@@ -1,0 +1,30 @@
+{
+  "cases": [
+    {
+      "id": "1",
+      "imageUrl": "https://lh3.googleusercontent.com/aida-public/AB6AXuANaXoIcZqSFaUfZZieHUhwADv7zbqRPY9gjLR0pNp0G4HoLA_luR4upGY-Zm5Xn2OmiLnq2stWtMuucMjEFd4-jaeNjjJx7UEKfIgp44qdcrEdQvSWO6zWpOm-tYV1wdQd1FbtQSaQ4QZuepCMcqCvAFngC9Kv68Ajg3kgaACpeht-9p9PgIqS5cwPZ_W__CziZ9msn0B9Wtp9Mnqyg7qN5YNvQbH77wr1zuT-V1TTaG5lIrZ5MkurxuDG5osA_be0BSDOzQP7mRub",
+      "imageAlt": "High-tech bright financial dashboard interface",
+      "tag": "Fintech",
+      "title": "Automatización de Reportes",
+      "description": "Reducción del 85% en tiempo de procesamiento de datos mensuales mediante agentes autónomos de conciliación.",
+      "stat1Label": "Eficiencia",
+      "stat1Value": "+85%",
+      "stat2Label": "Ahorro",
+      "stat2Value": "120h/mes",
+      "order": 1
+    },
+    {
+      "id": "2",
+      "imageUrl": "https://lh3.googleusercontent.com/aida-public/AB6AXuACmTUr5ZN1bvHrcEroNOok1L7Njf3kef_h-FPboOw3bDVxRNzF7oX70o1pPmChLg1-0pyAhYj5B1DxVyGv0p4Wdsiima9q-SZBHApCTorSjmteSlAAkmMZ4plcXQWKnQVluZAFVttdiJbSFtyCy79Erfh8striJYgNGquAMyJvkEQYAu_apVhr_6nbwlvkbCIcbHGRS-DzO3iPn9V53LFfI76UFI7hettd4cGrsOmnONDDebljuk4Dgttf5V7JWVudiCCHRGAS1Mwi",
+      "imageAlt": "Abstract bright airy neural network visualization",
+      "tag": "E-commerce",
+      "title": "Atención Autónoma",
+      "description": "Sistema conversacional híbrido que resuelve el 60% de los tickets complejos sin intervención humana directa.",
+      "stat1Label": "Resolución",
+      "stat1Value": "60%",
+      "stat2Label": "Satisfacción",
+      "stat2Value": "4.8/5",
+      "order": 2
+    }
+  ]
+}
