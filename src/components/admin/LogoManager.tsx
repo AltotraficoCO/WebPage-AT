@@ -225,21 +225,88 @@ export default function LogoManager({ initialSettings }: Props) {
               placeholder="Madrid, España"
             />
           </div>
-          <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1">
-              LinkedIn URL
-            </label>
-            <input
-              type="url"
-              value={settings.contactLinkedIn || ""}
-              onChange={(e) =>
-                setSettings((s) => ({ ...s, contactLinkedIn: e.target.value }))
-              }
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-              placeholder="https://linkedin.com/company/..."
-            />
-          </div>
         </div>
+      </div>
+
+      {/* Social Links */}
+      <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <h3 className="font-semibold text-gray-900 mb-4">Redes Sociales (Footer)</h3>
+        <div className="space-y-3">
+          {(settings.socialLinks || [])
+            .sort((a, b) => a.order - b.order)
+            .map((link) => (
+            <div key={link.id} className="flex items-center gap-2">
+              <select
+                value={link.platform}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setSettings((s) => ({
+                    ...s,
+                    socialLinks: s.socialLinks.map((l) =>
+                      l.id === link.id ? { ...l, platform: val } : l
+                    ),
+                  }));
+                }}
+                className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              >
+                <option value="LinkedIn">LinkedIn</option>
+                <option value="Instagram">Instagram</option>
+                <option value="Facebook">Facebook</option>
+                <option value="X">X (Twitter)</option>
+                <option value="YouTube">YouTube</option>
+                <option value="TikTok">TikTok</option>
+                <option value="WhatsApp">WhatsApp</option>
+                <option value="GitHub">GitHub</option>
+              </select>
+              <input
+                type="url"
+                value={link.url}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setSettings((s) => ({
+                    ...s,
+                    socialLinks: s.socialLinks.map((l) =>
+                      l.id === link.id ? { ...l, url: val } : l
+                    ),
+                  }));
+                }}
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                placeholder="https://..."
+              />
+              <button
+                onClick={() =>
+                  setSettings((s) => ({
+                    ...s,
+                    socialLinks: s.socialLinks.filter((l) => l.id !== link.id),
+                  }))
+                }
+                className="text-gray-400 hover:text-red-500 transition-colors"
+              >
+                <span className="material-icons text-lg">delete</span>
+              </button>
+            </div>
+          ))}
+        </div>
+        <button
+          onClick={() =>
+            setSettings((s) => ({
+              ...s,
+              socialLinks: [
+                ...(s.socialLinks || []),
+                {
+                  id: Date.now().toString(),
+                  platform: "LinkedIn",
+                  url: "",
+                  order: (s.socialLinks || []).length + 1,
+                },
+              ],
+            }))
+          }
+          className="mt-4 inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+        >
+          <span className="material-icons text-lg">add</span>
+          Agregar red social
+        </button>
       </div>
 
       {/* Save */}

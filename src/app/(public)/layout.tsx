@@ -30,7 +30,7 @@ export default async function PublicLayout({
         legalLinks={footerLinksData.legalLinks}
         contactEmail={settings.contactEmail || "hola@altotrafico.ai"}
         contactLocation={settings.contactLocation || "Madrid, España"}
-        contactLinkedIn={settings.contactLinkedIn || "#"}
+        socialLinks={settings.socialLinks || []}
       />
       <AiBot />
     </>

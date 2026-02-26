@@ -47,7 +47,27 @@ export function validateSettings(data: unknown): SiteSettings | null {
     footerLogoHeight: Math.min(Math.max(d.footerLogoHeight, 1), 1000),
     contactEmail: isString(d.contactEmail) ? sanitizeString(d.contactEmail, 200) : "hola@altotrafico.ai",
     contactLocation: isString(d.contactLocation) ? sanitizeString(d.contactLocation, 200) : "Madrid, España",
-    contactLinkedIn: isString(d.contactLinkedIn) ? sanitizeUrl(d.contactLinkedIn) : "#",
+    socialLinks: Array.isArray(d.socialLinks)
+      ? d.socialLinks
+          .filter(
+            (item: unknown) =>
+              item &&
+              typeof item === "object" &&
+              isString((item as Record<string, unknown>).id) &&
+              isString((item as Record<string, unknown>).platform) &&
+              isString((item as Record<string, unknown>).url)
+          )
+          .slice(0, 10)
+          .map((item: unknown) => {
+            const i = item as Record<string, unknown>;
+            return {
+              id: sanitizeString(i.id as string, 50),
+              platform: sanitizeString(i.platform as string, 50),
+              url: sanitizeUrl(i.url as string),
+              order: isNumber(i.order) ? Math.min(Math.max(i.order, 0), 100) : 0,
+            };
+          })
+      : [],
     faviconUrl: isString(d.faviconUrl) ? sanitizeUrl(d.faviconUrl) : undefined,
   };
 }

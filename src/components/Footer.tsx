@@ -11,6 +11,25 @@ interface FooterLinkItem {
   order: number;
 }
 
+interface SocialLinkItem {
+  id: string;
+  platform: string;
+  url: string;
+  order: number;
+}
+
+const SOCIAL_ICONS: Record<string, string> = {
+  linkedin: "share",
+  instagram: "photo_camera",
+  facebook: "facebook",
+  twitter: "tag",
+  x: "tag",
+  youtube: "play_circle",
+  tiktok: "music_note",
+  whatsapp: "chat",
+  github: "code",
+};
+
 interface FooterProps {
   logoUrl: string;
   logoAlt: string;
@@ -19,10 +38,10 @@ interface FooterProps {
   legalLinks: FooterLinkItem[];
   contactEmail: string;
   contactLocation: string;
-  contactLinkedIn: string;
+  socialLinks: SocialLinkItem[];
 }
 
-export default function Footer({ logoUrl, logoAlt, logoWidth, logoHeight, legalLinks, contactEmail, contactLocation, contactLinkedIn }: FooterProps) {
+export default function Footer({ logoUrl, logoAlt, logoWidth, logoHeight, legalLinks, contactEmail, contactLocation, socialLinks }: FooterProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -306,12 +325,21 @@ export default function Footer({ logoUrl, logoAlt, logoWidth, logoHeight, legalL
                   {contactLocation}
                 </span>
               </li>
-              <li>
-                <a className="flex items-center footer-link" href={contactLinkedIn} target="_blank" rel="noopener noreferrer">
-                  <span className="material-icons text-base mr-2">share</span>
-                  LinkedIn
-                </a>
-              </li>
+              {[...socialLinks].sort((a, b) => a.order - b.order).map((link) => (
+                <li key={link.id}>
+                  <a
+                    className="flex items-center footer-link"
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span className="material-icons text-base mr-2">
+                      {SOCIAL_ICONS[link.platform.toLowerCase()] || "link"}
+                    </span>
+                    {link.platform}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
         </div>

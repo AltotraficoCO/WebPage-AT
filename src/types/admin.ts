@@ -8,8 +8,15 @@ export interface SiteSettings {
   footerLogoHeight: number;
   contactEmail: string;
   contactLocation: string;
-  contactLinkedIn: string;
+  socialLinks: SocialLink[];
   faviconUrl?: string;
+}
+
+export interface SocialLink {
+  id: string;
+  platform: string;
+  url: string;
+  order: number;
 }
 
 export interface FooterLink {
