@@ -76,6 +76,7 @@ export default function AiBot({
         body: JSON.stringify({ action: "start_session" }),
       });
       const data = await res.json();
+      console.log("[AiBot] start_session response:", JSON.stringify(data));
       if (data.sessionId) {
         setSessionId(data.sessionId);
         lastTimestampRef.current = Date.now();
@@ -109,15 +110,70 @@ export default function AiBot({
         { headers: { "x-webchat-key": apiKey } }
       );
       const data = await res.json();
-      if (data.messages && data.messages.length > 0) {
-        const newMessages: Message[] = data.messages
-          .filter((m: { role: string }) => m.role !== "user")
-          .map((m: { id?: string; content: string; timestamp?: number }) => ({
-            id: m.id || Date.now().toString() + Math.random(),
+      console.log("[AiBot] poll response:", JSON.stringify(data));
+
+      // Handle array of messages - check multiple possible locations
+      let rawMessages = data.messages || data.results || [];
+      if (!Array.isArray(rawMessages) && Array.isArray(data.data)) {
+        rawMessages = data.data;
+      }
+
+      // Handle single message response (direct fields)
+      if (
+        (!Array.isArray(rawMessages) || rawMessages.length === 0) &&
+        (data.message || data.content || data.reply || data.text)
+      ) {
+        const botContent = data.message || data.content || data.reply || data.text;
+        const botId = data.id || data.messageId || `poll-${Date.now()}`;
+        setMessages((prev) => {
+          if (prev.some((m) => m.id === botId)) return prev;
+          return [
+            ...prev,
+            { id: botId, role: "bot", content: botContent, timestamp: Date.now() },
+          ];
+        });
+        lastTimestampRef.current = Date.now();
+        setLoading(false);
+        return;
+      }
+
+      // Handle single message nested under data object
+      if (
+        (!Array.isArray(rawMessages) || rawMessages.length === 0) &&
+        data.data &&
+        !Array.isArray(data.data)
+      ) {
+        const d = data.data;
+        const botContent = d.message || d.content || d.reply || d.text;
+        if (botContent) {
+          const botId = d.id || d.messageId || `poll-${Date.now()}`;
+          setMessages((prev) => {
+            if (prev.some((m) => m.id === botId)) return prev;
+            return [
+              ...prev,
+              { id: botId, role: "bot", content: botContent, timestamp: Date.now() },
+            ];
+          });
+          lastTimestampRef.current = Date.now();
+          setLoading(false);
+          return;
+        }
+      }
+
+      if (Array.isArray(rawMessages) && rawMessages.length > 0) {
+        const newMessages: Message[] = rawMessages
+          .filter((m: Record<string, unknown>) => {
+            const role = (m.role || m.sender || m.type || "") as string;
+            return role !== "user" && role !== "human";
+          })
+          .map((m: Record<string, unknown>) => ({
+            id: (m.id as string) || `poll-${Date.now()}-${Math.random()}`,
             role: "bot" as const,
-            content: m.content,
-            timestamp: m.timestamp || Date.now(),
-          }));
+            content: (m.content || m.message || m.text || m.reply || "") as string,
+            timestamp: (m.timestamp as number) || Date.now(),
+          }))
+          .filter((m: Message) => m.content);
+
         if (newMessages.length > 0) {
           setMessages((prev) => {
             const existingIds = new Set(prev.map((m) => m.id));
@@ -130,8 +186,8 @@ export default function AiBot({
           setLoading(false);
         }
       }
-    } catch {
-      // Silent fail on polling
+    } catch (err) {
+      console.log("[AiBot] poll error:", err);
     }
   }
 
@@ -164,17 +220,31 @@ export default function AiBot({
         }),
       });
       const data = await res.json();
-      if (data.message || data.content) {
+      console.log("[AiBot] send_message response:", JSON.stringify(data));
+      // Try direct fields
+      let botContent = data.message || data.content || data.reply || data.response || data.answer;
+      // Try nested under data
+      if (!botContent && data.data) {
+        const d = data.data;
+        botContent = d.message || d.content || d.reply || d.response || d.answer || d.text;
+      }
+      // Try nested under result
+      if (!botContent && data.result) {
+        const r = data.result;
+        botContent = typeof r === "string" ? r : (r.message || r.content || r.reply || r.text);
+      }
+      if (botContent) {
         const botMsg: Message = {
-          id: data.id || `bot-${Date.now()}`,
+          id: data.id || data.messageId || `bot-${Date.now()}`,
           role: "bot",
-          content: data.message || data.content,
+          content: botContent,
           timestamp: Date.now(),
         };
         setMessages((prev) => [...prev, botMsg]);
         lastTimestampRef.current = Date.now();
         setLoading(false);
       }
+      // If no immediate response, polling will pick it up
     } catch {
       setMessages((prev) => [
         ...prev,
