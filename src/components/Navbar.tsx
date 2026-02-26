@@ -55,6 +55,14 @@ export default function Navbar({ logoUrl, logoAlt, logoWidth, logoHeight }: Navb
                 {link.label}
               </Link>
             ))}
+            <a
+              href="https://www.app.altotrafico.co"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-tech btn-tech-outline px-5 py-2.5 rounded-full text-sm font-medium"
+            >
+              Zona clientes
+            </a>
             <Link
               href="/contacto"
               className="btn-tech bg-primary text-white px-5 py-2.5 rounded-full text-sm font-medium shadow-lg shadow-primary/20"
@@ -88,6 +96,15 @@ export default function Navbar({ logoUrl, logoAlt, logoWidth, logoHeight }: Navb
               {link.label}
             </Link>
           ))}
+          <a
+            href="https://www.app.altotrafico.co"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block btn-tech btn-tech-outline px-5 py-2.5 rounded-full text-sm font-medium text-center"
+            onClick={() => setMobileOpen(false)}
+          >
+            Zona clientes
+          </a>
           <Link
             href="/contacto"
             className="block btn-tech bg-primary text-white px-5 py-2.5 rounded-full text-sm font-medium text-center shadow-lg shadow-primary/20"
