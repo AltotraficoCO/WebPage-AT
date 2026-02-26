@@ -38,6 +38,14 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "**.hsforms.com",
       },
+      {
+        protocol: "https",
+        hostname: "**.public.blob.vercel-storage.com",
+      },
+      {
+        protocol: "https",
+        hostname: "altotrafico.co",
+      },
     ],
   },
   async headers() {
