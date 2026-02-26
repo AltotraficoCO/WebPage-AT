@@ -1,34 +1,19 @@
 import { fetchBlogPostBySlug } from "@/lib/hubspot";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import DOMPurify from "isomorphic-dompurify";
 import BlogImage from "@/components/BlogImage";
 
 export const revalidate = 3600;
 
 function sanitizeHtml(html: string): string {
-  try {
-    return DOMPurify.sanitize(html, {
-      ALLOWED_TAGS: [
-        "h1", "h2", "h3", "h4", "h5", "h6", "p", "br", "hr",
-        "ul", "ol", "li", "a", "strong", "em", "b", "i", "u",
-        "blockquote", "pre", "code", "img", "figure", "figcaption",
-        "table", "thead", "tbody", "tr", "th", "td",
-        "span", "div", "section",
-      ],
-      ALLOWED_ATTR: [
-        "href", "target", "rel", "src", "alt", "width", "height",
-        "class", "id",
-      ],
-      ALLOW_DATA_ATTR: false,
-    });
-  } catch {
-    return html
-      .replace(/<script[\s\S]*?<\/script>/gi, "")
-      .replace(/\s*on\w+="[^"]*"/gi, "")
-      .replace(/\s*on\w+='[^']*'/gi, "")
-      .replace(/javascript:/gi, "");
-  }
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/<style[\s\S]*?<\/style>/gi, "")
+    .replace(/<iframe[\s\S]*?<\/iframe>/gi, "")
+    .replace(/\s*on\w+\s*=\s*"[^"]*"/gi, "")
+    .replace(/\s*on\w+\s*=\s*'[^']*'/gi, "")
+    .replace(/javascript\s*:/gi, "")
+    .replace(/data\s*:/gi, "");
 }
 
 function stripHtml(html: string): string {
