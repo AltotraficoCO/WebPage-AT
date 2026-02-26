@@ -108,6 +108,7 @@ export default function AiBot({
         },
         body: JSON.stringify({
           action: "start_session",
+          content: info.subject,
           visitorName: info.name,
           visitorEmail: info.email,
           subject: info.subject,

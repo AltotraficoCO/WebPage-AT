@@ -48,7 +48,7 @@ export default function ChatManager({ initialSettings }: Props) {
           "Content-Type": "application/json",
           "x-webchat-key": settings.chatApiKey,
         },
-        body: JSON.stringify({ action: "start_session" }),
+        body: JSON.stringify({ action: "start_session", content: "test" }),
       });
       const data = await res.json();
       if (data.sessionId) {
