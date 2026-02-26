@@ -20,7 +20,6 @@ interface Message {
 interface ContactInfo {
   name: string;
   email: string;
-  subject: string;
 }
 
 export default function AiBot({
@@ -40,7 +39,6 @@ export default function AiBot({
   const [formData, setFormData] = useState<ContactInfo>({
     name: "",
     email: "",
-    subject: "",
   });
   const [formError, setFormError] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -83,9 +81,8 @@ export default function AiBot({
 
     const name = formData.name.trim();
     const email = formData.email.trim();
-    const subject = formData.subject.trim();
 
-    if (!name || !email || !subject) {
+    if (!name || !email) {
       setFormError("Todos los campos son obligatorios");
       return;
     }
@@ -94,7 +91,7 @@ export default function AiBot({
       return;
     }
 
-    const info = { name, email, subject };
+    const info = { name, email };
     setContactInfo(info);
     await startSession(info);
   }
@@ -110,7 +107,7 @@ export default function AiBot({
           "x-webchat-key": apiKey,
         },
         body: JSON.stringify({
-          content: info.subject,
+          content: `Hola, soy ${info.name}`,
           visitorName: info.name,
           visitorEmail: info.email,
         }),
@@ -347,20 +344,6 @@ export default function AiBot({
               }
               className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               placeholder="correo@ejemplo.com"
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1">
-              Asunto
-            </label>
-            <input
-              type="text"
-              value={formData.subject}
-              onChange={(e) =>
-                setFormData((f) => ({ ...f, subject: e.target.value }))
-              }
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-              placeholder="¿En qué podemos ayudarte?"
             />
           </div>
           {formError && (
