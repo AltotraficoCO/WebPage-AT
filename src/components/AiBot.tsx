@@ -262,6 +262,11 @@ export default function AiBot({
     setInput("");
     setLoading(true);
 
+    // Safety timeout: unlock input after 15s even if no response
+    const safetyTimeout = setTimeout(() => {
+      setLoading(false);
+    }, 15000);
+
     try {
       const res = await fetch(apiUrl, {
         method: "POST",
@@ -299,6 +304,7 @@ export default function AiBot({
             : r.message || r.content || r.reply || r.text;
       }
       if (botContent) {
+        clearTimeout(safetyTimeout);
         const botMsg: Message = {
           id: data.id || data.messageId || `bot-${Date.now()}`,
           role: "bot",
@@ -311,6 +317,7 @@ export default function AiBot({
       }
       // If no immediate response, polling will pick it up
     } catch {
+      clearTimeout(safetyTimeout);
       setMessages((prev) => [
         ...prev,
         {
