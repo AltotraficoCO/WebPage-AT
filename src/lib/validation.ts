@@ -48,6 +48,7 @@ export function validateSettings(data: unknown): SiteSettings | null {
     contactEmail: isString(d.contactEmail) ? sanitizeString(d.contactEmail, 200) : "hola@altotrafico.ai",
     contactLocation: isString(d.contactLocation) ? sanitizeString(d.contactLocation, 200) : "Madrid, España",
     contactLinkedIn: isString(d.contactLinkedIn) ? sanitizeUrl(d.contactLinkedIn) : "#",
+    faviconUrl: isString(d.faviconUrl) ? sanitizeUrl(d.faviconUrl) : undefined,
   };
 }
 
