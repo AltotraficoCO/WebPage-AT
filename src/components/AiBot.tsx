@@ -17,6 +17,12 @@ interface Message {
   timestamp: number;
 }
 
+interface ContactInfo {
+  name: string;
+  email: string;
+  subject: string;
+}
+
 export default function AiBot({
   enabled,
   apiUrl,
@@ -30,6 +36,13 @@ export default function AiBot({
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [initializing, setInitializing] = useState(false);
+  const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null);
+  const [formData, setFormData] = useState<ContactInfo>({
+    name: "",
+    email: "",
+    subject: "",
+  });
+  const [formError, setFormError] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const lastTimestampRef = useRef<number>(0);
@@ -42,12 +55,7 @@ export default function AiBot({
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
-  useEffect(() => {
-    if (open && !sessionId && !initializing && apiUrl && apiKey) {
-      startSession();
-    }
-  }, [open, sessionId, initializing, apiUrl, apiKey]);
-
+  // Only start polling after session is created (NOT on open)
   useEffect(() => {
     if (sessionId && open) {
       pollingRef.current = setInterval(() => {
@@ -64,7 +72,32 @@ export default function AiBot({
 
   if (!enabled || !apiUrl || !apiKey) return null;
 
-  async function startSession() {
+  function validateEmail(email: string) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  async function handleFormSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setFormError("");
+
+    const name = formData.name.trim();
+    const email = formData.email.trim();
+    const subject = formData.subject.trim();
+
+    if (!name || !email || !subject) {
+      setFormError("Todos los campos son obligatorios");
+      return;
+    }
+    if (!validateEmail(email)) {
+      setFormError("Ingresa un correo válido");
+      return;
+    }
+
+    setContactInfo({ name, email, subject });
+    await startSession({ name, email, subject });
+  }
+
+  async function startSession(info: ContactInfo) {
     setInitializing(true);
     try {
       const res = await fetch(apiUrl, {
@@ -73,7 +106,17 @@ export default function AiBot({
           "Content-Type": "application/json",
           "x-webchat-key": apiKey,
         },
-        body: JSON.stringify({ action: "start_session" }),
+        body: JSON.stringify({
+          action: "start_session",
+          visitorName: info.name,
+          visitorEmail: info.email,
+          subject: info.subject,
+          metadata: {
+            name: info.name,
+            email: info.email,
+            subject: info.subject,
+          },
+        }),
       });
       const data = await res.json();
       console.log("[AiBot] start_session response:", JSON.stringify(data));
@@ -123,13 +166,19 @@ export default function AiBot({
         (!Array.isArray(rawMessages) || rawMessages.length === 0) &&
         (data.message || data.content || data.reply || data.text)
       ) {
-        const botContent = data.message || data.content || data.reply || data.text;
+        const botContent =
+          data.message || data.content || data.reply || data.text;
         const botId = data.id || data.messageId || `poll-${Date.now()}`;
         setMessages((prev) => {
           if (prev.some((m) => m.id === botId)) return prev;
           return [
             ...prev,
-            { id: botId, role: "bot", content: botContent, timestamp: Date.now() },
+            {
+              id: botId,
+              role: "bot",
+              content: botContent,
+              timestamp: Date.now(),
+            },
           ];
         });
         lastTimestampRef.current = Date.now();
@@ -151,7 +200,12 @@ export default function AiBot({
             if (prev.some((m) => m.id === botId)) return prev;
             return [
               ...prev,
-              { id: botId, role: "bot", content: botContent, timestamp: Date.now() },
+              {
+                id: botId,
+                role: "bot",
+                content: botContent,
+                timestamp: Date.now(),
+              },
             ];
           });
           lastTimestampRef.current = Date.now();
@@ -169,7 +223,8 @@ export default function AiBot({
           .map((m: Record<string, unknown>) => ({
             id: (m.id as string) || `poll-${Date.now()}-${Math.random()}`,
             role: "bot" as const,
-            content: (m.content || m.message || m.text || m.reply || "") as string,
+            content: (m.content || m.message || m.text || m.reply ||
+              "") as string,
             timestamp: (m.timestamp as number) || Date.now(),
           }))
           .filter((m: Message) => m.content);
@@ -222,16 +277,25 @@ export default function AiBot({
       const data = await res.json();
       console.log("[AiBot] send_message response:", JSON.stringify(data));
       // Try direct fields
-      let botContent = data.message || data.content || data.reply || data.response || data.answer;
+      let botContent =
+        data.message ||
+        data.content ||
+        data.reply ||
+        data.response ||
+        data.answer;
       // Try nested under data
       if (!botContent && data.data) {
         const d = data.data;
-        botContent = d.message || d.content || d.reply || d.response || d.answer || d.text;
+        botContent =
+          d.message || d.content || d.reply || d.response || d.answer || d.text;
       }
       // Try nested under result
       if (!botContent && data.result) {
         const r = data.result;
-        botContent = typeof r === "string" ? r : (r.message || r.content || r.reply || r.text);
+        botContent =
+          typeof r === "string"
+            ? r
+            : r.message || r.content || r.reply || r.text;
       }
       if (botContent) {
         const botMsg: Message = {
@@ -266,6 +330,136 @@ export default function AiBot({
     }
   }
 
+  // Pre-chat form view
+  const formView = (
+    <div className="ai-bot-content">
+      <div className="px-1 py-2">
+        <p className="text-sm text-gray-600 mb-4">
+          Para iniciar la conversación, por favor completa los siguientes datos:
+        </p>
+        <form onSubmit={handleFormSubmit} className="space-y-3">
+          <div>
+            <label className="block text-xs font-medium text-gray-500 mb-1">
+              Nombre completo
+            </label>
+            <input
+              type="text"
+              value={formData.name}
+              onChange={(e) =>
+                setFormData((f) => ({ ...f, name: e.target.value }))
+              }
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              placeholder="Tu nombre"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-500 mb-1">
+              Correo electrónico
+            </label>
+            <input
+              type="email"
+              value={formData.email}
+              onChange={(e) =>
+                setFormData((f) => ({ ...f, email: e.target.value }))
+              }
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              placeholder="correo@ejemplo.com"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-500 mb-1">
+              Asunto
+            </label>
+            <input
+              type="text"
+              value={formData.subject}
+              onChange={(e) =>
+                setFormData((f) => ({ ...f, subject: e.target.value }))
+              }
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              placeholder="¿En qué podemos ayudarte?"
+            />
+          </div>
+          {formError && (
+            <p className="text-xs text-red-500">{formError}</p>
+          )}
+          <button
+            type="submit"
+            disabled={initializing}
+            className="w-full py-2.5 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+          >
+            {initializing ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                Conectando...
+              </>
+            ) : (
+              <>
+                <span className="material-icons text-sm">chat</span>
+                Iniciar conversación
+              </>
+            )}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+
+  // Chat view (messages + input)
+  const chatView = (
+    <>
+      <div className="ai-bot-content">
+        {messages.map((msg) => (
+          <div
+            key={msg.id}
+            className={`ai-chat-msg ${msg.role === "user" ? "user" : "bot"}`}
+          >
+            {msg.content}
+          </div>
+        ))}
+        {loading && (
+          <div className="ai-chat-msg bot">
+            <span className="inline-flex gap-1">
+              <span
+                className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
+                style={{ animationDelay: "0ms" }}
+              />
+              <span
+                className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
+                style={{ animationDelay: "150ms" }}
+              />
+              <span
+                className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
+                style={{ animationDelay: "300ms" }}
+              />
+            </span>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
+      </div>
+      <div className="ai-bot-input-area">
+        <div className="relative">
+          <input
+            className="w-full text-sm border-none bg-gray-50 rounded-lg py-3 px-4 pr-10 focus:ring-1 focus:ring-primary focus:bg-white transition-colors"
+            placeholder="Escribe tu consulta..."
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            disabled={!sessionId || loading}
+          />
+          <button
+            onClick={sendMessage}
+            disabled={!input.trim() || !sessionId || loading}
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary disabled:opacity-30 transition-colors"
+          >
+            <span className="material-icons text-lg">send</span>
+          </button>
+        </div>
+      </div>
+    </>
+  );
+
   return (
     <div className={`ai-bot-container ${open ? "open" : ""}`}>
       <div className="ai-bot-panel">
@@ -283,63 +477,9 @@ export default function AiBot({
             <span className="material-icons text-lg">close</span>
           </button>
         </div>
-        <div className="ai-bot-content">
-          {initializing ? (
-            <div className="flex items-center justify-center py-8">
-              <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-            </div>
-          ) : (
-            <>
-              {messages.map((msg) => (
-                <div
-                  key={msg.id}
-                  className={`ai-chat-msg ${msg.role === "user" ? "user" : "bot"}`}
-                >
-                  {msg.content}
-                </div>
-              ))}
-              {loading && (
-                <div className="ai-chat-msg bot">
-                  <span className="inline-flex gap-1">
-                    <span
-                      className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
-                      style={{ animationDelay: "0ms" }}
-                    />
-                    <span
-                      className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
-                      style={{ animationDelay: "150ms" }}
-                    />
-                    <span
-                      className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
-                      style={{ animationDelay: "300ms" }}
-                    />
-                  </span>
-                </div>
-              )}
-              <div ref={messagesEndRef} />
-            </>
-          )}
-        </div>
-        <div className="ai-bot-input-area">
-          <div className="relative">
-            <input
-              className="w-full text-sm border-none bg-gray-50 rounded-lg py-3 px-4 pr-10 focus:ring-1 focus:ring-primary focus:bg-white transition-colors"
-              placeholder="Escribe tu consulta..."
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              disabled={!sessionId || initializing}
-            />
-            <button
-              onClick={sendMessage}
-              disabled={!input.trim() || !sessionId || loading}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary disabled:opacity-30 transition-colors"
-            >
-              <span className="material-icons text-lg">send</span>
-            </button>
-          </div>
-        </div>
+
+        {/* Show form if no contact info submitted yet, otherwise show chat */}
+        {!contactInfo ? formView : chatView}
       </div>
 
       <div
