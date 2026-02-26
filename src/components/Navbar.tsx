@@ -56,7 +56,7 @@ export default function Navbar({ logoUrl, logoAlt, logoWidth, logoHeight }: Navb
               </Link>
             ))}
             <a
-              href="https://www.app.altotrafico.co"
+              href="https://app.altotrafico.co"
               target="_blank"
               rel="noopener noreferrer"
               className="btn-tech btn-tech-outline px-5 py-2.5 rounded-full text-sm font-medium"
@@ -97,7 +97,7 @@ export default function Navbar({ logoUrl, logoAlt, logoWidth, logoHeight }: Navb
             </Link>
           ))}
           <a
-            href="https://www.app.altotrafico.co"
+            href="https://app.altotrafico.co"
             target="_blank"
             rel="noopener noreferrer"
             className="block btn-tech btn-tech-outline px-5 py-2.5 rounded-full text-sm font-medium text-center"
