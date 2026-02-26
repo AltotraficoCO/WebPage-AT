@@ -6,6 +6,10 @@ export interface SiteSettings {
   footerLogoUrl: string;
   footerLogoWidth: number;
   footerLogoHeight: number;
+  contactEmail: string;
+  contactLocation: string;
+  contactLinkedIn: string;
+  faviconUrl?: string;
 }
 
 export interface FooterLink {

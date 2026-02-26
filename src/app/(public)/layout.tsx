@@ -28,6 +28,9 @@ export default async function PublicLayout({
         logoWidth={settings.footerLogoWidth}
         logoHeight={settings.footerLogoHeight}
         legalLinks={footerLinksData.legalLinks}
+        contactEmail={settings.contactEmail || "hola@altotrafico.ai"}
+        contactLocation={settings.contactLocation || "Madrid, España"}
+        contactLinkedIn={settings.contactLinkedIn || "#"}
       />
       <AiBot />
     </>

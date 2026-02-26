@@ -24,6 +24,9 @@ const DEFAULT_SETTINGS: SiteSettings = {
   footerLogoUrl: "/logo.png",
   footerLogoWidth: 120,
   footerLogoHeight: 32,
+  contactEmail: "hola@altotrafico.ai",
+  contactLocation: "Madrid, España",
+  contactLinkedIn: "#",
 };
 
 // ── Settings ────────────────────────────────────────────

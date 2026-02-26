@@ -45,6 +45,9 @@ export function validateSettings(data: unknown): SiteSettings | null {
     footerLogoUrl: sanitizeUrl(d.footerLogoUrl),
     footerLogoWidth: Math.min(Math.max(d.footerLogoWidth, 1), 1000),
     footerLogoHeight: Math.min(Math.max(d.footerLogoHeight, 1), 1000),
+    contactEmail: isString(d.contactEmail) ? sanitizeString(d.contactEmail, 200) : "hola@altotrafico.ai",
+    contactLocation: isString(d.contactLocation) ? sanitizeString(d.contactLocation, 200) : "Madrid, España",
+    contactLinkedIn: isString(d.contactLinkedIn) ? sanitizeUrl(d.contactLinkedIn) : "#",
   };
 }
 

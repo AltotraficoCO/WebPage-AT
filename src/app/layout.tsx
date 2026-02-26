@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { readSettings } from "@/lib/storage";
 import "./globals.css";
 
 const inter = Inter({
@@ -8,11 +8,19 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-export const metadata: Metadata = {
-  title: "Alto Tráfico - Potencia tu negocio con IA",
-  description:
-    "Consultoría estratégica de IA para empresas que buscan liderar la próxima era digital.",
-};
+export const dynamic = "force-dynamic";
+
+export async function generateMetadata() {
+  const settings = await readSettings();
+  return {
+    title: "Alto Tráfico - Potencia tu negocio con IA",
+    description:
+      "Consultoría estratégica de IA para empresas que buscan liderar la próxima era digital.",
+    icons: {
+      icon: settings.faviconUrl || "/favicon.ico",
+    },
+  };
+}
 
 export default function RootLayout({
   children,

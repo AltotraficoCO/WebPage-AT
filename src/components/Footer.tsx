@@ -17,9 +17,12 @@ interface FooterProps {
   logoWidth: number;
   logoHeight: number;
   legalLinks: FooterLinkItem[];
+  contactEmail: string;
+  contactLocation: string;
+  contactLinkedIn: string;
 }
 
-export default function Footer({ logoUrl, logoAlt, logoWidth, logoHeight, legalLinks }: FooterProps) {
+export default function Footer({ logoUrl, logoAlt, logoWidth, logoHeight, legalLinks, contactEmail, contactLocation, contactLinkedIn }: FooterProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -289,22 +292,22 @@ export default function Footer({ logoUrl, logoAlt, logoWidth, logoHeight, legalL
               <li>
                 <a
                   className="flex items-center footer-link"
-                  href="mailto:hola@altotrafico.ai"
+                  href={`mailto:${contactEmail}`}
                 >
                   <span className="material-icons text-base mr-2">email</span>
-                  hola@altotrafico.ai
+                  {contactEmail}
                 </a>
               </li>
               <li>
-                <a className="flex items-center footer-link" href="#">
+                <span className="flex items-center">
                   <span className="material-icons text-base mr-2">
                     location_on
                   </span>
-                  Madrid, España
-                </a>
+                  {contactLocation}
+                </span>
               </li>
               <li>
-                <a className="flex items-center footer-link" href="#">
+                <a className="flex items-center footer-link" href={contactLinkedIn} target="_blank" rel="noopener noreferrer">
                   <span className="material-icons text-base mr-2">share</span>
                   LinkedIn
                 </a>
