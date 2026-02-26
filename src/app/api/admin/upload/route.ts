@@ -61,6 +61,7 @@ export async function POST(request: Request) {
     const filename = `img-${Date.now()}.${ext}`;
     const blob = await put(filename, file, {
       access: "public",
+      token: process.env.BLOB_READ_WRITE_TOKEN,
     });
 
     return NextResponse.json({ url: blob.url });
