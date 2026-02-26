@@ -69,6 +69,11 @@ export function validateSettings(data: unknown): SiteSettings | null {
           })
       : [],
     faviconUrl: isString(d.faviconUrl) ? sanitizeUrl(d.faviconUrl) : undefined,
+    chatEnabled: typeof d.chatEnabled === "boolean" ? d.chatEnabled : true,
+    chatApiUrl: isString(d.chatApiUrl) ? sanitizeUrl(d.chatApiUrl) : "",
+    chatApiKey: isString(d.chatApiKey) ? d.chatApiKey.slice(0, 200) : "",
+    chatWelcomeMessage: isString(d.chatWelcomeMessage) ? sanitizeString(d.chatWelcomeMessage, 500) : "",
+    chatBotName: isString(d.chatBotName) ? sanitizeString(d.chatBotName, 50) : "AT Assistant",
   };
 }
 

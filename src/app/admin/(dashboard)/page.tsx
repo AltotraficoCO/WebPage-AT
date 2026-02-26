@@ -26,6 +26,12 @@ const sections = [
     icon: "article",
   },
   {
+    title: "Chat",
+    description: "Configurar el chat flotante del sitio",
+    href: "/admin/chat",
+    icon: "chat",
+  },
+  {
     title: "Usuarios",
     description: "Gestionar accesos al panel de administración",
     href: "/admin/users",

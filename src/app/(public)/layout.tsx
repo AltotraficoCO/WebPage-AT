@@ -32,7 +32,13 @@ export default async function PublicLayout({
         contactLocation={settings.contactLocation || "Madrid, España"}
         socialLinks={settings.socialLinks || []}
       />
-      <AiBot />
+      <AiBot
+        enabled={settings.chatEnabled ?? false}
+        apiUrl={settings.chatApiUrl || ""}
+        apiKey={settings.chatApiKey || ""}
+        welcomeMessage={settings.chatWelcomeMessage || "Hola. ¿En qué puedo ayudarte?"}
+        botName={settings.chatBotName || "AT Assistant"}
+      />
     </>
   );
 }

@@ -2,8 +2,13 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 
-const API_URL = "https://varylo.vercel.app/api/webchat";
-const API_KEY = "wc_2983925e1b0c5b03a365cf0da7c3e9af7702e25292edb003";
+interface AiBotProps {
+  enabled: boolean;
+  apiUrl: string;
+  apiKey: string;
+  welcomeMessage: string;
+  botName: string;
+}
 
 interface Message {
   id: string;
@@ -12,7 +17,13 @@ interface Message {
   timestamp: number;
 }
 
-export default function AiBot() {
+export default function AiBot({
+  enabled,
+  apiUrl,
+  apiKey,
+  welcomeMessage,
+  botName,
+}: AiBotProps) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -31,21 +42,18 @@ export default function AiBot() {
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
-  // Start session when chat opens for the first time
   useEffect(() => {
-    if (open && !sessionId && !initializing) {
+    if (open && !sessionId && !initializing && apiUrl && apiKey) {
       startSession();
     }
-  }, [open, sessionId, initializing]);
+  }, [open, sessionId, initializing, apiUrl, apiKey]);
 
-  // Polling for new messages
   useEffect(() => {
     if (sessionId && open) {
       pollingRef.current = setInterval(() => {
         pollMessages();
       }, 2000);
     }
-
     return () => {
       if (pollingRef.current) {
         clearInterval(pollingRef.current);
@@ -54,14 +62,16 @@ export default function AiBot() {
     };
   }, [sessionId, open]);
 
+  if (!enabled || !apiUrl || !apiKey) return null;
+
   async function startSession() {
     setInitializing(true);
     try {
-      const res = await fetch(API_URL, {
+      const res = await fetch(apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-webchat-key": API_KEY,
+          "x-webchat-key": apiKey,
         },
         body: JSON.stringify({ action: "start_session" }),
       });
@@ -69,27 +79,14 @@ export default function AiBot() {
       if (data.sessionId) {
         setSessionId(data.sessionId);
         lastTimestampRef.current = Date.now();
-        // Add welcome message if the API returns one
-        if (data.message) {
-          setMessages([
-            {
-              id: "welcome",
-              role: "bot",
-              content: data.message,
-              timestamp: Date.now(),
-            },
-          ]);
-        } else {
-          setMessages([
-            {
-              id: "welcome",
-              role: "bot",
-              content:
-                "Hola. Soy el asistente de Alto Tráfico. ¿En qué puedo ayudarte?",
-              timestamp: Date.now(),
-            },
-          ]);
-        }
+        setMessages([
+          {
+            id: "welcome",
+            role: "bot",
+            content: data.message || welcomeMessage,
+            timestamp: Date.now(),
+          },
+        ]);
       }
     } catch {
       setMessages([
@@ -108,12 +105,8 @@ export default function AiBot() {
     if (!sessionId) return;
     try {
       const res = await fetch(
-        `${API_URL}?sessionId=${sessionId}&after=${lastTimestampRef.current}`,
-        {
-          headers: {
-            "x-webchat-key": API_KEY,
-          },
-        }
+        `${apiUrl}?sessionId=${sessionId}&after=${lastTimestampRef.current}`,
+        { headers: { "x-webchat-key": apiKey } }
       );
       const data = await res.json();
       if (data.messages && data.messages.length > 0) {
@@ -125,7 +118,6 @@ export default function AiBot() {
             content: m.content,
             timestamp: m.timestamp || Date.now(),
           }));
-
         if (newMessages.length > 0) {
           setMessages((prev) => {
             const existingIds = new Set(prev.map((m) => m.id));
@@ -159,11 +151,11 @@ export default function AiBot() {
     setLoading(true);
 
     try {
-      const res = await fetch(API_URL, {
+      const res = await fetch(apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-webchat-key": API_KEY,
+          "x-webchat-key": apiKey,
         },
         body: JSON.stringify({
           action: "send_message",
@@ -172,8 +164,6 @@ export default function AiBot() {
         }),
       });
       const data = await res.json();
-
-      // If the API returns an immediate response
       if (data.message || data.content) {
         const botMsg: Message = {
           id: data.id || `bot-${Date.now()}`,
@@ -185,7 +175,6 @@ export default function AiBot() {
         lastTimestampRef.current = Date.now();
         setLoading(false);
       }
-      // Otherwise polling will pick up the response
     } catch {
       setMessages((prev) => [
         ...prev,
@@ -214,7 +203,7 @@ export default function AiBot() {
           <div className="flex items-center">
             <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse mr-2" />
             <span className="text-sm font-medium text-gray-900">
-              AT Assistant
+              {botName}
             </span>
           </div>
           <button
@@ -242,9 +231,18 @@ export default function AiBot() {
               {loading && (
                 <div className="ai-chat-msg bot">
                   <span className="inline-flex gap-1">
-                    <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                    <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                    <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                    <span
+                      className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
+                      style={{ animationDelay: "0ms" }}
+                    />
+                    <span
+                      className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
+                      style={{ animationDelay: "150ms" }}
+                    />
+                    <span
+                      className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
+                      style={{ animationDelay: "300ms" }}
+                    />
                   </span>
                 </div>
               )}

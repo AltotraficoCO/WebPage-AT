@@ -10,6 +10,7 @@ const navItems = [
   { href: "/admin/footer", label: "Footer Links", icon: "link" },
   { href: "/admin/cases", label: "Casos de Éxito", icon: "work" },
   { href: "/admin/blog", label: "Blog", icon: "article" },
+  { href: "/admin/chat", label: "Chat", icon: "chat" },
   { href: "/admin/users", label: "Usuarios", icon: "people" },
 ];
 
@@ -19,6 +20,7 @@ const pageTitles: Record<string, string> = {
   "/admin/footer": "Footer Links",
   "/admin/cases": "Casos de Éxito",
   "/admin/blog": "Blog - HubSpot",
+  "/admin/chat": "Chat",
   "/admin/users": "Usuarios",
 };
 

@@ -10,6 +10,11 @@ export interface SiteSettings {
   contactLocation: string;
   socialLinks: SocialLink[];
   faviconUrl?: string;
+  chatEnabled: boolean;
+  chatApiUrl: string;
+  chatApiKey: string;
+  chatWelcomeMessage: string;
+  chatBotName: string;
 }
 
 export interface SocialLink {

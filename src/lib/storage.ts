@@ -27,6 +27,11 @@ const DEFAULT_SETTINGS: SiteSettings = {
   contactEmail: "hola@altotrafico.ai",
   contactLocation: "Madrid, España",
   socialLinks: [],
+  chatEnabled: true,
+  chatApiUrl: "https://varylo.vercel.app/api/webchat",
+  chatApiKey: "",
+  chatWelcomeMessage: "Hola. Soy el asistente de Alto Tráfico. ¿En qué puedo ayudarte?",
+  chatBotName: "AT Assistant",
 };
 
 // ── Settings ────────────────────────────────────────────
