@@ -27,9 +27,10 @@ export default function HeroSection() {
     const mouse = { x: -1000, y: -1000 };
     let animationId: number;
 
+    const isMobile = window.innerWidth < 768;
     const config = {
-      particleCount: 180,
-      mouseRadius: 180,
+      particleCount: isMobile ? 60 : 180,
+      mouseRadius: isMobile ? 100 : 180,
       mouseForce: 0.15,
       friction: 0.95,
       colors: ["#B2FFB5", "#FFFA86", "#D9FD9E", "#ECFB92"],
@@ -217,7 +218,7 @@ export default function HeroSection() {
       <canvas ref={canvasRef} id="hero-canvas" />
       <div className="hero-content z-20 pointer-events-none w-full px-4">
         <h1
-          className={`text-6xl md:text-8xl font-medium tracking-tighter text-text-light mb-8 leading-[1.05] max-w-5xl mx-auto hero-text-reveal ${
+          className={`text-4xl sm:text-6xl md:text-8xl font-medium tracking-tighter text-text-light mb-6 md:mb-8 leading-[1.08] max-w-5xl mx-auto hero-text-reveal ${
             revealed ? "is-visible" : ""
           }`}
         >
@@ -229,7 +230,7 @@ export default function HeroSection() {
           </span>
         </h1>
         <p
-          className={`mt-8 mb-10 text-lg md:text-xl text-gray-500 max-w-2xl mx-auto hero-text-reveal font-normal ${
+          className={`mt-4 md:mt-8 mb-8 md:mb-10 text-base md:text-xl text-gray-500 max-w-2xl mx-auto hero-text-reveal font-normal px-2 ${
             revealed ? "is-visible" : ""
           }`}
           style={{ transitionDelay: "200ms" }}
@@ -245,7 +246,7 @@ export default function HeroSection() {
         >
           <Link
             href="/diagnostico-ia"
-            className="cta-button-generative px-8 py-4 rounded-full text-base flex items-center shadow-sm pointer-events-auto"
+            className="cta-button-generative px-6 py-3 md:px-8 md:py-4 rounded-full text-sm md:text-base flex items-center shadow-sm pointer-events-auto"
           >
             Iniciar Diagnostico
             <span className="material-icons ml-2 text-lg">arrow_forward</span>

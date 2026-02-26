@@ -101,7 +101,7 @@ export default function ContactSection() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10">
         <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-100 shadow-2xl overflow-hidden">
           {/* Header bar */}
-          <div className="h-16 border-b border-gray-100 flex items-center px-8 justify-between relative">
+          <div className="h-12 md:h-16 border-b border-gray-100 flex items-center px-4 md:px-8 justify-between relative">
             <div className="flex items-center space-x-3">
               <div className="flex space-x-1.5">
                 <div className="w-2.5 h-2.5 rounded-full bg-gray-200" />
@@ -128,7 +128,7 @@ export default function ContactSection() {
           </div>
 
           {/* Form content */}
-          <div className="p-8 md:p-16 min-h-[400px] flex flex-col justify-center relative">
+          <div className="p-5 md:p-16 min-h-[320px] md:min-h-[400px] flex flex-col justify-center relative">
             {/* Success */}
             {showSuccess && (
               <div className="text-center animate-entrance-up">

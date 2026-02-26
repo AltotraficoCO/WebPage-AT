@@ -71,13 +71,13 @@ export default function DiagnosisSection() {
                 Sistema Activo
               </span>
             </div>
-            <h2 className="text-4xl md:text-6xl font-medium tracking-tight text-gray-900 mb-8 leading-tight">
+            <h2 className="text-3xl md:text-6xl font-medium tracking-tight text-gray-900 mb-6 md:mb-8 leading-tight">
               AT Assistant: <br />
               <span className="font-normal text-gray-400">
                 Inteligencia aplicada a tu negocio
               </span>
             </h2>
-            <p className="text-lg text-gray-500 font-normal mb-10 max-w-lg leading-relaxed">
+            <p className="text-base md:text-lg text-gray-500 font-normal mb-8 md:mb-10 max-w-lg leading-relaxed">
               Un sistema diseñado para escanear tu estructura operativa, detectar
               ineficiencias y proponer soluciones automatizadas en tiempo real.
             </p>

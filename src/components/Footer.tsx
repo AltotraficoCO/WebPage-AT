@@ -58,8 +58,9 @@ export default function Footer({ logoUrl, logoAlt, logoWidth, logoHeight, legalL
     let mouse = { x: -1000, y: -1000 };
     let animationId: number;
 
+    const isMobile = window.innerWidth < 768;
     const config = {
-      particleCount: 80,
+      particleCount: isMobile ? 30 : 80,
       mouseRadius: 150,
       mouseForce: 0.15,
       friction: 0.95,
@@ -208,7 +209,7 @@ export default function Footer({ logoUrl, logoAlt, logoWidth, logoHeight, legalL
       >
         <canvas ref={canvasRef} id="footer-interactive-canvas" />
         <div className="footer-cta-block relative z-10 w-full mb-0">
-          <h2 className="text-3xl md:text-5xl font-medium tracking-tight mb-8">
+          <h2 className="text-2xl sm:text-3xl md:text-5xl font-medium tracking-tight mb-6 md:mb-8 px-4">
             Diseña sistemas que <br />
             realmente escalen.
           </h2>
@@ -223,8 +224,8 @@ export default function Footer({ logoUrl, logoAlt, logoWidth, logoHeight, legalL
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 lg:gap-16">
-          <div className="col-span-1">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-16">
+          <div className="col-span-2 md:col-span-1">
             <Link href="/" className="mb-4 block">
               <Image
                 alt={logoAlt}
@@ -344,7 +345,7 @@ export default function Footer({ logoUrl, logoAlt, logoWidth, logoHeight, legalL
           </div>
         </div>
 
-        <div className="mt-20 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400 font-normal">
+        <div className="mt-12 md:mt-20 pt-6 md:pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400 font-normal">
           <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-8 items-center">
             <span>&copy; 2024 Alto Tráfico.</span>
             {legalLinks

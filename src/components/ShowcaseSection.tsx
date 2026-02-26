@@ -12,16 +12,16 @@ export default function ShowcaseSection() {
 
       <div className="showcase-stage">
         <div className="showcase-bg-lines" />
-        <div className="orbit-circle w-[600px] h-[600px] animate-spin-slow" />
+        <div className="orbit-circle w-[300px] h-[300px] md:w-[600px] md:h-[600px] animate-spin-slow" />
         <div
-          className="orbit-circle w-[400px] h-[400px] border-dashed opacity-30"
+          className="orbit-circle w-[200px] h-[200px] md:w-[400px] md:h-[400px] border-dashed opacity-30"
           style={{ animationDirection: "reverse" }}
         />
 
         <div className="relative w-full max-w-3xl h-64 flex items-center justify-center">
           {/* Item 1 */}
           <div className="cycle-item-1 absolute inset-0 flex flex-col items-center justify-center opacity-0">
-            <div className="w-20 h-20 rounded-full bg-white neon-glow-box flex items-center justify-center mb-8 border border-gray-100">
+            <div className="w-14 h-14 md:w-20 md:h-20 rounded-full bg-white neon-glow-box flex items-center justify-center mb-4 md:mb-8 border border-gray-100">
               <span
                 className="material-symbols-outlined text-4xl neon-highlight"
                 style={{ fontVariationSettings: "'FILL' 1" }}
@@ -29,10 +29,10 @@ export default function ShowcaseSection() {
                 timer_off
               </span>
             </div>
-            <h3 className="text-4xl md:text-5xl font-medium text-gray-900 mb-4 tracking-tight">
+            <h3 className="text-2xl sm:text-4xl md:text-5xl font-medium text-gray-900 mb-3 md:mb-4 tracking-tight">
               Procesos <span className="neon-highlight">Manuales</span>
             </h3>
-            <p className="text-gray-500 max-w-md text-center text-lg font-normal">
+            <p className="text-gray-500 max-w-md text-center text-sm md:text-lg font-normal px-4">
               Equipos talentosos perdiendo horas en tareas repetitivas que no
               generan valor estratégico.
             </p>
@@ -40,7 +40,7 @@ export default function ShowcaseSection() {
 
           {/* Item 2 */}
           <div className="cycle-item-2 absolute inset-0 flex flex-col items-center justify-center opacity-0">
-            <div className="w-20 h-20 rounded-full bg-white neon-glow-box flex items-center justify-center mb-8 border border-gray-100">
+            <div className="w-14 h-14 md:w-20 md:h-20 rounded-full bg-white neon-glow-box flex items-center justify-center mb-4 md:mb-8 border border-gray-100">
               <span
                 className="material-symbols-outlined text-4xl neon-highlight"
                 style={{ fontVariationSettings: "'FILL' 1" }}
@@ -48,10 +48,10 @@ export default function ShowcaseSection() {
                 cloud_off
               </span>
             </div>
-            <h3 className="text-4xl md:text-5xl font-medium text-gray-900 mb-4 tracking-tight">
+            <h3 className="text-2xl sm:text-4xl md:text-5xl font-medium text-gray-900 mb-3 md:mb-4 tracking-tight">
               Datos <span className="neon-highlight">Dispersos</span>
             </h3>
-            <p className="text-gray-500 max-w-md text-center text-lg font-normal">
+            <p className="text-gray-500 max-w-md text-center text-sm md:text-lg font-normal px-4">
               Información vital fragmentada en múltiples herramientas sin fuente
               única de verdad.
             </p>
@@ -59,7 +59,7 @@ export default function ShowcaseSection() {
 
           {/* Item 3 */}
           <div className="cycle-item-3 absolute inset-0 flex flex-col items-center justify-center opacity-0">
-            <div className="w-20 h-20 rounded-full bg-white neon-glow-box flex items-center justify-center mb-8 border border-gray-100">
+            <div className="w-14 h-14 md:w-20 md:h-20 rounded-full bg-white neon-glow-box flex items-center justify-center mb-4 md:mb-8 border border-gray-100">
               <span
                 className="material-symbols-outlined text-4xl neon-highlight"
                 style={{ fontVariationSettings: "'FILL' 1" }}
@@ -67,10 +67,10 @@ export default function ShowcaseSection() {
                 extension_off
               </span>
             </div>
-            <h3 className="text-4xl md:text-5xl font-medium text-gray-900 mb-4 tracking-tight">
+            <h3 className="text-2xl sm:text-4xl md:text-5xl font-medium text-gray-900 mb-3 md:mb-4 tracking-tight">
               Falta de <span className="neon-highlight">Adopción</span>
             </h3>
-            <p className="text-gray-500 max-w-md text-center text-lg font-normal">
+            <p className="text-gray-500 max-w-md text-center text-sm md:text-lg font-normal px-4">
               Herramientas potentes que el equipo no utiliza por complejidad o
               falta de capacitación.
             </p>

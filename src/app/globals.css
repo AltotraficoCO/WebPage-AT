@@ -118,14 +118,19 @@ p, span, li, a, input, label, div {
 #generative-hero {
   position: relative;
   width: 100%;
-  height: 100vh;
-  min-height: 700px;
+  height: 100svh;
+  min-height: 500px;
   background: #ffffff;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+}
+@media (min-width: 768px) {
+  #generative-hero {
+    min-height: 700px;
+  }
 }
 #hero-canvas {
   position: absolute;
@@ -258,12 +263,17 @@ p, span, li, a, input, label, div {
 /* ===== Showcase ===== */
 .showcase-stage {
   position: relative;
-  height: 500px;
+  height: 380px;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   background: #ffffff;
+}
+@media (min-width: 768px) {
+  .showcase-stage {
+    height: 500px;
+  }
 }
 .showcase-bg-lines {
   position: absolute;
@@ -476,10 +486,15 @@ p, span, li, a, input, label, div {
   background: transparent;
   border: none;
   border-bottom: 2px solid #e5e7eb;
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   width: 100%;
   padding: 0.5rem 0;
   transition: border-color 0.3s;
+}
+@media (min-width: 768px) {
+  .ai-input {
+    font-size: 1.5rem;
+  }
 }
 .ai-input:focus {
   outline: none;
@@ -577,10 +592,16 @@ p, span, li, a, input, label, div {
 /* ===== AI Bot ===== */
 .ai-bot-container {
   position: fixed;
-  bottom: 30px;
-  right: 30px;
+  bottom: 16px;
+  right: 16px;
   z-index: 9999;
   transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+@media (min-width: 768px) {
+  .ai-bot-container {
+    bottom: 30px;
+    right: 30px;
+  }
 }
 .ai-bot-trigger {
   width: 60px;
@@ -658,12 +679,20 @@ p, span, li, a, input, label, div {
   border: 1px solid rgba(0,0,0,0.05);
 }
 .ai-bot-container.open .ai-bot-panel {
-  width: 380px;
-  height: 500px;
+  width: calc(100vw - 32px);
+  max-width: 380px;
+  height: 70svh;
+  max-height: 500px;
   border-radius: 20px;
   opacity: 1;
   pointer-events: auto;
   bottom: 80px;
+}
+@media (min-width: 768px) {
+  .ai-bot-container.open .ai-bot-panel {
+    width: 380px;
+    height: 500px;
+  }
 }
 .ai-bot-container.open .ai-bot-trigger {
   transform: scale(0.9) rotate(45deg);
@@ -769,14 +798,22 @@ p, span, li, a, input, label, div {
 .service-row-interactive {
   position: relative;
   display: grid;
-  grid-template-columns: 80px 1fr;
-  gap: 2rem;
-  padding-top: 5rem;
-  padding-bottom: 5rem;
+  grid-template-columns: 50px 1fr;
+  gap: 1rem;
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
   border-bottom: 1px solid rgba(22, 51, 54, 0.1);
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
   background: white;
+}
+@media (min-width: 768px) {
+  .service-row-interactive {
+    grid-template-columns: 80px 1fr;
+    gap: 2rem;
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
 }
 @media (min-width: 768px) {
   .service-row-interactive {
@@ -914,11 +951,16 @@ p, span, li, a, input, label, div {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.5s ease;
-  display: flex;
+  display: none;
   flex-direction: column;
   justify-content: center;
   align-items: flex-end;
   gap: 4px;
+}
+@media (min-width: 1024px) {
+  .data-viz-absolute {
+    display: flex;
+  }
 }
 .service-row-interactive:hover .data-viz-absolute {
   opacity: 1;
@@ -942,22 +984,28 @@ p, span, li, a, input, label, div {
 
 /* Service title & description */
 .service-title-interactive {
-  font-size: 2rem;
-  line-height: 1.1;
+  font-size: 1.5rem;
+  line-height: 1.15;
   font-weight: 500;
   color: #163336;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   position: relative;
   z-index: 10;
   display: inline-block;
 }
 @media (min-width: 768px) {
   .service-title-interactive {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+}
+@media (min-width: 1024px) {
+  .service-title-interactive {
     font-size: 3.5rem;
   }
 }
 .service-description-interactive {
-  font-size: 1.125rem;
+  font-size: 0.875rem;
   line-height: 1.6;
   color: #4b5563;
   max-width: 42rem;
@@ -965,6 +1013,11 @@ p, span, li, a, input, label, div {
   font-weight: 400;
   position: relative;
   z-index: 10;
+}
+@media (min-width: 768px) {
+  .service-description-interactive {
+    font-size: 1.125rem;
+  }
 }
 
 /* Blinking cursor */
@@ -1042,19 +1095,31 @@ p, span, li, a, input, label, div {
 .radar-stage {
   perspective: 1200px;
   transform-style: preserve-3d;
-  width: 500px;
-  height: 500px;
+  width: 280px;
+  height: 280px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
 }
+@media (min-width: 768px) {
+  .radar-stage {
+    width: 500px;
+    height: 500px;
+  }
+}
 .radar-plane {
   position: relative;
-  width: 400px;
-  height: 400px;
+  width: 240px;
+  height: 240px;
   transform-style: preserve-3d;
   transition: transform 0.1s ease-out;
+}
+@media (min-width: 768px) {
+  .radar-plane {
+    width: 400px;
+    height: 400px;
+  }
 }
 .radar-grid {
   position: absolute;
