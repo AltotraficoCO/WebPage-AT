@@ -379,6 +379,7 @@ export default function AiBot({
           <div
             key={msg.id}
             className={`ai-chat-msg ${msg.role === "user" ? "user" : "bot"}`}
+            style={{ whiteSpace: "pre-wrap" }}
           >
             {msg.content}
           </div>
