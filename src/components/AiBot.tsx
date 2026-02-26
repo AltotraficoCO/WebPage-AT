@@ -14,7 +14,7 @@ interface Message {
   id: string;
   role: "user" | "bot";
   content: string;
-  timestamp: number;
+  timestamp: string; // ISO date string from Varylo
 }
 
 interface ContactInfo {
@@ -45,7 +45,8 @@ export default function AiBot({
   const [formError, setFormError] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const lastTimestampRef = useRef<number>(0);
+  const lastPollDateRef = useRef<string | null>(null);
+  const pollErrorCount = useRef(0);
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -55,12 +56,12 @@ export default function AiBot({
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
-  // Only start polling after session is created (NOT on open)
+  // Poll for new messages via GET (only after session exists)
   useEffect(() => {
     if (sessionId && open) {
       pollingRef.current = setInterval(() => {
         pollMessages();
-      }, 2000);
+      }, 3000);
     }
     return () => {
       if (pollingRef.current) {
@@ -93,10 +94,12 @@ export default function AiBot({
       return;
     }
 
-    setContactInfo({ name, email, subject });
-    await startSession({ name, email, subject });
+    const info = { name, email, subject };
+    setContactInfo(info);
+    await startSession(info);
   }
 
+  // Varylo creates session on first message - send subject as first message
   async function startSession(info: ContactInfo) {
     setInitializing(true);
     try {
@@ -107,29 +110,52 @@ export default function AiBot({
           "x-webchat-key": apiKey,
         },
         body: JSON.stringify({
-          action: "start_session",
           content: info.subject,
           visitorName: info.name,
           visitorEmail: info.email,
-          subject: info.subject,
-          metadata: {
-            name: info.name,
-            email: info.email,
-            subject: info.subject,
-          },
         }),
       });
       const data = await res.json();
-      console.log("[AiBot] start_session response:", JSON.stringify(data));
+      console.log("[AiBot] start response:", JSON.stringify(data));
+
       if (data.sessionId) {
         setSessionId(data.sessionId);
-        lastTimestampRef.current = Date.now();
-        setMessages([
+        lastPollDateRef.current = new Date().toISOString();
+        pollErrorCount.current = 0;
+
+        // Add welcome message
+        const initialMessages: Message[] = [
           {
             id: "welcome",
             role: "bot",
-            content: data.message || welcomeMessage,
-            timestamp: Date.now(),
+            content: welcomeMessage,
+            timestamp: new Date().toISOString(),
+          },
+        ];
+
+        // Add bot responses from the pipeline if any
+        if (data.responses && Array.isArray(data.responses)) {
+          for (const r of data.responses) {
+            if (r.direction === "OUTBOUND" && r.content) {
+              initialMessages.push({
+                id: r.id,
+                role: "bot",
+                content: r.content,
+                timestamp: r.createdAt,
+              });
+              lastPollDateRef.current = r.createdAt;
+            }
+          }
+        }
+
+        setMessages(initialMessages);
+      } else {
+        setMessages([
+          {
+            id: "error",
+            role: "bot",
+            content: data.error || "Error al iniciar sesión.",
+            timestamp: new Date().toISOString(),
           },
         ]);
       }
@@ -139,110 +165,69 @@ export default function AiBot({
           id: "error",
           role: "bot",
           content: "No pude conectar. Intenta de nuevo más tarde.",
-          timestamp: Date.now(),
+          timestamp: new Date().toISOString(),
         },
       ]);
     }
     setInitializing(false);
   }
 
+  // GET /api/webchat?sessionId=xxx&after=ISODateString
   async function pollMessages() {
     if (!sessionId) return;
-    try {
-      const res = await fetch(
-        `${apiUrl}?sessionId=${sessionId}&after=${lastTimestampRef.current}`,
-        { headers: { "x-webchat-key": apiKey } }
-      );
-      const data = await res.json();
-      console.log("[AiBot] poll response:", JSON.stringify(data));
-
-      // Handle array of messages - check multiple possible locations
-      let rawMessages = data.messages || data.results || [];
-      if (!Array.isArray(rawMessages) && Array.isArray(data.data)) {
-        rawMessages = data.data;
+    // Stop polling after too many consecutive errors
+    if (pollErrorCount.current >= 5) {
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current);
+        pollingRef.current = null;
       }
+      return;
+    }
 
-      // Handle single message response (direct fields)
-      if (
-        (!Array.isArray(rawMessages) || rawMessages.length === 0) &&
-        (data.message || data.content || data.reply || data.text)
-      ) {
-        const botContent =
-          data.message || data.content || data.reply || data.text;
-        const botId = data.id || data.messageId || `poll-${Date.now()}`;
-        setMessages((prev) => {
-          if (prev.some((m) => m.id === botId)) return prev;
-          return [
-            ...prev,
-            {
-              id: botId,
-              role: "bot",
-              content: botContent,
-              timestamp: Date.now(),
-            },
-          ];
-        });
-        lastTimestampRef.current = Date.now();
-        setLoading(false);
+    try {
+      const url = lastPollDateRef.current
+        ? `${apiUrl}?sessionId=${sessionId}&after=${encodeURIComponent(lastPollDateRef.current)}`
+        : `${apiUrl}?sessionId=${sessionId}`;
+
+      const res = await fetch(url, {
+        headers: { "x-webchat-key": apiKey },
+      });
+
+      if (!res.ok) {
+        pollErrorCount.current++;
+        console.log("[AiBot] poll error:", res.status);
         return;
       }
 
-      // Handle single message nested under data object
-      if (
-        (!Array.isArray(rawMessages) || rawMessages.length === 0) &&
-        data.data &&
-        !Array.isArray(data.data)
-      ) {
-        const d = data.data;
-        const botContent = d.message || d.content || d.reply || d.text;
-        if (botContent) {
-          const botId = d.id || d.messageId || `poll-${Date.now()}`;
-          setMessages((prev) => {
-            if (prev.some((m) => m.id === botId)) return prev;
-            return [
-              ...prev,
-              {
-                id: botId,
-                role: "bot",
-                content: botContent,
-                timestamp: Date.now(),
-              },
-            ];
-          });
-          lastTimestampRef.current = Date.now();
-          setLoading(false);
-          return;
-        }
-      }
+      const data = await res.json();
+      pollErrorCount.current = 0; // Reset on success
 
-      if (Array.isArray(rawMessages) && rawMessages.length > 0) {
-        const newMessages: Message[] = rawMessages
-          .filter((m: Record<string, unknown>) => {
-            const role = (m.role || m.sender || m.type || "") as string;
-            return role !== "user" && role !== "human";
-          })
-          .map((m: Record<string, unknown>) => ({
-            id: (m.id as string) || `poll-${Date.now()}-${Math.random()}`,
+      if (data.messages && Array.isArray(data.messages) && data.messages.length > 0) {
+        // Only add OUTBOUND (bot) messages we haven't seen
+        const botMessages: Message[] = data.messages
+          .filter((m: { direction: string; content: string }) => m.direction === "OUTBOUND" && m.content)
+          .map((m: { id: string; content: string; createdAt: string }) => ({
+            id: m.id,
             role: "bot" as const,
-            content: (m.content || m.message || m.text || m.reply ||
-              "") as string,
-            timestamp: (m.timestamp as number) || Date.now(),
-          }))
-          .filter((m: Message) => m.content);
+            content: m.content,
+            timestamp: m.createdAt,
+          }));
 
-        if (newMessages.length > 0) {
+        if (botMessages.length > 0) {
           setMessages((prev) => {
             const existingIds = new Set(prev.map((m) => m.id));
-            const unique = newMessages.filter(
-              (m: Message) => !existingIds.has(m.id)
-            );
-            return unique.length > 0 ? [...prev, ...unique] : prev;
+            const newMsgs = botMessages.filter((m: Message) => !existingIds.has(m.id));
+            return newMsgs.length > 0 ? [...prev, ...newMsgs] : prev;
           });
-          lastTimestampRef.current = Date.now();
+
+          // Update the poll cursor to the latest message timestamp
+          const latest = botMessages[botMessages.length - 1];
+          lastPollDateRef.current = latest.timestamp;
           setLoading(false);
         }
       }
     } catch (err) {
+      pollErrorCount.current++;
       console.log("[AiBot] poll error:", err);
     }
   }
@@ -255,17 +240,17 @@ export default function AiBot({
       id: `user-${Date.now()}`,
       role: "user",
       content: text,
-      timestamp: Date.now(),
+      timestamp: new Date().toISOString(),
     };
 
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
     setLoading(true);
 
-    // Safety timeout: unlock input after 15s even if no response
+    // Safety timeout: unlock input after 30s
     const safetyTimeout = setTimeout(() => {
       setLoading(false);
-    }, 15000);
+    }, 30000);
 
     try {
       const res = await fetch(apiUrl, {
@@ -275,47 +260,37 @@ export default function AiBot({
           "x-webchat-key": apiKey,
         },
         body: JSON.stringify({
-          action: "send_message",
           sessionId,
           content: text,
         }),
       });
       const data = await res.json();
       console.log("[AiBot] send_message response:", JSON.stringify(data));
-      // Try direct fields
-      let botContent =
-        data.message ||
-        data.content ||
-        data.reply ||
-        data.response ||
-        data.answer;
-      // Try nested under data
-      if (!botContent && data.data) {
-        const d = data.data;
-        botContent =
-          d.message || d.content || d.reply || d.response || d.answer || d.text;
-      }
-      // Try nested under result
-      if (!botContent && data.result) {
-        const r = data.result;
-        botContent =
-          typeof r === "string"
-            ? r
-            : r.message || r.content || r.reply || r.text;
-      }
-      if (botContent) {
+
+      // Varylo returns { sessionId, messageId, responses: [...] }
+      if (data.responses && Array.isArray(data.responses) && data.responses.length > 0) {
         clearTimeout(safetyTimeout);
-        const botMsg: Message = {
-          id: data.id || data.messageId || `bot-${Date.now()}`,
-          role: "bot",
-          content: botContent,
-          timestamp: Date.now(),
-        };
-        setMessages((prev) => [...prev, botMsg]);
-        lastTimestampRef.current = Date.now();
+        const botMessages: Message[] = data.responses
+          .filter((r: { direction: string; content: string }) => r.direction === "OUTBOUND" && r.content)
+          .map((r: { id: string; content: string; createdAt: string }) => ({
+            id: r.id,
+            role: "bot" as const,
+            content: r.content,
+            timestamp: r.createdAt,
+          }));
+
+        if (botMessages.length > 0) {
+          setMessages((prev) => {
+            const existingIds = new Set(prev.map((m) => m.id));
+            const newMsgs = botMessages.filter((m: Message) => !existingIds.has(m.id));
+            return newMsgs.length > 0 ? [...prev, ...newMsgs] : prev;
+          });
+          const latest = botMessages[botMessages.length - 1];
+          lastPollDateRef.current = latest.timestamp;
+        }
         setLoading(false);
       }
-      // If no immediate response, polling will pick it up
+      // If no immediate responses, polling will pick them up
     } catch {
       clearTimeout(safetyTimeout);
       setMessages((prev) => [
@@ -324,7 +299,7 @@ export default function AiBot({
           id: `error-${Date.now()}`,
           role: "bot",
           content: "Error al enviar. Intenta de nuevo.",
-          timestamp: Date.now(),
+          timestamp: new Date().toISOString(),
         },
       ]);
       setLoading(false);
