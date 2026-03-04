@@ -1343,3 +1343,37 @@ body.input-focused .cursor-dot-outline {
 .footer-link-hover:hover::after {
   width: 100%;
 }
+
+/* ===== Landing Page (LP) ===== */
+@keyframes lpGlowPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 30px -10px rgba(178, 255, 181, 0.3),
+      inset 0 0 30px -10px rgba(178, 255, 181, 0.05);
+  }
+  50% {
+    box-shadow:
+      0 0 60px -10px rgba(178, 255, 181, 0.5),
+      inset 0 0 60px -10px rgba(178, 255, 181, 0.1);
+  }
+}
+@keyframes lpFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.lp-diagnostic-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 1.5rem;
+  animation: lpGlowPulse 4s ease-in-out infinite;
+}
+@media (min-width: 768px) {
+  .lp-diagnostic-card {
+    animation:
+      lpGlowPulse 4s ease-in-out infinite,
+      lpFloat 8s ease-in-out infinite;
+  }
+}
