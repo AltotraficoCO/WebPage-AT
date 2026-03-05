@@ -16,6 +16,14 @@
   --color-neon-3: #D9FD9E;
   --color-neon-4: #ECFB92;
 
+  /* Dark landing tokens */
+  --color-dark-bg: #09090b;
+  --color-dark-surface: #18181b;
+  --color-dark-border: #27272a;
+  --color-accent-purple: #8b5cf6;
+  --color-accent-blue: #3b82f6;
+  --color-accent-electric: #a78bfa;
+
   --font-display: 'Neue Haas Grotesk Display Pro', 'Inter', sans-serif;
   --font-sans: 'Neue Haas Grotesk Display Pro', 'Inter', sans-serif;
 
@@ -31,7 +39,22 @@
   --animate-breathe-glow: breatheGlow 5s ease-in-out infinite;
   --animate-pulse-ring: pulseRing 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
   --animate-reveal-text: revealText 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-shimmer: shimmer 2.5s linear infinite;
+  --animate-gradient-shift: gradient-shift 6s ease infinite;
+  --animate-glow-pulse: glow-pulse 3s ease-in-out infinite;
 
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  @keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  @keyframes glow-pulse {
+    0%, 100% { box-shadow: 0 0 20px -5px rgba(139, 92, 246, 0.3); }
+    50% { box-shadow: 0 0 30px 5px rgba(139, 92, 246, 0.5); }
+  }
   @keyframes fadeInOut {
     0%, 100% { opacity: 0; }
     10%, 30% { opacity: 1; }
@@ -1342,4 +1365,39 @@ body.input-focused .cursor-dot-outline {
 }
 .footer-link-hover:hover::after {
   width: 100%;
+}
+
+/* ===== Dark Landing Cursor ===== */
+.dark-cursor-page { cursor: none; }
+.dark-cursor-page * { cursor: none; }
+.dark-cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  pointer-events: none;
+}
+.dark-cursor-outline {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  pointer-events: none;
+  transition: width 0.2s, height 0.2s, background-color 0.2s, border-color 0.2s;
+}
+.dark-particle {
+  position: absolute;
+  background: #8b5cf6;
+  border-radius: 50%;
+  opacity: 0;
 }
