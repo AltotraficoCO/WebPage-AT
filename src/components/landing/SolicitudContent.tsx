@@ -25,10 +25,12 @@ export default function SolicitudContent() {
 
           <ScrollReveal delay={0.15}>
             <div className="relative bg-white border border-gray-200 shadow-lg rounded-2xl p-2 sm:p-4 overflow-hidden">
-              <div
+              <iframe
                 className="clickup-embed clickup-dynamic-height"
-                data-options-t="d89l5hs"
-                style={{ width: "100%", minHeight: "600px" }}
+                src="https://forms.clickup.com/90131563007/f/2ky450fz-11053/Z9020YSG8HAQPNNAEW"
+                width="100%"
+                height="100%"
+                style={{ background: "transparent", border: "1px solid #ccc", minHeight: "600px" }}
               />
             </div>
           </ScrollReveal>
