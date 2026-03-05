@@ -1,18 +1,5 @@
 import Image from "next/image";
-
-interface CaseStudy {
-  id: string;
-  imageUrl: string;
-  imageAlt: string;
-  tag: string;
-  title: string;
-  description: string;
-  stat1Label: string;
-  stat1Value: string;
-  stat2Label: string;
-  stat2Value: string;
-  order: number;
-}
+import type { CaseStudy } from "@/types/admin";
 
 interface Props {
   cases: CaseStudy[];

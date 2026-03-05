@@ -18,7 +18,7 @@ export async function generateMetadata() {
     description:
       "Consultoría estratégica de IA para empresas que buscan liderar la próxima era digital.",
     icons: {
-      icon: settings.faviconUrl || "/favicon.png",
+      icon: settings.faviconUrl || "/favicon.ico",
     },
   };
 }

@@ -1,36 +1,43 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import AiBot from "@/components/AiBot";
+import { readSettings, readFooterLinks } from "@/lib/storage";
 
-export default function PublicLayout({
+export const dynamic = "force-dynamic";
+
+export default async function PublicLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const settings = await readSettings();
+  const footerLinksData = await readFooterLinks();
+
   return (
     <>
       <Navbar
-        logoUrl="/uploads/logo-1772055291022.jpg"
-        logoAlt="Alto Tráfico"
-        logoWidth={160}
-        logoHeight={40}
+        logoUrl={settings.logoUrl}
+        logoAlt={settings.logoAlt}
+        logoWidth={settings.logoWidth}
+        logoHeight={settings.logoHeight}
       />
       {children}
       <Footer
-        logoUrl="/uploads/logo-1772055291022.jpg"
-        logoAlt="Alto Tráfico"
-        logoWidth={120}
-        logoHeight={32}
-        legalLinks={[
-          {
-            id: "1",
-            label: "Política de Tratamiento de Datos",
-            url: "/legal/politica-datos",
-            order: 1,
-          },
-        ]}
-        contactEmail="hola@altotrafico.ai"
-        contactLocation="Madrid, España"
-        socialLinks={[]}
+        logoUrl={settings.footerLogoUrl}
+        logoAlt={settings.logoAlt}
+        logoWidth={settings.footerLogoWidth}
+        logoHeight={settings.footerLogoHeight}
+        legalLinks={footerLinksData.legalLinks}
+        contactEmail={settings.contactEmail || "hola@altotrafico.ai"}
+        contactLocation={settings.contactLocation || "Madrid, España"}
+        socialLinks={settings.socialLinks || []}
+      />
+      <AiBot
+        enabled={settings.chatEnabled ?? false}
+        apiUrl={settings.chatApiUrl || ""}
+        apiKey={settings.chatApiKey || ""}
+        welcomeMessage={settings.chatWelcomeMessage || "Hola. ¿En qué puedo ayudarte?"}
+        botName={settings.chatBotName || "AT Assistant"}
       />
     </>
   );
