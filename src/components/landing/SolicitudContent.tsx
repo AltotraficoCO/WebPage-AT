@@ -11,14 +11,14 @@ export default function SolicitudContent() {
           <ScrollReveal>
             <div className="text-center mb-12">
               <p className="text-sm font-mono text-primary uppercase tracking-wider mb-4">
-                Formulario
+                Solicitudes
               </p>
               <h1 className="text-3xl md:text-5xl font-medium tracking-tight text-gray-900 mb-4">
-                Solicita tu diagnostico
+                Envia tu solicitud
               </h1>
               <p className="text-lg text-gray-500 max-w-2xl mx-auto">
-                Completa el formulario y nuestro equipo se pondra en contacto
-                contigo para iniciar el analisis de tu empresa.
+                Completa el formulario con los detalles de tu solicitud y
+                nuestro equipo la atendera a la brevedad.
               </p>
             </div>
           </ScrollReveal>
