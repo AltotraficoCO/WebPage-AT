@@ -1,6 +1,5 @@
 import { Inter } from "next/font/google";
 import Script from "next/script";
-import { readSettings } from "@/lib/storage";
 import "./globals.css";
 
 const inter = Inter({
@@ -9,19 +8,14 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-export const dynamic = "force-dynamic";
-
-export async function generateMetadata() {
-  const settings = await readSettings();
-  return {
-    title: "Alto Tráfico - Potencia tu negocio con IA",
-    description:
-      "Consultoría estratégica de IA para empresas que buscan liderar la próxima era digital.",
-    icons: {
-      icon: settings.faviconUrl || "/favicon.ico",
-    },
-  };
-}
+export const metadata = {
+  title: "Alto Tráfico - Potencia tu negocio con IA",
+  description:
+    "Consultoría estratégica de IA para empresas que buscan liderar la próxima era digital.",
+  icons: {
+    icon: "/favicon.png",
+  },
+};
 
 export default function RootLayout({
   children,
