@@ -4,7 +4,10 @@
       "Bash(cat:*)",
       "Bash(npm run:*)",
       "Bash(npx next:*)",
-      "Bash(./node_modules/.bin/next build:*)"
+      "Bash(./node_modules/.bin/next build:*)",
+      "Bash(npx tsc:*)",
+      "Bash(ls:*)",
+      "Bash(head:*)"
     ]
   }
 }

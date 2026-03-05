@@ -4,11 +4,16 @@ export default function LpDiagnosticCard() {
   return (
     <section id="diagnostico" className="w-full px-6 py-12 md:py-20">
       <div className="mx-auto max-w-xl">
-        <div className="lp-diagnostic-card p-8 md:p-12">
+        <div className="lp-diagnostic-card lp-card-laser-border p-8 md:p-12">
+          {/* Skeleton decorative */}
+          <div className="mb-6 flex justify-center">
+            <span className="lp-skeleton">SYSTEM_READY</span>
+          </div>
+
           {/* ===== [INTEGRATION POINT: DIAGNOSTIC AGENT] ===== */}
           {/* Replace this block with the AI diagnostic agent component */}
           <div className="flex flex-col items-center text-center">
-            <span className="material-icons mb-4 text-4xl text-neon-1">
+            <span className="material-icons mb-4 text-4xl text-cyber-cyan">
               smart_toy
             </span>
             <h2 className="mb-2 text-xl font-medium text-white md:text-2xl">
@@ -24,7 +29,7 @@ export default function LpDiagnosticCard() {
               href="https://wa.me/34600000000"
               target="_blank"
               rel="noopener noreferrer"
-              className="cta-button-generative inline-flex items-center gap-2 rounded-full px-8 py-3 text-sm font-medium md:text-base"
+              className="cta-button-generative lp-dark inline-flex items-center gap-2 rounded-full px-8 py-3 text-sm font-medium md:text-base"
             >
               Hablar con experto
               <span className="material-icons text-base">arrow_forward</span>

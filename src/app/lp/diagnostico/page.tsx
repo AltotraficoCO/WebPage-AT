@@ -2,6 +2,7 @@ import LpHero from "@/components/lp/LpHero";
 import LpDiagnosticCard from "@/components/lp/LpDiagnosticCard";
 import LpTrustIndicators from "@/components/lp/LpTrustIndicators";
 import LpFooter from "@/components/lp/LpFooter";
+import LpParticleCanvas from "@/components/lp/LpParticleCanvas";
 
 export const metadata = {
   title: "Diagnóstico IA Gratuito | Alto Tráfico",
@@ -12,14 +13,17 @@ export const metadata = {
 export default function LpDiagnosticoPage() {
   return (
     <div className="relative min-h-svh bg-background-dark text-white overflow-x-hidden">
+      {/* Interactive particle canvas */}
+      <LpParticleCanvas />
+
       {/* Ambient glow blobs */}
       <div
         className="pointer-events-none fixed inset-0 overflow-hidden"
         aria-hidden="true"
       >
-        <div className="absolute -top-[30%] left-1/2 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-neon-1/[0.07] blur-[120px]" />
-        <div className="absolute top-[60%] -left-[10%] h-[400px] w-[400px] rounded-full bg-neon-1/[0.04] blur-[120px]" />
-        <div className="absolute top-[40%] -right-[10%] h-[350px] w-[350px] rounded-full bg-neon-2/[0.03] blur-[120px]" />
+        <div className="absolute -top-[30%] left-1/2 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-cyber-cyan/[0.07] blur-[120px]" />
+        <div className="absolute top-[60%] -left-[10%] h-[400px] w-[400px] rounded-full bg-cyber-violet/[0.05] blur-[120px]" />
+        <div className="absolute top-[40%] -right-[10%] h-[350px] w-[350px] rounded-full bg-cyber-cyan/[0.03] blur-[120px]" />
       </div>
 
       {/* Content */}

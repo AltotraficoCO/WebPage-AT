@@ -9,8 +9,8 @@ export default function LpHero() {
         style={{ opacity: 0, animation: "entranceUp 0.6s ease-out 0s forwards" }}
       >
         <span className="relative flex h-2 w-2">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-neon-1 opacity-75" />
-          <span className="relative inline-flex h-2 w-2 rounded-full bg-neon-1" />
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyber-cyan opacity-75" />
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-cyber-cyan" />
         </span>
         IA Activada
       </div>
@@ -21,7 +21,7 @@ export default function LpHero() {
         style={{ opacity: 0, animation: "entranceUp 0.8s ease-out 0.1s forwards" }}
       >
         Tu negocio merece{" "}
-        <span className="neon-highlight">inteligencia real</span>
+        <span className="lp-animated-gradient-text">inteligencia real</span>
       </h1>
 
       {/* Subtítulo */}
@@ -29,14 +29,16 @@ export default function LpHero() {
         className="mt-5 max-w-lg text-base text-white/50 md:text-lg"
         style={{ opacity: 0, animation: "entranceUp 0.8s ease-out 0.2s forwards" }}
       >
-        Descubre en 3 minutos cómo la IA puede transformar tus resultados.
+        Descubre en{" "}
+        <span className="font-mono text-cyber-cyan">3 minutos</span>{" "}
+        cómo la IA puede transformar tus resultados.
         Sin compromiso, sin coste.
       </p>
 
       {/* CTA */}
       <a
         href="#diagnostico"
-        className="cta-button-generative mt-8 inline-flex items-center gap-2 rounded-full px-8 py-3 text-sm font-medium md:text-base"
+        className="cta-button-generative lp-dark mt-8 inline-flex items-center gap-2 rounded-full px-8 py-3 text-sm font-medium md:text-base"
         style={{ opacity: 0, animation: "entranceUp 0.8s ease-out 0.3s forwards" }}
       >
         Comenzar diagnóstico gratis

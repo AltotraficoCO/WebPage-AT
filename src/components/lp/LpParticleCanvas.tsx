@@ -1,20 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
-export default function ServicesHero() {
+export default function LpParticleCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const sectionRef = useRef<HTMLElement>(null);
-  const [revealed, setRevealed] = useState(false);
-
-  useEffect(() => {
-    setRevealed(true);
-  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const section = sectionRef.current;
-    if (!canvas || !section) return;
+    if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
@@ -24,13 +17,21 @@ export default function ServicesHero() {
     const mouse = { x: -1000, y: -1000 };
     let animationId: number;
 
+    const isMobile = window.innerWidth < 768;
     const config = {
-      particleCount: 150,
-      mouseRadius: 180,
+      particleCount: isMobile ? 40 : 120,
+      mouseRadius: isMobile ? 100 : 180,
       mouseForce: 0.15,
       friction: 0.95,
-      colors: ["#B2FFB5", "#FFFA86", "#D9FD9E", "#ECFB92"],
+      connectionDistance: 140,
+      gridSpacing: 60,
     };
+
+    const weightedColors = [
+      "#00F0FF", "#00F0FF", "#00F0FF", "#00F0FF", "#00F0FF", "#00F0FF",
+      "#A855F7", "#A855F7",
+      "#B2FFB5", "#B2FFB5",
+    ];
 
     class Particle {
       x: number;
@@ -48,15 +49,15 @@ export default function ServicesHero() {
       constructor(x?: number, y?: number, isFragment = false) {
         this.x = x ?? Math.random() * width;
         this.y = y ?? Math.random() * height;
-        this.vx = (Math.random() - 0.5) * (isFragment ? 8 : 1);
-        this.vy = (Math.random() - 0.5) * (isFragment ? 8 : 1);
+        this.vx = (Math.random() - 0.5) * (isFragment ? 8 : 0.5);
+        this.vy = (Math.random() - 0.5) * (isFragment ? 8 : 0.5);
         this.radius = isFragment
           ? Math.random() * 2 + 1
-          : Math.random() * 3 + 2;
+          : Math.random() * 2 + 1.5;
         this.color =
-          config.colors[Math.floor(Math.random() * config.colors.length)];
+          weightedColors[Math.floor(Math.random() * weightedColors.length)];
         this.angle = Math.random() * Math.PI * 2;
-        this.speed = Math.random() * 0.5 + 0.1;
+        this.speed = Math.random() * 0.3 + 0.1;
         this.isFragment = isFragment;
         this.alpha = 1;
         this.decay = Math.random() * 0.02 + 0.01;
@@ -64,9 +65,11 @@ export default function ServicesHero() {
 
       update() {
         if (!this.isFragment) {
-          this.angle += 0.01;
+          this.angle += 0.008;
           this.x += Math.cos(this.angle) * this.speed + this.vx;
           this.y += Math.sin(this.angle) * this.speed + this.vy;
+          this.vx *= 0.98;
+          this.vy *= 0.98;
         } else {
           this.x += this.vx;
           this.y += this.vy;
@@ -79,22 +82,10 @@ export default function ServicesHero() {
         const dy = mouse.y - this.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
         if (distance < config.mouseRadius) {
-          const forceDirectionX = dx / distance;
-          const forceDirectionY = dy / distance;
           const force =
             (config.mouseRadius - distance) / config.mouseRadius;
-          this.vx -=
-            forceDirectionX *
-            force *
-            config.mouseRadius *
-            config.mouseForce *
-            0.05;
-          this.vy -=
-            forceDirectionY *
-            force *
-            config.mouseRadius *
-            config.mouseForce *
-            0.05;
+          this.vx -= (dx / distance) * force * config.mouseForce;
+          this.vy -= (dy / distance) * force * config.mouseForce;
         }
 
         if (this.x < 0) this.x = width;
@@ -109,11 +100,11 @@ export default function ServicesHero() {
         c.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         c.fillStyle = this.color;
         const oldAlpha = c.globalAlpha;
-        c.globalAlpha = this.alpha;
+        c.globalAlpha = this.alpha * 0.8;
         c.fill();
-        if (this.radius > 3) {
+        if (this.radius > 2) {
           c.shadowColor = this.color;
-          c.shadowBlur = 10;
+          c.shadowBlur = 8;
           c.fill();
           c.shadowBlur = 0;
         }
@@ -123,7 +114,7 @@ export default function ServicesHero() {
 
     function resize() {
       width = canvas!.width = window.innerWidth;
-      height = canvas!.height = section!.offsetHeight;
+      height = canvas!.height = window.innerHeight;
     }
 
     function initParticles() {
@@ -134,22 +125,43 @@ export default function ServicesHero() {
     }
 
     function burst(x: number, y: number) {
+      const burstColors = ["#00F0FF", "#A855F7"];
       for (let i = 0; i < 20; i++) {
-        particles.push(new Particle(x, y, true));
+        const p = new Particle(x, y, true);
+        p.color = burstColors[Math.floor(Math.random() * burstColors.length)];
+        particles.push(p);
+      }
+    }
+
+    function drawGrid() {
+      ctx!.strokeStyle = "rgba(0, 240, 255, 0.03)";
+      ctx!.lineWidth = 0.5;
+      for (let x = 0; x < width; x += config.gridSpacing) {
+        ctx!.beginPath();
+        ctx!.moveTo(x, 0);
+        ctx!.lineTo(x, height);
+        ctx!.stroke();
+      }
+      for (let y = 0; y < height; y += config.gridSpacing) {
+        ctx!.beginPath();
+        ctx!.moveTo(0, y);
+        ctx!.lineTo(width, y);
+        ctx!.stroke();
       }
     }
 
     function drawConnections() {
       for (let i = 0; i < particles.length; i++) {
-        if (particles[i].alpha <= 0) continue;
+        if (particles[i].isFragment || particles[i].alpha <= 0) continue;
         for (let j = i + 1; j < particles.length; j++) {
-          if (particles[j].alpha <= 0) continue;
+          if (particles[j].isFragment || particles[j].alpha <= 0) continue;
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 120) {
+          if (dist < config.connectionDistance) {
+            const opacity = (1 - dist / config.connectionDistance) * 0.4;
             ctx!.beginPath();
-            ctx!.strokeStyle = `rgba(178, 255, 181, ${1 - dist / 120})`;
+            ctx!.strokeStyle = `rgba(0, 240, 255, ${opacity})`;
             ctx!.lineWidth = 0.5;
             ctx!.moveTo(particles[i].x, particles[i].y);
             ctx!.lineTo(particles[j].x, particles[j].y);
@@ -161,6 +173,7 @@ export default function ServicesHero() {
 
     function animate() {
       ctx!.clearRect(0, 0, width, height);
+      drawGrid();
       particles = particles.filter((p) => p.alpha > 0);
       particles.forEach((p) => {
         p.update();
@@ -174,51 +187,43 @@ export default function ServicesHero() {
     initParticles();
     animate();
 
-    window.addEventListener("resize", resize);
+    const handleResize = () => resize();
+    window.addEventListener("resize", handleResize);
 
     const handleMouseMove = (e: MouseEvent) => {
-      const rect = canvas!.getBoundingClientRect();
-      mouse.x = e.clientX - rect.left;
-      mouse.y = e.clientY - rect.top;
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
     };
 
     const handleClick = (e: MouseEvent) => {
-      const rect = canvas!.getBoundingClientRect();
-      burst(e.clientX - rect.left, e.clientY - rect.top);
+      burst(e.clientX, e.clientY);
+    };
+
+    const handleTouch = (e: TouchEvent) => {
+      const touch = e.touches[0];
+      mouse.x = touch.clientX;
+      mouse.y = touch.clientY;
+      burst(mouse.x, mouse.y);
     };
 
     window.addEventListener("mousemove", handleMouseMove);
-    section.addEventListener("click", handleClick);
+    window.addEventListener("click", handleClick);
+    window.addEventListener("touchstart", handleTouch, { passive: true });
 
     return () => {
       cancelAnimationFrame(animationId);
-      window.removeEventListener("resize", resize);
+      window.removeEventListener("resize", handleResize);
       window.removeEventListener("mousemove", handleMouseMove);
-      section.removeEventListener("click", handleClick);
+      window.removeEventListener("click", handleClick);
+      window.removeEventListener("touchstart", handleTouch);
     };
   }, []);
 
   return (
-    <section id="services-hero" ref={sectionRef}>
-      <canvas ref={canvasRef} id="services-hero-canvas" />
-      <div className="hero-content z-20 pointer-events-none w-full px-4">
-        <h1
-          className={`text-5xl md:text-7xl font-medium tracking-tighter text-text-light mb-4 leading-[1.05] max-w-5xl mx-auto hero-text-reveal ${
-            revealed ? "is-visible" : ""
-          }`}
-        >
-          Servicios diseñados <br />
-          como sistemas.
-        </h1>
-        <p
-          className={`text-lg md:text-xl font-normal text-gray-500 max-w-2xl mx-auto hero-text-reveal ${
-            revealed ? "is-visible" : ""
-          }`}
-          style={{ transitionDelay: "0.1s" }}
-        >
-          IA, integraciones y performance para escalar con control.
-        </p>
-      </div>
-    </section>
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 z-0 pointer-events-none"
+      style={{ width: "100%", height: "100%" }}
+    />
   );
 }

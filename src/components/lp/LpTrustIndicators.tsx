@@ -11,16 +11,16 @@ export default function LpTrustIndicators() {
         {stats.map((s, i) => (
           <div
             key={s.label}
-            className="flex flex-col items-center text-center"
+            className="lp-stat-item flex flex-col items-center text-center"
             style={{
               opacity: 0,
               animation: `entranceUp 0.7s ease-out ${0.4 + i * 0.1}s forwards`,
             }}
           >
-            <span className="material-icons text-neon-1 mb-2 text-2xl md:text-3xl">
+            <span className="material-icons text-cyber-cyan mb-2 text-2xl md:text-3xl">
               {s.icon}
             </span>
-            <span className="text-2xl font-medium text-neon-1 md:text-3xl">
+            <span className="lp-stat-value lp-animated-gradient-text text-2xl font-medium md:text-3xl">
               {s.value}
             </span>
             <span className="mt-1 text-xs text-white/50 md:text-sm">
