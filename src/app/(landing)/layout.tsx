@@ -12,7 +12,7 @@ export default async function LandingLayout({
   const settings = await readSettings();
 
   return (
-    <div className="bg-dark-bg text-white min-h-screen">
+    <div className="bg-white text-gray-900 min-h-screen">
       <DarkNavbar
         logoUrl={settings.logoUrl}
         logoAlt={settings.logoAlt}

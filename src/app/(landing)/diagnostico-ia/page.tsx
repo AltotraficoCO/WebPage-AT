@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import LandingCursor from "@/components/landing/LandingCursor";
-import MeshGradientBg from "@/components/landing/MeshGradientBg";
 import HeroLanding from "@/components/landing/HeroLanding";
 import BenefitsSection from "@/components/landing/BenefitsSection";
 import HowItWorksLanding from "@/components/landing/HowItWorksLanding";
@@ -15,8 +13,6 @@ export const metadata: Metadata = {
 export default function DiagnosticoIAPage() {
   return (
     <>
-      <LandingCursor />
-      <MeshGradientBg />
       <main className="pt-20 min-h-screen relative overflow-hidden">
         <HeroLanding />
         <BenefitsSection />

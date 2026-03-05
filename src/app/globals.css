@@ -52,8 +52,8 @@
     50% { background-position: 100% 50%; }
   }
   @keyframes glow-pulse {
-    0%, 100% { box-shadow: 0 0 20px -5px rgba(139, 92, 246, 0.3); }
-    50% { box-shadow: 0 0 30px 5px rgba(139, 92, 246, 0.5); }
+    0%, 100% { box-shadow: 0 0 20px -5px rgba(22, 51, 54, 0.15); }
+    50% { box-shadow: 0 0 30px 5px rgba(22, 51, 54, 0.25); }
   }
   @keyframes fadeInOut {
     0%, 100% { opacity: 0; }

@@ -47,10 +47,10 @@ export default function BenefitsSection() {
       <div className="max-w-7xl mx-auto">
         <ScrollReveal>
           <div className="text-center mb-16">
-            <p className="text-sm font-mono text-accent-purple uppercase tracking-wider mb-4">
+            <p className="text-sm font-mono text-primary uppercase tracking-wider mb-4">
               Beneficios
             </p>
-            <h2 className="text-3xl md:text-5xl font-medium tracking-tight text-white">
+            <h2 className="text-3xl md:text-5xl font-medium tracking-tight text-gray-900">
               Todo lo que incluye el diagnostico
             </h2>
           </div>
@@ -59,18 +59,18 @@ export default function BenefitsSection() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {benefits.map((benefit, i) => (
             <ScrollReveal key={benefit.title} delay={i * 0.1}>
-              <div className="group relative p-6 rounded-2xl bg-dark-surface border border-dark-border hover:border-accent-purple/40 transition-all duration-500 animate-glow-pulse h-full"
+              <div className="group relative p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:border-primary/40 transition-all duration-500 animate-glow-pulse h-full"
                 style={{ animationDelay: `${i * 0.5}s` }}
               >
-                <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-accent-purple/10 mb-5">
-                  <span className="material-icons text-accent-purple">
+                <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 mb-5">
+                  <span className="material-icons text-primary">
                     {benefit.icon}
                   </span>
                 </div>
-                <h3 className="text-lg font-medium text-white mb-3">
+                <h3 className="text-lg font-medium text-gray-900 mb-3">
                   {benefit.title}
                 </h3>
-                <p className="text-sm text-zinc-400 leading-relaxed">
+                <p className="text-sm text-gray-500 leading-relaxed">
                   {benefit.description}
                 </p>
               </div>

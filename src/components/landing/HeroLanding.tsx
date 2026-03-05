@@ -11,13 +11,13 @@ export default function HeroLanding() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="inline-flex items-center space-x-2 bg-white/5 backdrop-blur-sm border border-dark-border rounded-full px-4 py-1.5 mb-8"
+          className="inline-flex items-center space-x-2 bg-surface-light border border-gray-200 rounded-full px-4 py-1.5 mb-8"
         >
           <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-purple opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-accent-purple" />
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-1 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-neon-1" />
           </span>
-          <span className="text-xs font-mono text-zinc-400 uppercase tracking-wider">
+          <span className="text-xs font-mono text-gray-500 uppercase tracking-wider">
             Diagnostico Impulsado por IA
           </span>
         </motion.div>
@@ -28,11 +28,11 @@ export default function HeroLanding() {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="text-4xl md:text-6xl lg:text-7xl font-medium tracking-tighter mb-6 leading-[1.1]"
         >
-          <span className="block text-white">Descubre el potencial</span>
+          <span className="block text-gray-900">Descubre el potencial</span>
           <span
             className="block bg-clip-text text-transparent animate-gradient-shift"
             style={{
-              backgroundImage: "linear-gradient(135deg, #8b5cf6, #3b82f6, #a78bfa, #8b5cf6)",
+              backgroundImage: "linear-gradient(135deg, #163336, #2c5f64, #163336, #163336)",
               backgroundSize: "300% 300%",
             }}
           >
@@ -44,7 +44,7 @@ export default function HeroLanding() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.6 }}
-          className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto mb-10"
+          className="text-lg md:text-xl text-gray-500 max-w-2xl mx-auto mb-10"
         >
           Analiza la madurez digital de tu organizacion, identifica oportunidades
           de automatizacion y obtiene una hoja de ruta personalizada.
@@ -58,18 +58,8 @@ export default function HeroLanding() {
         >
           <Link
             href="/solicitudes-slc"
-            className="relative inline-flex items-center px-8 py-4 rounded-full text-sm font-medium text-white overflow-hidden group"
-            style={{
-              background: "linear-gradient(135deg, #8b5cf6, #3b82f6)",
-            }}
+            className="relative inline-flex items-center px-8 py-4 rounded-full text-sm font-medium text-white bg-primary hover:bg-primary/90 overflow-hidden group transition-colors"
           >
-            <span
-              className="absolute inset-0 animate-shimmer opacity-0 group-hover:opacity-100 transition-opacity"
-              style={{
-                background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)",
-                backgroundSize: "200% 100%",
-              }}
-            />
             <span className="relative z-10">Solicitar Diagnostico Gratuito</span>
             <span className="material-icons ml-2 relative z-10 group-hover:translate-x-1 transition-transform">
               arrow_forward
@@ -77,7 +67,7 @@ export default function HeroLanding() {
           </Link>
           <a
             href="#beneficios"
-            className="inline-flex items-center px-8 py-4 rounded-full text-sm font-medium text-zinc-300 border border-dark-border hover:border-zinc-600 hover:text-white transition-all"
+            className="inline-flex items-center px-8 py-4 rounded-full text-sm font-medium text-gray-600 border border-gray-300 hover:border-primary hover:text-primary transition-all"
           >
             Conocer mas
             <span className="material-icons ml-2">arrow_downward</span>
