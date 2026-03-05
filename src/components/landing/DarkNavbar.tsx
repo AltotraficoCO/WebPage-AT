@@ -4,7 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-export default function DarkNavbar() {
+interface DarkNavbarProps {
+  logoUrl: string;
+  logoAlt: string;
+  logoWidth: number;
+  logoHeight: number;
+}
+
+export default function DarkNavbar({ logoUrl, logoAlt, logoWidth, logoHeight }: DarkNavbarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
@@ -13,11 +20,11 @@ export default function DarkNavbar() {
         <div className="flex justify-between items-center h-20">
           <Link href="/" className="flex items-center">
             <Image
-              alt="Alto Tráfico"
+              alt={logoAlt}
               className="h-8 md:h-10 w-auto object-contain"
-              src="/uploads/logo-1772055291022.jpg"
-              width={160}
-              height={40}
+              src={logoUrl}
+              width={logoWidth}
+              height={logoHeight}
               priority
             />
           </Link>
