@@ -8,6 +8,21 @@ import type {
   AdminUser,
 } from "@/types/admin";
 
+async function readLocalJson<T>(filename: string): Promise<T | null> {
+  try {
+    // Dynamic require to avoid Edge Runtime static analysis
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const fs = require("fs").promises;
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const path = require("path");
+    const filePath = path.join(path.resolve("."), "src", "data", filename);
+    const raw = await fs.readFile(filePath, "utf-8");
+    return JSON.parse(raw) as T;
+  } catch {
+    return null;
+  }
+}
+
 const KEYS = {
   settings: "site:settings",
   footerLinks: "site:footer-links",
@@ -38,12 +53,16 @@ const DEFAULT_SETTINGS: SiteSettings = {
 
 export async function readSettings(): Promise<SiteSettings> {
   const redis = getRedis();
-  const data = await redis.get<SiteSettings>(KEYS.settings);
-  return data ?? DEFAULT_SETTINGS;
+  if (redis) {
+    const data = await redis.get<SiteSettings>(KEYS.settings);
+    return data ?? DEFAULT_SETTINGS;
+  }
+  return (await readLocalJson<SiteSettings>("settings.json")) ?? DEFAULT_SETTINGS;
 }
 
 export async function writeSettings(settings: SiteSettings): Promise<void> {
   const redis = getRedis();
+  if (!redis) throw new Error("Redis not configured");
   await redis.set(KEYS.settings, settings);
 }
 
@@ -51,12 +70,16 @@ export async function writeSettings(settings: SiteSettings): Promise<void> {
 
 export async function readFooterLinks(): Promise<FooterLinksData> {
   const redis = getRedis();
-  const data = await redis.get<FooterLinksData>(KEYS.footerLinks);
-  return data ?? { legalLinks: [] };
+  if (redis) {
+    const data = await redis.get<FooterLinksData>(KEYS.footerLinks);
+    return data ?? { legalLinks: [] };
+  }
+  return (await readLocalJson<FooterLinksData>("footer-links.json")) ?? { legalLinks: [] };
 }
 
 export async function writeFooterLinks(data: FooterLinksData): Promise<void> {
   const redis = getRedis();
+  if (!redis) throw new Error("Redis not configured");
   await redis.set(KEYS.footerLinks, data);
 }
 
@@ -71,12 +94,16 @@ export async function readFooterLinkBySlug(
 
 export async function readCases(): Promise<CasesData> {
   const redis = getRedis();
-  const data = await redis.get<CasesData>(KEYS.cases);
-  return data ?? { cases: [] };
+  if (redis) {
+    const data = await redis.get<CasesData>(KEYS.cases);
+    return data ?? { cases: [] };
+  }
+  return (await readLocalJson<CasesData>("cases.json")) ?? { cases: [] };
 }
 
 export async function writeCases(data: CasesData): Promise<void> {
   const redis = getRedis();
+  if (!redis) throw new Error("Redis not configured");
   await redis.set(KEYS.cases, data);
 }
 
@@ -84,14 +111,18 @@ export async function writeCases(data: CasesData): Promise<void> {
 
 export async function readHubSpotConfig(): Promise<HubSpotConfig> {
   const redis = getRedis();
-  const data = await redis.get<HubSpotConfig>(KEYS.hubspotConfig);
-  return data ?? { accessToken: "" };
+  if (redis) {
+    const data = await redis.get<HubSpotConfig>(KEYS.hubspotConfig);
+    return data ?? { accessToken: "" };
+  }
+  return { accessToken: "" };
 }
 
 export async function writeHubSpotConfig(
   config: HubSpotConfig
 ): Promise<void> {
   const redis = getRedis();
+  if (!redis) throw new Error("Redis not configured");
   await redis.set(KEYS.hubspotConfig, config);
 }
 
@@ -99,12 +130,16 @@ export async function writeHubSpotConfig(
 
 export async function readUsers(): Promise<AdminUser[]> {
   const redis = getRedis();
-  const data = await redis.get<AdminUser[]>(KEYS.users);
-  return data ?? [];
+  if (redis) {
+    const data = await redis.get<AdminUser[]>(KEYS.users);
+    return data ?? [];
+  }
+  return [];
 }
 
 export async function writeUsers(users: AdminUser[]): Promise<void> {
   const redis = getRedis();
+  if (!redis) throw new Error("Redis not configured");
   await redis.set(KEYS.users, users);
 }
 

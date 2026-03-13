@@ -7,7 +7,11 @@
       "Bash(./node_modules/.bin/next build:*)",
       "Bash(ls:*)",
       "Bash(npm install:*)",
-      "Bash(kill:*)"
+      "Bash(kill:*)",
+      "Bash(git -C \"/Users/psoto/Desktop/Altotrafico/Paginas Web/WebPage-AT\" ls-files | grep -E 'admin.*cases|cases.*page' | head -10)",
+      "Bash(git -C \"/Users/psoto/Desktop/Altotrafico/Paginas Web/WebPage-AT\" show HEAD:src/app/admin/\\\\\\(dashboard\\\\\\)/cases/page.tsx)",
+      "Bash(cd \"/Users/psoto/Desktop/Altotrafico/Paginas Web/WebPage-AT\" && rm -f \"src/lib/storage 2.ts\" \"src/lib/redis 2.ts\")",
+      "Bash(cd \"/Users/psoto/Desktop/Altotrafico/Paginas Web/WebPage-AT\" && ls src/components/pauta/ && ls src/app/\\\\\\(pauta\\\\\\)/ia-para-empresas/ && ls src/app/api/diagnosis/ src/app/api/leads/)"
     ]
   }
 }
