@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import PautaHero from "@/components/pauta/PautaHero";
-import MetricsBar from "@/components/pauta/MetricsBar";
 import PautaQuiz from "@/components/pauta/PautaQuiz";
 
 export const metadata: Metadata = {
@@ -13,8 +11,6 @@ export const metadata: Metadata = {
 export default function IaParaEmpresasPage() {
   return (
     <main className="pt-20 min-h-screen relative overflow-hidden">
-      <PautaHero />
-      <MetricsBar />
       <PautaQuiz />
     </main>
   );

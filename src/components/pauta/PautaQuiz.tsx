@@ -68,7 +68,6 @@ export default function PautaQuiz() {
     const newAnswers = { ...answers, [stepId]: value };
     setAnswers(newAnswers);
 
-    // Find the selected option to get its score
     const currentStepData = quizSteps[currentStep];
     const selectedOption = currentStepData.options?.find((o) => o.value === value);
     const optionScore = selectedOption?.score || 0;
@@ -122,7 +121,6 @@ export default function PautaQuiz() {
 
   const handleBack = useCallback(() => {
     if (currentStep > 0) {
-      // If going back from a scored question, subtract its score
       const currentStepData = quizSteps[currentStep];
       const prevAnswer = answers[currentStepData.id];
       if (prevAnswer && currentStepData.options) {
@@ -131,7 +129,6 @@ export default function PautaQuiz() {
           setScore((s) => s - prevOption.score);
         }
       }
-      // Remove the answer for the current step
       setAnswers((prev) => {
         const next = { ...prev };
         delete next[currentStepData.id];
@@ -166,40 +163,28 @@ export default function PautaQuiz() {
 
   const step = quizSteps[currentStep];
 
-  return (
-    <section id="quiz-section" className="py-24 relative overflow-hidden">
-      {/* Premium gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-white via-gray-50/80 to-white" />
-      <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.07]" />
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-neon-1/5 rounded-full blur-[100px] pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <span className="inline-flex items-center gap-2 text-xs font-medium tracking-wider text-primary uppercase mb-4 px-4 py-2 rounded-full bg-primary/5 border border-primary/10">
-            <span className="w-1.5 h-1.5 rounded-full bg-neon-1 animate-pulse" />
-            Diagnóstico IA
-          </span>
-          <h2 className="text-3xl md:text-5xl font-medium text-primary leading-tight">
-            Tu diagnóstico personalizado
-          </h2>
-          <p className="text-gray-400 mt-3 text-sm md:text-base max-w-lg mx-auto">
-            10 preguntas, 3 minutos — nuestra IA analizará tu empresa y determinará tu perfil
-          </p>
-        </motion.div>
-
-        {phase === "report" && diagnosis ? (
+  // Show report full-width
+  if (phase === "report" && diagnosis) {
+    return (
+      <section className="py-16 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-white via-gray-50/80 to-white" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <DiagnosisReport
             result={diagnosis}
             userName={answers.name || ""}
             companyName={answers.company || ""}
           />
-        ) : phase === "processing" ? (
+        </div>
+      </section>
+    );
+  }
+
+  // Show processing centered
+  if (phase === "processing") {
+    return (
+      <section className="py-16 relative overflow-hidden min-h-screen flex items-center">
+        <div className="absolute inset-0 bg-gradient-to-b from-white via-gray-50/80 to-white" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
           <div className="flex justify-center">
             <ProcessingAnimation
               score={score}
@@ -207,105 +192,162 @@ export default function PautaQuiz() {
               onComplete={handleProcessingComplete}
             />
           </div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            {/* Terminal Panel */}
-            <div className="lg:col-span-4 order-2 lg:order-1">
-              <motion.div
-                className="sticky top-24"
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                <div className="bg-[#0a0f14] text-neon-3 p-6 rounded-2xl border border-gray-800/60 shadow-2xl shadow-black/20 font-mono text-sm min-h-[420px] flex flex-col justify-between overflow-hidden backdrop-blur-sm">
-                  <div className="scanner-overlay" />
-                  <div>
-                    <div className="flex justify-between items-center mb-5 border-b border-gray-800 pb-3">
-                      <div className="flex items-center gap-2">
-                        <div className="flex space-x-1.5">
-                          <div className="w-3 h-3 rounded-full bg-red-500/80" />
-                          <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-                          <div className="w-3 h-3 rounded-full bg-green-500/80" />
-                        </div>
-                        <span className="text-[10px] text-gray-600 ml-2 uppercase tracking-widest">
-                          alto_trafico_diagnostic.sh
-                        </span>
+        </div>
+      </section>
+    );
+  }
+
+  // Main: Hero + Quiz integrated
+  return (
+    <section id="quiz-section" className="relative min-h-screen overflow-hidden bg-white">
+      {/* Background */}
+      <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:32px_32px] opacity-20" />
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-neon-1/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-neon-2/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3 pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-12 lg:py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+
+          {/* Left: Hero Copy + Terminal */}
+          <div className="lg:sticky lg:top-24">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 border border-primary/10 text-sm text-primary mb-6">
+                <span className="w-2 h-2 rounded-full bg-neon-1 animate-pulse" />
+                Diagnóstico impulsado por IA real
+              </span>
+
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-primary mb-4 leading-[1.1]">
+                Descubre tu perfil de{" "}
+                <span className="neon-highlight">IA empresarial</span>
+              </h1>
+
+              <p className="text-base lg:text-lg text-gray-500 max-w-lg mb-6 font-normal leading-relaxed">
+                10 preguntas, 3 minutos — nuestra IA analizará tu empresa y generará un informe
+                ejecutivo con tu arquetipo, análisis de riesgo y hoja de ruta personalizada.
+              </p>
+
+              {/* Trust badges inline */}
+              <div className="flex flex-wrap gap-4 mb-8">
+                {[
+                  { icon: "quiz", text: "10 preguntas" },
+                  { icon: "timer", text: "3 minutos" },
+                  { icon: "description", text: "Informe IA" },
+                ].map((badge) => (
+                  <span
+                    key={badge.text}
+                    className="inline-flex items-center gap-1.5 text-xs font-medium text-primary bg-primary/5 border border-primary/10 px-3 py-1.5 rounded-full"
+                  >
+                    <span className="material-icons text-sm text-neon-1">{badge.icon}</span>
+                    {badge.text}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Terminal — hidden on mobile, shown on lg */}
+            <motion.div
+              className="hidden lg:block"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <div className="bg-[#0a0f14] text-neon-3 p-5 rounded-2xl border border-gray-800/60 shadow-2xl shadow-black/20 font-mono text-sm overflow-hidden backdrop-blur-sm">
+                <div className="scanner-overlay" />
+                <div>
+                  <div className="flex justify-between items-center mb-4 border-b border-gray-800 pb-3">
+                    <div className="flex items-center gap-2">
+                      <div className="flex space-x-1.5">
+                        <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                        <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                        <div className="w-3 h-3 rounded-full bg-green-500/80" />
                       </div>
-                      <span className="text-[10px] text-green-500/60 uppercase tracking-wider flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                        Live
+                      <span className="text-[10px] text-gray-600 ml-2 uppercase tracking-widest">
+                        alto_trafico_diagnostic.sh
                       </span>
                     </div>
-                    <div
-                      ref={terminalRef}
-                      className="space-y-1.5 opacity-90 max-h-[220px] overflow-y-auto scrollbar-thin"
-                    >
-                      {logs.map((log, i) => (
-                        <p key={i} className={`text-xs leading-relaxed ${log.isUser ? "text-neon-1" : "text-gray-400"}`}>
-                          <span className={log.isUser ? "text-neon-1" : "text-gray-600"}>
-                            {log.isUser ? "$ " : "> "}
-                          </span>
-                          {log.text}
-                        </p>
-                      ))}
-                      <p className="text-white text-xs">
-                        $ <span className="typing-cursor" />
-                      </p>
-                    </div>
+                    <span className="text-[10px] text-green-500/60 uppercase tracking-wider flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                      Live
+                    </span>
                   </div>
-
-                  {/* Score bar */}
-                  {score > 0 && (
-                    <div className="mt-4 border-t border-gray-800/60 pt-3">
-                      <div className="flex justify-between text-[10px] uppercase tracking-wider mb-1.5">
-                        <span className="text-gray-600">Score</span>
-                        <span className="text-neon-1 font-mono font-bold">{score}/40</span>
-                      </div>
-                      <div className="w-full bg-gray-800/60 h-1.5 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-gradient-to-r from-neon-1 to-neon-2 transition-all duration-500 ease-out rounded-full"
-                          style={{ width: `${(score / 40) * 100}%` }}
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="mt-3 border-t border-gray-800/60 pt-3">
-                    <div className="flex justify-between text-[10px] uppercase tracking-wider mb-2">
-                      <span className="text-gray-600">Progress</span>
-                      <span className="text-green-400 flex items-center gap-1">
-                        <span className="w-1 h-1 rounded-full bg-green-400" />
-                        Active
-                      </span>
-                    </div>
-                    <div className="w-full bg-gray-800/60 h-1 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-gradient-to-r from-neon-1 to-neon-2 transition-all duration-700 ease-out rounded-full"
-                        style={{ width: progressWidth }}
-                      />
-                    </div>
-                    <div className="mt-2 flex justify-between text-[10px] text-gray-600">
-                      <span>Phase {currentStep + 1}/{quizSteps.length}</span>
-                      <span className="font-mono">{Math.round(((currentStep) / quizSteps.length) * 100)}%</span>
-                    </div>
+                  <div
+                    ref={terminalRef}
+                    className="space-y-1.5 opacity-90 max-h-[180px] overflow-y-auto scrollbar-thin"
+                  >
+                    {logs.map((log, i) => (
+                      <p key={i} className={`text-xs leading-relaxed ${log.isUser ? "text-neon-1" : "text-gray-400"}`}>
+                        <span className={log.isUser ? "text-neon-1" : "text-gray-600"}>
+                          {log.isUser ? "$ " : "> "}
+                        </span>
+                        {log.text}
+                      </p>
+                    ))}
+                    <p className="text-white text-xs">
+                      $ <span className="typing-cursor" />
+                    </p>
                   </div>
                 </div>
-              </motion.div>
-            </div>
 
-            {/* Steps Panel */}
-            <div className="lg:col-span-8 order-1 lg:order-2 relative min-h-[500px]">
-              {error && (
-                <motion.div
-                  className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-center gap-2"
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
-                  <span className="material-icons text-sm">error</span>
-                  {error}
-                </motion.div>
-              )}
+                {/* Score bar */}
+                {score > 0 && (
+                  <div className="mt-3 border-t border-gray-800/60 pt-3">
+                    <div className="flex justify-between text-[10px] uppercase tracking-wider mb-1.5">
+                      <span className="text-gray-600">Score</span>
+                      <span className="text-neon-1 font-mono font-bold">{score}/40</span>
+                    </div>
+                    <div className="w-full bg-gray-800/60 h-1.5 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-neon-1 to-neon-2 transition-all duration-500 ease-out rounded-full"
+                        style={{ width: `${(score / 40) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                <div className="mt-3 border-t border-gray-800/60 pt-3">
+                  <div className="flex justify-between text-[10px] uppercase tracking-wider mb-2">
+                    <span className="text-gray-600">Progress</span>
+                    <span className="text-green-400 flex items-center gap-1">
+                      <span className="w-1 h-1 rounded-full bg-green-400" />
+                      Active
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-800/60 h-1 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-neon-1 to-neon-2 transition-all duration-700 ease-out rounded-full"
+                      style={{ width: progressWidth }}
+                    />
+                  </div>
+                  <div className="mt-2 flex justify-between text-[10px] text-gray-600">
+                    <span>Phase {currentStep + 1}/{quizSteps.length}</span>
+                    <span className="font-mono">{Math.round(((currentStep) / quizSteps.length) * 100)}%</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Right: Quiz Steps */}
+          <div className="relative min-h-[500px]">
+            {error && (
+              <motion.div
+                className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-center gap-2"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <span className="material-icons text-sm">error</span>
+                {error}
+              </motion.div>
+            )}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
               <QuizStepComponent
                 step={step}
                 stepIndex={currentStep}
@@ -317,9 +359,9 @@ export default function PautaQuiz() {
                 onBack={handleBack}
                 direction={direction}
               />
-            </div>
+            </motion.div>
           </div>
-        )}
+        </div>
       </div>
     </section>
   );
