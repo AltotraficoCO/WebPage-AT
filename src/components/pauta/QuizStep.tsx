@@ -130,7 +130,7 @@ export default function QuizStepComponent({
                   ? "bg-neon-1 flex-1"
                   : i === stepIndex
                   ? "bg-primary flex-[2]"
-                  : "bg-gray-200 flex-1"
+                  : "bg-gray-300 flex-1"
               }`}
             />
           ))}
@@ -138,7 +138,7 @@ export default function QuizStepComponent({
 
         <div className="mb-8">
           <motion.span
-            className="inline-flex items-center gap-2 text-neon-1 font-mono text-xs bg-primary/5 border border-primary/10 px-4 py-1.5 rounded-full tracking-wider uppercase"
+            className="inline-flex items-center gap-2 text-primary font-mono text-xs bg-primary/10 border border-primary/20 px-4 py-1.5 rounded-full tracking-wider uppercase font-semibold"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
@@ -147,7 +147,7 @@ export default function QuizStepComponent({
             {step.phase}
           </motion.span>
           <motion.h2
-            className="text-2xl md:text-3xl font-medium mt-4 text-primary leading-tight"
+            className="text-2xl md:text-3xl font-semibold mt-4 text-primary leading-tight"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
@@ -155,7 +155,7 @@ export default function QuizStepComponent({
             {step.title}
           </motion.h2>
           <motion.p
-            className="text-gray-400 mt-2 font-normal text-sm md:text-base"
+            className="text-gray-600 mt-2 font-normal text-sm md:text-base"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
@@ -174,7 +174,7 @@ export default function QuizStepComponent({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 + i * 0.08 }}
               >
-                <label className="block text-xs text-gray-400 uppercase tracking-wider mb-2 font-medium group-focus-within:text-primary transition-colors">
+                <label className="block text-xs text-gray-600 uppercase tracking-wider mb-2 font-semibold group-focus-within:text-primary transition-colors">
                   {field.label}
                 </label>
                 <div className="relative">
@@ -184,14 +184,14 @@ export default function QuizStepComponent({
                     placeholder={field.placeholder}
                     required={field.required}
                     defaultValue={formData[field.name] || ""}
-                    className="form-input w-full text-primary bg-white border border-gray-200 rounded-xl px-4 py-3.5 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all placeholder:text-gray-300"
+                    className="form-input w-full text-primary bg-white border-2 border-gray-200 rounded-xl px-4 py-3.5 text-sm font-medium focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all placeholder:text-gray-400"
                   />
                 </div>
               </motion.div>
             ))}
             <motion.button
               type="submit"
-              className="mt-6 inline-flex items-center gap-2 px-8 py-3.5 bg-primary text-white rounded-full font-medium hover:bg-primary/90 transition-all hover:-translate-y-0.5 shadow-lg shadow-primary/20 group"
+              className="mt-6 inline-flex items-center gap-2 px-8 py-3.5 bg-primary text-white rounded-full font-semibold hover:bg-primary/90 transition-all hover:-translate-y-0.5 shadow-lg shadow-primary/20 group"
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
@@ -211,7 +211,7 @@ export default function QuizStepComponent({
                   animate={{ opacity: 0, y: -40, scale: 1.3 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.7 }}
-                  className="absolute -top-2 right-4 z-20 text-neon-1 font-mono font-bold text-lg pointer-events-none"
+                  className="absolute -top-2 right-4 z-20 text-primary font-mono font-bold text-lg pointer-events-none"
                 >
                   +{flashScore.points} pts
                 </motion.div>
@@ -227,24 +227,24 @@ export default function QuizStepComponent({
                   transition={{ delay: 0.15 + i * 0.06 }}
                 >
                   <TiltCard
-                    className="group relative p-5 bg-white border border-gray-100 rounded-2xl text-left hover:border-primary/30 transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-primary/5 w-full"
+                    className="group relative p-5 bg-white border-2 border-gray-200 rounded-2xl text-left hover:border-primary/40 transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-primary/5 w-full"
                     onClick={() => handleOptionClick(opt)}
                   >
                     {/* Letter badge */}
-                    <div className="absolute top-4 right-4 w-7 h-7 rounded-full bg-primary/5 group-hover:bg-primary group-hover:text-white flex items-center justify-center transition-all duration-300">
+                    <div className="absolute top-4 right-4 w-7 h-7 rounded-full bg-primary/10 group-hover:bg-primary group-hover:text-white flex items-center justify-center transition-all duration-300">
                       <span className="text-xs font-bold text-primary group-hover:text-white transition-colors">
                         {opt.letter}
                       </span>
                     </div>
                     {opt.icon && (
-                      <div className="w-10 h-10 rounded-xl bg-primary/5 group-hover:bg-primary/10 flex items-center justify-center mb-3 transition-colors">
-                        <span className="material-icons text-xl text-gray-400 group-hover:text-primary transition-colors">
+                      <div className="w-10 h-10 rounded-xl bg-primary/8 group-hover:bg-primary/15 flex items-center justify-center mb-3 transition-colors">
+                        <span className="material-icons text-xl text-primary/60 group-hover:text-primary transition-colors">
                           {opt.icon}
                         </span>
                       </div>
                     )}
-                    <h3 className="font-medium text-sm text-primary mb-1 pr-8">{opt.title}</h3>
-                    <p className="text-xs text-gray-400 font-normal leading-relaxed">{opt.desc}</p>
+                    <h3 className="font-semibold text-sm text-primary mb-1 pr-8">{opt.title}</h3>
+                    <p className="text-xs text-gray-500 font-normal leading-relaxed">{opt.desc}</p>
                   </TiltCard>
                 </motion.div>
               ))}
@@ -256,7 +256,7 @@ export default function QuizStepComponent({
         <div className="mt-8 flex items-center justify-between">
           {stepIndex > 0 ? (
             <button
-              className="text-sm text-gray-400 hover:text-primary flex items-center gap-1 transition-colors group"
+              className="text-sm text-gray-500 hover:text-primary flex items-center gap-1 transition-colors group font-medium"
               onClick={onBack}
               type="button"
             >
@@ -268,11 +268,11 @@ export default function QuizStepComponent({
           )}
           <div className="flex items-center gap-3">
             {stepIndex > 0 && currentScore > 0 && (
-              <span className="text-xs text-neon-1 font-mono bg-primary/5 px-2 py-1 rounded-full">
+              <span className="text-xs text-primary font-mono font-semibold bg-primary/10 px-2.5 py-1 rounded-full">
                 {currentScore} pts
               </span>
             )}
-            <span className="text-xs text-gray-300 font-mono">
+            <span className="text-xs text-gray-500 font-mono font-medium">
               {String(stepIndex + 1).padStart(2, "0")} / {String(totalSteps).padStart(2, "0")}
             </span>
           </div>

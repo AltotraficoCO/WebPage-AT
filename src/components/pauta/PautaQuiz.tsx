@@ -6,6 +6,7 @@ import { quizSteps, terminalLogs, getArchetype, type DiagnosisResult } from "./q
 import QuizStepComponent from "./QuizStep";
 import ProcessingAnimation from "./ProcessingAnimation";
 import DiagnosisReport from "./DiagnosisReport";
+import BotMascot from "./BotMascot";
 
 type Phase = "quiz" | "processing" | "report";
 
@@ -205,6 +206,11 @@ export default function PautaQuiz() {
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-neon-1/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-neon-2/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3 pointer-events-none" />
 
+      {/* Floating bot mascot — desktop only */}
+      <div className="hidden lg:block fixed bottom-32 left-8 z-20" style={{ animation: "botFloat 4s ease-in-out infinite" }}>
+        <BotMascot />
+      </div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-12 lg:py-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
 
@@ -215,17 +221,17 @@ export default function PautaQuiz() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 border border-primary/10 text-sm text-primary mb-6">
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm font-medium text-primary mb-6">
                 <span className="w-2 h-2 rounded-full bg-neon-1 animate-pulse" />
                 Diagnóstico impulsado por IA real
               </span>
 
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-primary mb-4 leading-[1.1]">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-primary mb-4 leading-[1.1]">
                 Descubre tu perfil de{" "}
                 <span className="neon-highlight">IA empresarial</span>
               </h1>
 
-              <p className="text-base lg:text-lg text-gray-500 max-w-lg mb-6 font-normal leading-relaxed">
+              <p className="text-base lg:text-lg text-gray-700 max-w-lg mb-6 font-normal leading-relaxed">
                 10 preguntas, 3 minutos — nuestra IA analizará tu empresa y generará un informe
                 ejecutivo con tu arquetipo, análisis de riesgo y hoja de ruta personalizada.
               </p>
@@ -239,9 +245,9 @@ export default function PautaQuiz() {
                 ].map((badge) => (
                   <span
                     key={badge.text}
-                    className="inline-flex items-center gap-1.5 text-xs font-medium text-primary bg-primary/5 border border-primary/10 px-3 py-1.5 rounded-full"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary bg-primary/8 border border-primary/15 px-3 py-1.5 rounded-full"
                   >
-                    <span className="material-icons text-sm text-neon-1">{badge.icon}</span>
+                    <span className="material-icons text-sm text-primary">{badge.icon}</span>
                     {badge.text}
                   </span>
                 ))}
@@ -265,12 +271,12 @@ export default function PautaQuiz() {
                         <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
                         <div className="w-3 h-3 rounded-full bg-green-500/80" />
                       </div>
-                      <span className="text-[10px] text-gray-600 ml-2 uppercase tracking-widest">
+                      <span className="text-[10px] text-gray-500 ml-2 uppercase tracking-widest">
                         alto_trafico_diagnostic.sh
                       </span>
                     </div>
-                    <span className="text-[10px] text-green-500/60 uppercase tracking-wider flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                    <span className="text-[10px] text-green-400 uppercase tracking-wider flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
                       Live
                     </span>
                   </div>
@@ -296,7 +302,7 @@ export default function PautaQuiz() {
                 {score > 0 && (
                   <div className="mt-3 border-t border-gray-800/60 pt-3">
                     <div className="flex justify-between text-[10px] uppercase tracking-wider mb-1.5">
-                      <span className="text-gray-600">Score</span>
+                      <span className="text-gray-500">Score</span>
                       <span className="text-neon-1 font-mono font-bold">{score}/40</span>
                     </div>
                     <div className="w-full bg-gray-800/60 h-1.5 rounded-full overflow-hidden">
@@ -310,7 +316,7 @@ export default function PautaQuiz() {
 
                 <div className="mt-3 border-t border-gray-800/60 pt-3">
                   <div className="flex justify-between text-[10px] uppercase tracking-wider mb-2">
-                    <span className="text-gray-600">Progress</span>
+                    <span className="text-gray-500">Progress</span>
                     <span className="text-green-400 flex items-center gap-1">
                       <span className="w-1 h-1 rounded-full bg-green-400" />
                       Active
@@ -322,7 +328,7 @@ export default function PautaQuiz() {
                       style={{ width: progressWidth }}
                     />
                   </div>
-                  <div className="mt-2 flex justify-between text-[10px] text-gray-600">
+                  <div className="mt-2 flex justify-between text-[10px] text-gray-500">
                     <span>Phase {currentStep + 1}/{quizSteps.length}</span>
                     <span className="font-mono">{Math.round(((currentStep) / quizSteps.length) * 100)}%</span>
                   </div>

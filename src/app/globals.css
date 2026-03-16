@@ -1115,6 +1115,20 @@ p, span, li, a, input, label, div {
   100% { top: 0%; }
 }
 
+/* Bot mascot animations */
+@keyframes botWalk {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+@keyframes botArmSwing {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(8deg); }
+}
+@keyframes botFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
 .radar-stage {
   perspective: 1200px;
   transform-style: preserve-3d;

@@ -1,5 +1,6 @@
 import PautaNavbar from "@/components/pauta/PautaNavbar";
 import DarkFooter from "@/components/landing/DarkFooter";
+import AiBot from "@/components/AiBot";
 import { readSettings } from "@/lib/storage";
 
 export const dynamic = "force-dynamic";
@@ -21,6 +22,13 @@ export default async function PautaLayout({
       />
       {children}
       <DarkFooter />
+      <AiBot
+        enabled={settings.chatEnabled ?? false}
+        apiUrl={settings.chatApiUrl || ""}
+        apiKey={settings.chatApiKey || ""}
+        welcomeMessage={settings.chatWelcomeMessage || "Hola. ¿En qué puedo ayudarte?"}
+        botName={settings.chatBotName || "AT Assistant"}
+      />
     </div>
   );
 }
