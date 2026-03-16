@@ -126,19 +126,24 @@ export async function POST(request: Request) {
       ...aiResult,
     };
 
-    // Send lead to webhook (async, non-blocking)
+    // Send lead to webhook — format matches CRM expected schema
+    const nameParts = answers.name.trim().split(/\s+/);
+    const firstName = nameParts[0] || "";
+    const lastName = nameParts.slice(1).join(" ") || "";
+
     const leadPayload = {
-      ...answers,
-      score,
-      archetype: archetype.key,
-      archetype_name: archetype.name,
-      source: "ia-para-empresas",
+      first_name: firstName,
+      last_name: lastName,
+      email: answers.email,
+      empresa: answers.company,
+      fuente: "ia-para-empresas",
+      proyecto: body.utm_campaign || "Diagnóstico IA",
+      // Extra context as notes
+      cargo: answers.role,
+      archetype: archetype.name,
+      score: `${score}/40`,
       utm_source: body.utm_source || "",
       utm_medium: body.utm_medium || "",
-      utm_campaign: body.utm_campaign || "",
-      utm_term: body.utm_term || "",
-      utm_content: body.utm_content || "",
-      timestamp: new Date().toISOString(),
     };
 
     fetch(WEBHOOK_URL, {
