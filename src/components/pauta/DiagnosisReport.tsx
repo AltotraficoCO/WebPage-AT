@@ -4,7 +4,7 @@ import { useCallback } from "react";
 import { motion } from "framer-motion";
 import type { DiagnosisResult } from "./quizData";
 
-const WHATSAPP_NUMBER = "573001234567"; // TODO: Replace with actual service number
+const WHATSAPP_NUMBER = "573045248141";
 
 interface DiagnosisReportProps {
   result: DiagnosisResult;
@@ -60,8 +60,19 @@ export default function DiagnosisReport({ result, userName, companyName }: Diagn
   }, []);
 
   const handleWhatsApp = useCallback(() => {
+    // Capture UTMs from URL to preserve attribution in WhatsApp message
+    const params = new URLSearchParams(window.location.search);
+    const utmSource = params.get("utm_source");
+    const utmMedium = params.get("utm_medium");
+    const utmCampaign = params.get("utm_campaign");
+    const utmParts: string[] = [];
+    if (utmSource) utmParts.push(`source: ${utmSource}`);
+    if (utmMedium) utmParts.push(`medio: ${utmMedium}`);
+    if (utmCampaign) utmParts.push(`campaña: ${utmCampaign}`);
+    const utmLine = utmParts.length > 0 ? `\n[${utmParts.join(" | ")}]` : "";
+
     const msg = encodeURIComponent(
-      `Hola! Soy ${userName} de ${companyName}. Acabo de completar el diagnóstico de IA y mi perfil es "${result.archetype.name}" (${result.score}/40). Me gustaría agendar una sesión para profundizar en mi caso.`
+      `Hola! Soy ${userName} de ${companyName}. Acabo de completar el diagnóstico de IA y mi perfil es "${result.archetype.name}" (${result.score}/40). Me gustaría agendar una sesión para profundizar en mi caso.${utmLine}`
     );
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank");
   }, [userName, companyName, result]);
