@@ -145,9 +145,18 @@ export async function POST(request: Request) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(leadPayload),
-    }).catch(() => {
-      // Silently fail — don't block user experience
-    });
+    })
+      .then(async (res) => {
+        if (!res.ok) {
+          const text = await res.text().catch(() => "no body");
+          console.error(`Webhook failed: ${res.status} ${res.statusText} — ${text}`);
+        } else {
+          console.log("Webhook sent successfully:", res.status);
+        }
+      })
+      .catch((err) => {
+        console.error("Webhook network error:", err);
+      });
 
     return NextResponse.json(diagnosis);
   } catch (e) {
