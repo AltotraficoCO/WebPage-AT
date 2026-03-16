@@ -131,6 +131,36 @@ export async function POST(request: Request) {
     const firstName = nameParts[0] || "";
     const lastName = nameParts.slice(1).join(" ") || "";
 
+    // Build diagnosis summary for sales team
+    const diagnosisSummary = [
+      `PERFIL: ${archetype.name} (${score}/40)`,
+      `CARGO: ${answers.role}`,
+      ``,
+      `RESUMEN: ${aiResult.profile_summary || "N/A"}`,
+      ``,
+      `VENTAS: ${aiResult.area_analysis?.sales_marketing?.status || "N/A"}`,
+      ...(aiResult.area_analysis?.sales_marketing?.insights || []).map((i: string) => `  - ${i}`),
+      `OPERACIONES: ${aiResult.area_analysis?.operations?.status || "N/A"}`,
+      ...(aiResult.area_analysis?.operations?.insights || []).map((i: string) => `  - ${i}`),
+      ``,
+      `RIESGOS: ${(aiResult.risk_semaphore?.red || []).join("; ")}`,
+      ``,
+      `ACCIONES INMEDIATAS:`,
+      ...(aiResult.tactical_roadmap?.immediate || []).map((i: string) => `  - ${i}`),
+      ``,
+      `RESPUESTAS:`,
+      `  Frustración: ${answers.q9_frustracion}`,
+      `  Adopción IA: ${answers.q10_adopcion}`,
+      `  Procesos: ${answers.q6_procesos}`,
+      `  Documentación: ${answers.q7_documentacion}`,
+      `  Herramientas: ${answers.q8_integracion}`,
+      `  Captación: ${answers.q1_captacion}`,
+      `  Leads: ${answers.q2_leads}`,
+      `  Marketing: ${answers.q3_contenido}`,
+      `  Post-venta: ${answers.q4_postventa}`,
+      `  Métricas: ${answers.q5_metricas}`,
+    ].join("\n");
+
     const leadPayload = {
       first_name: firstName,
       last_name: lastName,
@@ -138,10 +168,8 @@ export async function POST(request: Request) {
       empresa: answers.company,
       fuente: "ia-para-empresas",
       proyecto: body.utm_campaign || "Diagnóstico IA",
-      // Extra context as notes
+      notas: diagnosisSummary,
       cargo: answers.role,
-      archetype: archetype.name,
-      score: `${score}/40`,
       utm_source: body.utm_source || "",
       utm_medium: body.utm_medium || "",
     };
