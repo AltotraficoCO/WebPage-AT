@@ -26,7 +26,7 @@ export default function PautaQuiz() {
   const addLog = useCallback((text: string, isUser = false) => {
     setLogs((prev) => {
       const next = [...prev, { text, isUser }];
-      return next.length > 10 ? next.slice(-10) : next;
+      return next.length > 12 ? next.slice(-12) : next;
     });
   }, []);
 
@@ -37,7 +37,6 @@ export default function PautaQuiz() {
   }, [logs]);
 
   const fetchDiagnosis = useCallback(async (allAnswers: Record<string, string>) => {
-    // Capture UTM params from URL
     const params = new URLSearchParams(window.location.search);
     const utm: Record<string, string> = {};
     for (const key of ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"]) {
@@ -66,13 +65,11 @@ export default function PautaQuiz() {
     const nextIndex = currentStep + 1;
 
     if (nextIndex >= quizSteps.length) {
-      // Last step — start API call and show processing animation
       setPhase("processing");
       diagnosisPromise.current = fetchDiagnosis(newAnswers);
       return;
     }
 
-    // Add terminal logs for next step
     const nextStep = quizSteps[nextIndex];
     const nextLogs = terminalLogs[nextStep.id] || [];
     setTimeout(() => {
@@ -134,22 +131,30 @@ export default function PautaQuiz() {
   const step = quizSteps[currentStep];
 
   return (
-    <section id="quiz-section" className="py-24 bg-white relative overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px] opacity-10" />
+    <section id="quiz-section" className="py-24 relative overflow-hidden">
+      {/* Premium gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white via-gray-50/80 to-white" />
+      <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.07]" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-neon-1/5 rounded-full blur-[100px] pointer-events-none" />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
-          className="text-center mb-12"
+          className="text-center mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <span className="text-xs font-medium tracking-wider text-primary uppercase mb-3 block">
+          <span className="inline-flex items-center gap-2 text-xs font-medium tracking-wider text-primary uppercase mb-4 px-4 py-2 rounded-full bg-primary/5 border border-primary/10">
+            <span className="w-1.5 h-1.5 rounded-full bg-neon-1 animate-pulse" />
             Diagnóstico IA
           </span>
-          <h2 className="text-3xl md:text-4xl font-medium text-primary">
+          <h2 className="text-3xl md:text-5xl font-medium text-primary leading-tight">
             Tu diagnóstico personalizado
           </h2>
+          <p className="text-gray-400 mt-3 text-sm md:text-base max-w-lg mx-auto">
+            Responde las preguntas y nuestra IA analizará tu empresa en tiempo real
+          </p>
         </motion.div>
 
         {phase === "report" && diagnosis ? (
@@ -166,68 +171,87 @@ export default function PautaQuiz() {
             />
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* Terminal Panel */}
             <div className="lg:col-span-4 order-2 lg:order-1">
-              <div className="sticky top-24 bg-surface-dark text-neon-3 p-6 rounded-xl border border-gray-800 shadow-2xl font-mono text-sm min-h-[400px] flex flex-col justify-between overflow-hidden">
-                <div className="scanner-overlay" />
-                <div>
-                  <div className="flex justify-between items-center mb-4 border-b border-gray-700 pb-2">
-                    <span className="uppercase tracking-widest text-xs opacity-70">
-                      Terminal Output
-                    </span>
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 rounded-full bg-red-500" />
-                      <div className="w-2 h-2 rounded-full bg-yellow-500" />
-                      <div className="w-2 h-2 rounded-full bg-green-500" />
+              <motion.div
+                className="sticky top-24"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                <div className="bg-[#0a0f14] text-neon-3 p-6 rounded-2xl border border-gray-800/60 shadow-2xl shadow-black/20 font-mono text-sm min-h-[420px] flex flex-col justify-between overflow-hidden backdrop-blur-sm">
+                  <div className="scanner-overlay" />
+                  <div>
+                    <div className="flex justify-between items-center mb-5 border-b border-gray-800 pb-3">
+                      <div className="flex items-center gap-2">
+                        <div className="flex space-x-1.5">
+                          <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                          <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                          <div className="w-3 h-3 rounded-full bg-green-500/80" />
+                        </div>
+                        <span className="text-[10px] text-gray-600 ml-2 uppercase tracking-widest">
+                          alto_trafico_diagnostic.sh
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-green-500/60 uppercase tracking-wider flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                        Live
+                      </span>
+                    </div>
+                    <div
+                      ref={terminalRef}
+                      className="space-y-1.5 opacity-90 max-h-[260px] overflow-y-auto scrollbar-thin"
+                    >
+                      {logs.map((log, i) => (
+                        <p key={i} className={`text-xs leading-relaxed ${log.isUser ? "text-neon-1" : "text-gray-400"}`}>
+                          <span className={log.isUser ? "text-neon-1" : "text-gray-600"}>
+                            {log.isUser ? "$ " : "> "}
+                          </span>
+                          {log.text}
+                        </p>
+                      ))}
+                      <p className="text-white text-xs">
+                        $ <span className="typing-cursor" />
+                      </p>
                     </div>
                   </div>
-                  <div
-                    ref={terminalRef}
-                    className="space-y-2 opacity-90 max-h-[250px] overflow-y-auto"
-                  >
-                    {logs.map((log, i) => (
-                      <p key={i} className={log.isUser ? "text-neon-1" : ""}>
-                        {log.isUser ? (
-                          <span className="text-neon-1">&gt; </span>
-                        ) : (
-                          <span>&gt; </span>
-                        )}
-                        {log.text}
-                      </p>
-                    ))}
-                    <p className="text-white">
-                      &gt; Waiting for user input
-                      <span className="typing-cursor" />
-                    </p>
-                  </div>
-                </div>
 
-                <div className="mt-8 border-t border-gray-800 pt-4">
-                  <div className="flex justify-between text-xs uppercase tracking-wider mb-2 text-gray-500">
-                    <span>System Status</span>
-                    <span className="text-green-400">Active</span>
-                  </div>
-                  <div className="w-full bg-gray-800 h-1 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-neon-1 transition-all duration-500"
-                      style={{ width: progressWidth }}
-                    />
-                  </div>
-                  <div className="mt-2 text-right text-xs opacity-60">
-                    <span>{currentStep + 1}</span>/{quizSteps.length} Completed
+                  <div className="mt-6 border-t border-gray-800/60 pt-4">
+                    <div className="flex justify-between text-[10px] uppercase tracking-wider mb-2">
+                      <span className="text-gray-600">System Status</span>
+                      <span className="text-green-400 flex items-center gap-1">
+                        <span className="w-1 h-1 rounded-full bg-green-400" />
+                        Active
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-800/60 h-1 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-neon-1 to-neon-2 transition-all duration-700 ease-out rounded-full"
+                        style={{ width: progressWidth }}
+                      />
+                    </div>
+                    <div className="mt-2 flex justify-between text-[10px] text-gray-600">
+                      <span>Phase {currentStep + 1}/{quizSteps.length}</span>
+                      <span className="font-mono">{Math.round(((currentStep) / quizSteps.length) * 100)}%</span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </div>
 
             {/* Steps Panel */}
             <div className="lg:col-span-8 order-1 lg:order-2 relative min-h-[500px]">
               {error && (
-                <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
-                  <span className="material-icons text-sm mr-1 align-text-bottom">error</span>
+                <motion.div
+                  className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-center gap-2"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  <span className="material-icons text-sm">error</span>
                   {error}
-                </div>
+                </motion.div>
               )}
               <QuizStepComponent
                 step={step}

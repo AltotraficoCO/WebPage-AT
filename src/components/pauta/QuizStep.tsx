@@ -23,9 +23,9 @@ function TiltCard({
     const y = e.clientY - rect.top;
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
-    const rotateX = ((y - centerY) / centerY) * -5;
-    const rotateY = ((x - centerX) / centerX) * 5;
-    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+    const rotateX = ((y - centerY) / centerY) * -4;
+    const rotateY = ((x - centerX) / centerX) * 4;
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.03, 1.03, 1.03)`;
   };
 
   const handleMouseLeave = () => {
@@ -71,16 +71,19 @@ export default function QuizStepComponent({
 }: QuizStepProps) {
   const variants = {
     enter: (dir: number) => ({
-      x: dir > 0 ? 300 : -300,
+      x: dir > 0 ? 200 : -200,
       opacity: 0,
+      scale: 0.98,
     }),
     center: {
       x: 0,
       opacity: 1,
+      scale: 1,
     },
     exit: (dir: number) => ({
-      x: dir > 0 ? -300 : 300,
+      x: dir > 0 ? -200 : 200,
       opacity: 0,
+      scale: 0.98,
     }),
   };
 
@@ -103,79 +106,138 @@ export default function QuizStepComponent({
         initial="enter"
         animate="center"
         exit="exit"
-        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
         className="w-full"
       >
+        {/* Step indicator pills */}
+        <div className="flex items-center gap-2 mb-8">
+          {Array.from({ length: totalSteps }, (_, i) => (
+            <div
+              key={i}
+              className={`h-1.5 rounded-full transition-all duration-500 ${
+                i < stepIndex
+                  ? "bg-neon-1 flex-1"
+                  : i === stepIndex
+                  ? "bg-primary flex-[2]"
+                  : "bg-gray-200 flex-1"
+              }`}
+            />
+          ))}
+        </div>
+
         <div className="mb-8">
-          <span className="text-neon-1 font-mono text-sm bg-primary/5 px-3 py-1 rounded">
+          <motion.span
+            className="inline-flex items-center gap-2 text-neon-1 font-mono text-xs bg-primary/5 border border-primary/10 px-4 py-1.5 rounded-full tracking-wider uppercase"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-neon-1 animate-pulse" />
             {step.phase}
-          </span>
-          <h2 className="text-2xl md:text-3xl font-medium mt-3 text-primary">
+          </motion.span>
+          <motion.h2
+            className="text-2xl md:text-3xl font-medium mt-4 text-primary leading-tight"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+          >
             {step.title}
-          </h2>
-          <p className="text-gray-500 mt-2 font-normal">{step.subtitle}</p>
+          </motion.h2>
+          <motion.p
+            className="text-gray-400 mt-2 font-normal text-sm md:text-base"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            {step.subtitle}
+          </motion.p>
         </div>
 
         {step.type === "form" ? (
-          <form onSubmit={handleSubmit} className="space-y-6 max-w-lg">
-            {step.fields?.map((field) => (
-              <div key={field.name} className="input-group">
-                <label className="block text-xs text-gray-400 uppercase tracking-wider mb-2">
+          <form onSubmit={handleSubmit} className="space-y-5 max-w-lg">
+            {step.fields?.map((field, i) => (
+              <motion.div
+                key={field.name}
+                className="group"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 + i * 0.08 }}
+              >
+                <label className="block text-xs text-gray-400 uppercase tracking-wider mb-2 font-medium group-focus-within:text-primary transition-colors">
                   {field.label}
                 </label>
-                <input
-                  name={field.name}
-                  type={field.type}
-                  placeholder={field.placeholder}
-                  required={field.required}
-                  defaultValue={formData[field.name] || ""}
-                  className="form-input w-full text-primary"
-                />
-                <div className="input-underline" />
-              </div>
+                <div className="relative">
+                  <input
+                    name={field.name}
+                    type={field.type}
+                    placeholder={field.placeholder}
+                    required={field.required}
+                    defaultValue={formData[field.name] || ""}
+                    className="form-input w-full text-primary bg-white border border-gray-200 rounded-xl px-4 py-3.5 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all placeholder:text-gray-300"
+                  />
+                </div>
+              </motion.div>
             ))}
-            <button
+            <motion.button
               type="submit"
-              className="mt-4 inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-full font-medium hover:bg-primary/90 transition-all hover:-translate-y-0.5 shadow-lg shadow-primary/20"
+              className="mt-6 inline-flex items-center gap-2 px-8 py-3.5 bg-primary text-white rounded-full font-medium hover:bg-primary/90 transition-all hover:-translate-y-0.5 shadow-lg shadow-primary/20 group"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
             >
               Continuar
-              <span className="material-icons text-lg">arrow_forward</span>
-            </button>
+              <span className="material-icons text-lg group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+            </motion.button>
           </form>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {step.options?.map((opt) => (
-              <TiltCard
+            {step.options?.map((opt, i) => (
+              <motion.div
                 key={opt.value}
-                className="group relative p-5 bg-white border border-gray-200 rounded-xl text-left hover:border-primary transition-all duration-300 shadow-sm hover:shadow-md w-full"
-                onClick={() => onSelect(opt.value)}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15 + i * 0.06 }}
               >
-                <div className="absolute top-4 right-4 w-4 h-4 rounded-full border border-gray-300 group-hover:bg-neon-1 group-hover:border-transparent transition-colors" />
-                {opt.icon && (
-                  <span className="material-icons text-2xl text-gray-400 mb-3 group-hover:text-primary transition-colors block">
-                    {opt.icon}
-                  </span>
-                )}
-                <h3 className="font-medium text-base text-primary mb-1">{opt.title}</h3>
-                <p className="text-sm text-gray-500 font-normal">{opt.desc}</p>
-              </TiltCard>
+                <TiltCard
+                  className="group relative p-5 bg-white border border-gray-100 rounded-2xl text-left hover:border-primary/30 transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-primary/5 w-full"
+                  onClick={() => onSelect(opt.value)}
+                >
+                  {/* Selection indicator */}
+                  <div className="absolute top-4 right-4 w-5 h-5 rounded-full border-2 border-gray-200 group-hover:border-primary group-hover:bg-neon-1 transition-all duration-300 flex items-center justify-center">
+                    <span className="material-icons text-[11px] text-primary opacity-0 group-hover:opacity-100 transition-opacity">check</span>
+                  </div>
+                  {opt.icon && (
+                    <div className="w-10 h-10 rounded-xl bg-primary/5 group-hover:bg-primary/10 flex items-center justify-center mb-3 transition-colors">
+                      <span className="material-icons text-xl text-gray-400 group-hover:text-primary transition-colors">
+                        {opt.icon}
+                      </span>
+                    </div>
+                  )}
+                  <h3 className="font-medium text-sm text-primary mb-1">{opt.title}</h3>
+                  <p className="text-xs text-gray-400 font-normal leading-relaxed">{opt.desc}</p>
+                </TiltCard>
+              </motion.div>
             ))}
           </div>
         )}
 
-        {stepIndex > 0 && (
-          <button
-            className="mt-6 text-sm text-gray-400 hover:text-primary flex items-center transition-colors"
-            onClick={onBack}
-            type="button"
-          >
-            <span className="material-icons text-sm mr-1">arrow_back</span>
-            Atrás
-          </button>
-        )}
-
-        <div className="mt-8 text-xs text-gray-400">
-          {stepIndex + 1} de {totalSteps}
+        {/* Navigation */}
+        <div className="mt-8 flex items-center justify-between">
+          {stepIndex > 0 ? (
+            <button
+              className="text-sm text-gray-400 hover:text-primary flex items-center gap-1 transition-colors group"
+              onClick={onBack}
+              type="button"
+            >
+              <span className="material-icons text-sm group-hover:-translate-x-0.5 transition-transform">arrow_back</span>
+              Atrás
+            </button>
+          ) : (
+            <div />
+          )}
+          <span className="text-xs text-gray-300 font-mono">
+            {String(stepIndex + 1).padStart(2, "0")} / {String(totalSteps).padStart(2, "0")}
+          </span>
         </div>
       </motion.div>
     </AnimatePresence>
