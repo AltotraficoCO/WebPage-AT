@@ -146,22 +146,22 @@ export async function POST(request: Request) {
       utm_medium: body.utm_medium || "",
     };
 
-    fetch(WEBHOOK_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(leadPayload),
-    })
-      .then(async (res) => {
-        if (!res.ok) {
-          const text = await res.text().catch(() => "no body");
-          console.error(`Webhook failed: ${res.status} ${res.statusText} — ${text}`);
-        } else {
-          console.log("Webhook sent successfully:", res.status);
-        }
-      })
-      .catch((err) => {
-        console.error("Webhook network error:", err);
+    // Must await — serverless functions kill unawaited promises on return
+    try {
+      const webhookRes = await fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(leadPayload),
       });
+      if (!webhookRes.ok) {
+        const text = await webhookRes.text().catch(() => "no body");
+        console.error(`Webhook failed: ${webhookRes.status} ${webhookRes.statusText} — ${text}`);
+      } else {
+        console.log("Webhook sent successfully:", webhookRes.status);
+      }
+    } catch (err) {
+      console.error("Webhook network error:", err);
+    }
 
     return NextResponse.json(diagnosis);
   } catch (e) {
