@@ -1,11 +1,17 @@
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { checkRateLimit } from "@/lib/rate-limit";
-import { buildPrompt } from "@/components/pauta/quizData";
+import { buildPrompt, getArchetype, archetypes } from "@/components/pauta/quizData";
 
 const WEBHOOK_URL = "https://app.altotrafico.co/api/webhook/c/70ddc358-f9ef-4931-996f-b4092e45ea8b";
 
-const REQUIRED_FIELDS = ["name", "email", "company", "role", "sector", "company_size", "data_maturity", "ai_usage", "ai_priority"] as const;
+const CONTACT_FIELDS = ["name", "email", "company", "role"] as const;
+const QUESTION_FIELDS = [
+  "q1_captacion", "q2_leads", "q3_contenido", "q4_postventa", "q5_metricas",
+  "q6_procesos", "q7_documentacion", "q8_integracion", "q9_frustracion", "q10_adopcion",
+] as const;
+
+const VALID_ARCHETYPE_KEYS = archetypes.map((a) => a.key);
 
 function sanitize(str: string): string {
   return String(str).replace(/<[^>]*>/g, "").trim().slice(0, 500);
@@ -31,9 +37,9 @@ export async function POST(request: Request) {
 
     const body = await request.json();
 
-    // Validate required fields
+    // Validate contact fields
     const answers: Record<string, string> = {};
-    for (const field of REQUIRED_FIELDS) {
+    for (const field of CONTACT_FIELDS) {
       const val = body[field];
       if (!val || typeof val !== "string" || !val.trim()) {
         return NextResponse.json(
@@ -48,6 +54,32 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Email inválido" }, { status: 400 });
     }
 
+    // Validate question fields
+    for (const field of QUESTION_FIELDS) {
+      const val = body[field];
+      if (!val || typeof val !== "string" || !val.trim()) {
+        return NextResponse.json(
+          { error: `Campo requerido: ${field}` },
+          { status: 400 }
+        );
+      }
+      answers[field] = sanitize(val);
+    }
+
+    // Validate score
+    const score = Number(body.score);
+    if (!Number.isInteger(score) || score < 10 || score > 40) {
+      return NextResponse.json({ error: "Score inválido (debe ser 10-40)" }, { status: 400 });
+    }
+
+    // Validate archetype
+    const archetypeKey = body.archetype;
+    if (!archetypeKey || !VALID_ARCHETYPE_KEYS.includes(archetypeKey)) {
+      return NextResponse.json({ error: "Arquetipo inválido" }, { status: 400 });
+    }
+
+    const archetype = getArchetype(score);
+
     // Check API key
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
@@ -58,7 +90,7 @@ export async function POST(request: Request) {
     }
 
     // Build prompt and call Claude
-    const prompt = buildPrompt(answers);
+    const prompt = buildPrompt(answers, score, archetype);
 
     const client = new Anthropic({ apiKey });
     const message = await client.messages.create({
@@ -80,22 +112,32 @@ export async function POST(request: Request) {
       jsonStr = fenceMatch[1].trim();
     }
 
-    let diagnosis;
+    let aiResult;
     try {
-      diagnosis = JSON.parse(jsonStr);
+      aiResult = JSON.parse(jsonStr);
     } catch {
       return NextResponse.json({ error: "Error al procesar respuesta de la IA" }, { status: 500 });
     }
 
+    // Compose final diagnosis result with archetype info
+    const diagnosis = {
+      archetype,
+      score,
+      ...aiResult,
+    };
+
     // Send lead to webhook (async, non-blocking)
     const leadPayload = {
       ...answers,
-      diagnosis_score: diagnosis.maturity_score,
-      diagnosis_label: diagnosis.maturity_label,
+      score,
+      archetype: archetype.key,
+      archetype_name: archetype.name,
       source: "ia-para-empresas",
       utm_source: body.utm_source || "",
       utm_medium: body.utm_medium || "",
       utm_campaign: body.utm_campaign || "",
+      utm_term: body.utm_term || "",
+      utm_content: body.utm_content || "",
       timestamp: new Date().toISOString(),
     };
 

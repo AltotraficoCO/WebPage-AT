@@ -1,22 +1,27 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { motion } from "framer-motion";
-import { processingLogs } from "./quizData";
+import { motion, AnimatePresence } from "framer-motion";
+import { processingLogs, type Archetype } from "./quizData";
 
 interface ProcessingAnimationProps {
-  sector: string;
+  sector?: string;
+  score: number;
+  archetype: Archetype;
   onComplete: () => void;
 }
 
-export default function ProcessingAnimation({ sector, onComplete }: ProcessingAnimationProps) {
+export default function ProcessingAnimation({ score, archetype, onComplete }: ProcessingAnimationProps) {
   const [logs, setLogs] = useState<string[]>([]);
   const [progress, setProgress] = useState(0);
+  const [showReveal, setShowReveal] = useState(false);
   const terminalRef = useRef<HTMLDivElement>(null);
   const completedRef = useRef(false);
 
   useEffect(() => {
-    const filledLogs = processingLogs.map((l) => l.replace("{sector}", sector));
+    const filledLogs = processingLogs.map((l) =>
+      l.replace("{score}", String(score)).replace("{archetype}", archetype.name)
+    );
     let i = 0;
 
     const interval = setInterval(() => {
@@ -26,15 +31,17 @@ export default function ProcessingAnimation({ sector, onComplete }: ProcessingAn
         i++;
       } else {
         clearInterval(interval);
+        // Show archetype reveal before completing
+        setShowReveal(true);
         if (!completedRef.current) {
           completedRef.current = true;
-          setTimeout(onComplete, 800);
+          setTimeout(onComplete, 2500);
         }
       }
     }, 400);
 
     return () => clearInterval(interval);
-  }, [sector, onComplete]);
+  }, [score, archetype, onComplete]);
 
   useEffect(() => {
     if (terminalRef.current) {
@@ -112,6 +119,50 @@ export default function ProcessingAnimation({ sector, onComplete }: ProcessingAn
             $ <span className="typing-cursor" />
           </p>
         </div>
+
+        {/* Archetype reveal */}
+        <AnimatePresence>
+          {showReveal && (
+            <motion.div
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              className="mt-4 p-4 bg-primary/20 border border-neon-1/30 rounded-xl text-center"
+            >
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+              >
+                <span className="material-icons text-3xl text-neon-1 mb-1 block">{archetype.icon}</span>
+              </motion.div>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="text-neon-1 font-bold text-sm uppercase tracking-wider"
+              >
+                Tu perfil:
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+                className="text-white font-medium text-lg mt-1"
+              >
+                {archetype.name}
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8 }}
+                className="text-gray-400 text-xs mt-1"
+              >
+                Score: {score}/40 — {archetype.tagline}
+              </motion.p>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Progress bar */}
         <div className="mt-6 border-t border-gray-800/60 pt-4">

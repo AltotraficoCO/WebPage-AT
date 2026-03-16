@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
-import { quizSteps, terminalLogs, type DiagnosisResult } from "./quizData";
+import { quizSteps, terminalLogs, getArchetype, type DiagnosisResult } from "./quizData";
 import QuizStepComponent from "./QuizStep";
 import ProcessingAnimation from "./ProcessingAnimation";
 import DiagnosisReport from "./DiagnosisReport";
@@ -16,6 +16,7 @@ export default function PautaQuiz() {
   const [direction, setDirection] = useState(1);
   const [diagnosis, setDiagnosis] = useState<DiagnosisResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [score, setScore] = useState(0);
   const [logs, setLogs] = useState<{ text: string; isUser?: boolean }[]>([
     { text: "Initializing diagnostic protocol..." },
     { text: "Loading heuristic models..." },
@@ -26,7 +27,7 @@ export default function PautaQuiz() {
   const addLog = useCallback((text: string, isUser = false) => {
     setLogs((prev) => {
       const next = [...prev, { text, isUser }];
-      return next.length > 12 ? next.slice(-12) : next;
+      return next.length > 14 ? next.slice(-14) : next;
     });
   }, []);
 
@@ -36,7 +37,7 @@ export default function PautaQuiz() {
     }
   }, [logs]);
 
-  const fetchDiagnosis = useCallback(async (allAnswers: Record<string, string>) => {
+  const fetchDiagnosis = useCallback(async (allAnswers: Record<string, string>, totalScore: number) => {
     const params = new URLSearchParams(window.location.search);
     const utm: Record<string, string> = {};
     for (const key of ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"]) {
@@ -44,10 +45,17 @@ export default function PautaQuiz() {
       if (val) utm[key] = val;
     }
 
+    const archetype = getArchetype(totalScore);
+
     const res = await fetch("/api/diagnosis", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...allAnswers, ...utm }),
+      body: JSON.stringify({
+        ...allAnswers,
+        score: totalScore,
+        archetype: archetype.key,
+        ...utm,
+      }),
     });
     if (!res.ok) {
       const err = await res.json().catch(() => ({ error: "Error al generar diagnóstico" }));
@@ -59,14 +67,24 @@ export default function PautaQuiz() {
   const handleSelect = useCallback((stepId: string, value: string) => {
     const newAnswers = { ...answers, [stepId]: value };
     setAnswers(newAnswers);
-    addLog(`Input: "${value}"`, true);
-    addLog("Processing...");
+
+    // Find the selected option to get its score
+    const currentStepData = quizSteps[currentStep];
+    const selectedOption = currentStepData.options?.find((o) => o.value === value);
+    const optionScore = selectedOption?.score || 0;
+    const newScore = score + optionScore;
+    setScore(newScore);
+
+    addLog(`Input: "${selectedOption?.letter || ""} — ${selectedOption?.title || value}"`, true);
+    if (optionScore > 0) {
+      addLog(`> Score +${optionScore} → Total: ${newScore}/40`);
+    }
 
     const nextIndex = currentStep + 1;
 
     if (nextIndex >= quizSteps.length) {
       setPhase("processing");
-      diagnosisPromise.current = fetchDiagnosis(newAnswers);
+      diagnosisPromise.current = fetchDiagnosis(newAnswers, newScore);
       return;
     }
 
@@ -80,7 +98,7 @@ export default function PautaQuiz() {
 
     setDirection(1);
     setCurrentStep(nextIndex);
-  }, [answers, currentStep, addLog, fetchDiagnosis]);
+  }, [answers, currentStep, addLog, fetchDiagnosis, score]);
 
   const handleFormSubmit = useCallback((data: Record<string, string>) => {
     const newAnswers = { ...answers, ...data };
@@ -104,11 +122,27 @@ export default function PautaQuiz() {
 
   const handleBack = useCallback(() => {
     if (currentStep > 0) {
+      // If going back from a scored question, subtract its score
+      const currentStepData = quizSteps[currentStep];
+      const prevAnswer = answers[currentStepData.id];
+      if (prevAnswer && currentStepData.options) {
+        const prevOption = currentStepData.options.find((o) => o.value === prevAnswer);
+        if (prevOption?.score) {
+          setScore((s) => s - prevOption.score);
+        }
+      }
+      // Remove the answer for the current step
+      setAnswers((prev) => {
+        const next = { ...prev };
+        delete next[currentStepData.id];
+        return next;
+      });
+
       setDirection(-1);
       setCurrentStep(currentStep - 1);
       addLog(`Reverting to Phase ${String(currentStep).padStart(2, "0")}...`);
     }
-  }, [currentStep, addLog]);
+  }, [currentStep, addLog, answers]);
 
   const handleProcessingComplete = useCallback(async () => {
     try {
@@ -123,6 +157,8 @@ export default function PautaQuiz() {
       setCurrentStep(quizSteps.length - 1);
     }
   }, []);
+
+  const archetype = getArchetype(score);
 
   const progressWidth = phase === "report"
     ? "100%"
@@ -153,7 +189,7 @@ export default function PautaQuiz() {
             Tu diagnóstico personalizado
           </h2>
           <p className="text-gray-400 mt-3 text-sm md:text-base max-w-lg mx-auto">
-            Responde las preguntas y nuestra IA analizará tu empresa en tiempo real
+            10 preguntas, 3 minutos — nuestra IA analizará tu empresa y determinará tu perfil
           </p>
         </motion.div>
 
@@ -166,7 +202,8 @@ export default function PautaQuiz() {
         ) : phase === "processing" ? (
           <div className="flex justify-center">
             <ProcessingAnimation
-              sector={answers.sector || "tu sector"}
+              score={score}
+              archetype={archetype}
               onComplete={handleProcessingComplete}
             />
           </div>
@@ -202,7 +239,7 @@ export default function PautaQuiz() {
                     </div>
                     <div
                       ref={terminalRef}
-                      className="space-y-1.5 opacity-90 max-h-[260px] overflow-y-auto scrollbar-thin"
+                      className="space-y-1.5 opacity-90 max-h-[220px] overflow-y-auto scrollbar-thin"
                     >
                       {logs.map((log, i) => (
                         <p key={i} className={`text-xs leading-relaxed ${log.isUser ? "text-neon-1" : "text-gray-400"}`}>
@@ -218,9 +255,25 @@ export default function PautaQuiz() {
                     </div>
                   </div>
 
-                  <div className="mt-6 border-t border-gray-800/60 pt-4">
+                  {/* Score bar */}
+                  {score > 0 && (
+                    <div className="mt-4 border-t border-gray-800/60 pt-3">
+                      <div className="flex justify-between text-[10px] uppercase tracking-wider mb-1.5">
+                        <span className="text-gray-600">Score</span>
+                        <span className="text-neon-1 font-mono font-bold">{score}/40</span>
+                      </div>
+                      <div className="w-full bg-gray-800/60 h-1.5 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-neon-1 to-neon-2 transition-all duration-500 ease-out rounded-full"
+                          style={{ width: `${(score / 40) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="mt-3 border-t border-gray-800/60 pt-3">
                     <div className="flex justify-between text-[10px] uppercase tracking-wider mb-2">
-                      <span className="text-gray-600">System Status</span>
+                      <span className="text-gray-600">Progress</span>
                       <span className="text-green-400 flex items-center gap-1">
                         <span className="w-1 h-1 rounded-full bg-green-400" />
                         Active
@@ -258,6 +311,7 @@ export default function PautaQuiz() {
                 stepIndex={currentStep}
                 totalSteps={quizSteps.length}
                 formData={answers}
+                currentScore={score}
                 onSelect={(value) => handleSelect(step.id, value)}
                 onFormSubmit={handleFormSubmit}
                 onBack={handleBack}

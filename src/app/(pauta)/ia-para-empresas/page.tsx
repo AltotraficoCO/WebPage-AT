@@ -1,30 +1,21 @@
 import type { Metadata } from "next";
 import PautaHero from "@/components/pauta/PautaHero";
 import MetricsBar from "@/components/pauta/MetricsBar";
-import CasesSection from "@/components/CasesSection";
 import PautaQuiz from "@/components/pauta/PautaQuiz";
-import PautaProcess from "@/components/pauta/PautaProcess";
-import PautaCTA from "@/components/pauta/PautaCTA";
-import { readCases } from "@/lib/storage";
 
 export const metadata: Metadata = {
   title: "Diagnóstico IA para Empresas | Alto Tráfico",
   description:
-    "Descubre el potencial de la inteligencia artificial en tu empresa. Diagnóstico gratuito generado por IA con score de madurez, oportunidades y roadmap de 90 días.",
+    "10 preguntas, 3 minutos: descubre tu perfil de IA empresarial. Diagnóstico gratuito con arquetipo, análisis por áreas, semáforo de riesgo y hoja de ruta táctica.",
   robots: { index: false, follow: false },
 };
 
-export default async function IaParaEmpresasPage() {
-  const casesData = await readCases();
-
+export default function IaParaEmpresasPage() {
   return (
     <main className="pt-20 min-h-screen relative overflow-hidden">
       <PautaHero />
       <MetricsBar />
-      {casesData.cases.length > 0 && <CasesSection cases={casesData.cases} />}
-      <PautaProcess />
       <PautaQuiz />
-      <PautaCTA />
     </main>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { QuizStep as QuizStepType } from "./quizData";
 
@@ -53,6 +53,7 @@ interface QuizStepProps {
   stepIndex: number;
   totalSteps: number;
   formData: Record<string, string>;
+  currentScore: number;
   onSelect: (value: string) => void;
   onFormSubmit: (data: Record<string, string>) => void;
   onBack: () => void;
@@ -64,11 +65,14 @@ export default function QuizStepComponent({
   stepIndex,
   totalSteps,
   formData,
+  currentScore,
   onSelect,
   onFormSubmit,
   onBack,
   direction,
 }: QuizStepProps) {
+  const [flashScore, setFlashScore] = useState<{ points: number; key: number } | null>(null);
+
   const variants = {
     enter: (dir: number) => ({
       x: dir > 0 ? 200 : -200,
@@ -95,6 +99,13 @@ export default function QuizStepComponent({
       data[field.name] = (fd.get(field.name) as string) || "";
     }
     onFormSubmit(data);
+  };
+
+  const handleOptionClick = (opt: NonNullable<QuizStepType["options"]>[number]) => {
+    if (opt.score) {
+      setFlashScore({ points: opt.score, key: Date.now() });
+    }
+    setTimeout(() => onSelect(opt.value), 150);
   };
 
   return (
@@ -190,34 +201,54 @@ export default function QuizStepComponent({
             </motion.button>
           </form>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {step.options?.map((opt, i) => (
-              <motion.div
-                key={opt.value}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.15 + i * 0.06 }}
-              >
-                <TiltCard
-                  className="group relative p-5 bg-white border border-gray-100 rounded-2xl text-left hover:border-primary/30 transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-primary/5 w-full"
-                  onClick={() => onSelect(opt.value)}
+          <div className="relative">
+            {/* Score flash animation */}
+            <AnimatePresence>
+              {flashScore && (
+                <motion.div
+                  key={flashScore.key}
+                  initial={{ opacity: 1, y: 0, scale: 1 }}
+                  animate={{ opacity: 0, y: -40, scale: 1.3 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.7 }}
+                  className="absolute -top-2 right-4 z-20 text-neon-1 font-mono font-bold text-lg pointer-events-none"
                 >
-                  {/* Selection indicator */}
-                  <div className="absolute top-4 right-4 w-5 h-5 rounded-full border-2 border-gray-200 group-hover:border-primary group-hover:bg-neon-1 transition-all duration-300 flex items-center justify-center">
-                    <span className="material-icons text-[11px] text-primary opacity-0 group-hover:opacity-100 transition-opacity">check</span>
-                  </div>
-                  {opt.icon && (
-                    <div className="w-10 h-10 rounded-xl bg-primary/5 group-hover:bg-primary/10 flex items-center justify-center mb-3 transition-colors">
-                      <span className="material-icons text-xl text-gray-400 group-hover:text-primary transition-colors">
-                        {opt.icon}
+                  +{flashScore.points} pts
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {step.options?.map((opt, i) => (
+                <motion.div
+                  key={opt.value}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.15 + i * 0.06 }}
+                >
+                  <TiltCard
+                    className="group relative p-5 bg-white border border-gray-100 rounded-2xl text-left hover:border-primary/30 transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-primary/5 w-full"
+                    onClick={() => handleOptionClick(opt)}
+                  >
+                    {/* Letter badge */}
+                    <div className="absolute top-4 right-4 w-7 h-7 rounded-full bg-primary/5 group-hover:bg-primary group-hover:text-white flex items-center justify-center transition-all duration-300">
+                      <span className="text-xs font-bold text-primary group-hover:text-white transition-colors">
+                        {opt.letter}
                       </span>
                     </div>
-                  )}
-                  <h3 className="font-medium text-sm text-primary mb-1">{opt.title}</h3>
-                  <p className="text-xs text-gray-400 font-normal leading-relaxed">{opt.desc}</p>
-                </TiltCard>
-              </motion.div>
-            ))}
+                    {opt.icon && (
+                      <div className="w-10 h-10 rounded-xl bg-primary/5 group-hover:bg-primary/10 flex items-center justify-center mb-3 transition-colors">
+                        <span className="material-icons text-xl text-gray-400 group-hover:text-primary transition-colors">
+                          {opt.icon}
+                        </span>
+                      </div>
+                    )}
+                    <h3 className="font-medium text-sm text-primary mb-1 pr-8">{opt.title}</h3>
+                    <p className="text-xs text-gray-400 font-normal leading-relaxed">{opt.desc}</p>
+                  </TiltCard>
+                </motion.div>
+              ))}
+            </div>
           </div>
         )}
 
@@ -235,9 +266,16 @@ export default function QuizStepComponent({
           ) : (
             <div />
           )}
-          <span className="text-xs text-gray-300 font-mono">
-            {String(stepIndex + 1).padStart(2, "0")} / {String(totalSteps).padStart(2, "0")}
-          </span>
+          <div className="flex items-center gap-3">
+            {stepIndex > 0 && currentScore > 0 && (
+              <span className="text-xs text-neon-1 font-mono bg-primary/5 px-2 py-1 rounded-full">
+                {currentScore} pts
+              </span>
+            )}
+            <span className="text-xs text-gray-300 font-mono">
+              {String(stepIndex + 1).padStart(2, "0")} / {String(totalSteps).padStart(2, "0")}
+            </span>
+          </div>
         </div>
       </motion.div>
     </AnimatePresence>

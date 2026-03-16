@@ -3,6 +3,8 @@ export interface QuizOption {
   title: string;
   desc: string;
   value: string;
+  letter: string;
+  score: number;
 }
 
 export interface QuizStep {
@@ -15,10 +17,91 @@ export interface QuizStep {
   fields?: { name: string; label: string; type: string; placeholder: string; required: boolean }[];
 }
 
+export interface Archetype {
+  key: string;
+  name: string;
+  tagline: string;
+  focus: string;
+  painPoint: string;
+  proposal: string;
+  icon: string;
+}
+
+export interface DiagnosisResult {
+  archetype: Archetype;
+  score: number;
+  profile_summary: string;
+  area_analysis: {
+    sales_marketing: { status: string; insights: string[] };
+    operations: { status: string; insights: string[] };
+  };
+  risk_semaphore: {
+    red: string[];
+    yellow: string[];
+    green: string[];
+  };
+  tactical_roadmap: {
+    immediate: string[];
+    short_term: string[];
+    medium_term: string[];
+  };
+  commercial_close: {
+    headline: string;
+    body: string;
+    cta_text: string;
+  };
+}
+
+export const archetypes: Archetype[] = [
+  {
+    key: "explorador",
+    name: "El Explorador Curioso",
+    tagline: "Primeros pasos hacia la transformación digital",
+    focus: "Educación y primeros pasos",
+    painPoint: "Miedo a quedarse atrás y caos manual",
+    proposal: "Talleres de alfabetización IA y automatización básica con ChatGPT",
+    icon: "explore",
+  },
+  {
+    key: "optimizador",
+    name: "El Optimizador Reactivo",
+    tagline: "Listo para escalar con herramientas inteligentes",
+    focus: "Eficiencia y ahorro de tiempo",
+    painPoint: "Tareas repetitivas que queman al equipo",
+    proposal: "CRMs con IA, chatbots de ventas y automatización de procesos clave",
+    icon: "tune",
+  },
+  {
+    key: "estratega",
+    name: "El Estratega Digital",
+    tagline: "Ventaja competitiva a través de datos e IA",
+    focus: "Ventaja competitiva y datos",
+    painPoint: "Falta de integración entre sistemas",
+    proposal: "IA personalizada, automatización de flujos e integración end-to-end",
+    icon: "psychology",
+  },
+  {
+    key: "visionario",
+    name: "El Visionario Disruptivo",
+    tagline: "Transformación total con agentes autónomos",
+    focus: "Transformación total",
+    painPoint: "Costos de nómina altos en áreas operativas",
+    proposal: "Agentes autónomos de IA y 'Cerebro Central' para orquestar operaciones",
+    icon: "rocket_launch",
+  },
+];
+
+export function getArchetype(score: number): Archetype {
+  if (score <= 18) return archetypes[0];
+  if (score <= 27) return archetypes[1];
+  if (score <= 35) return archetypes[2];
+  return archetypes[3];
+}
+
 export const quizSteps: QuizStep[] = [
   {
     id: "contact",
-    phase: "Fase 01: Identificación",
+    phase: "Fase 00: Identificación",
     title: "Cuéntanos sobre ti",
     subtitle: "Personaliza tu diagnóstico con tus datos básicos.",
     type: "form",
@@ -30,72 +113,133 @@ export const quizSteps: QuizStep[] = [
     ],
   },
   {
-    id: "sector",
-    phase: "Fase 02: Sector",
-    title: "¿En qué sector opera tu empresa?",
-    subtitle: "Esto nos permite personalizar las recomendaciones a tu industria.",
+    id: "q1_captacion",
+    phase: "Fase 01: Ventas",
+    title: "¿Cómo captan clientes hoy?",
+    subtitle: "Entender tu canal de adquisición nos permite recomendar la estrategia correcta.",
     type: "select",
     options: [
-      { icon: "account_balance", title: "Fintech", desc: "Servicios financieros, pagos, banca digital.", value: "Fintech" },
-      { icon: "shopping_cart", title: "E-commerce", desc: "Comercio electrónico, marketplace, retail online.", value: "E-commerce" },
-      { icon: "code", title: "SaaS / Tech", desc: "Software como servicio, plataformas tecnológicas.", value: "SaaS" },
-      { icon: "handshake", title: "Servicios", desc: "Consultoría, agencias, servicios profesionales.", value: "Servicios" },
-      { icon: "local_hospital", title: "Salud", desc: "Healthtech, clínicas, farmacéutica.", value: "Salud" },
-      { icon: "precision_manufacturing", title: "Manufactura", desc: "Producción, logística, cadena de suministro.", value: "Manufactura" },
-      { icon: "school", title: "Educación", desc: "Edtech, universidades, formación corporativa.", value: "Educación" },
-      { icon: "more_horiz", title: "Otro", desc: "Otro sector o industria.", value: "Otro" },
+      { letter: "A", icon: "record_voice_over", title: "Boca a boca y referidos", desc: "Dependemos de recomendaciones y contactos personales.", value: "Boca a boca y referidos", score: 1 },
+      { letter: "B", icon: "phone_android", title: "Redes sociales manuales y algo de pauta", desc: "Publicamos contenido y hacemos algo de publicidad digital.", value: "Redes sociales manuales y algo de pauta", score: 2 },
+      { letter: "C", icon: "filter_alt", title: "Funnel digital con CRM y automatización básica", desc: "Tenemos un embudo definido con seguimiento automatizado.", value: "Funnel digital con CRM y automatización básica", score: 3 },
+      { letter: "D", icon: "auto_awesome", title: "Growth engine con IA y scoring predictivo", desc: "Motor de crecimiento con personalización e IA integrada.", value: "Growth engine con IA, scoring predictivo y personalización", score: 4 },
     ],
   },
   {
-    id: "company_size",
-    phase: "Fase 03: Escala",
-    title: "¿Cuántas personas hay en tu equipo?",
-    subtitle: "El tamaño del equipo define la estrategia de implementación.",
+    id: "q2_leads",
+    phase: "Fase 02: Seguimiento",
+    title: "¿Cómo gestionan el seguimiento de leads?",
+    subtitle: "El manejo de prospectos revela la madurez de tu proceso comercial.",
     type: "select",
     options: [
-      { icon: "person", title: "1 – 10", desc: "Startup o equipo pequeño.", value: "1-10" },
-      { icon: "group", title: "11 – 50", desc: "Empresa en crecimiento.", value: "11-50" },
-      { icon: "groups", title: "51 – 200", desc: "Mediana empresa consolidada.", value: "51-200" },
-      { icon: "corporate_fare", title: "200+", desc: "Empresa grande o corporación.", value: "200+" },
+      { letter: "A", icon: "table_chart", title: "Excel o libreta, sin proceso claro", desc: "Seguimiento manual sin estructura definida.", value: "Excel o libreta, sin proceso claro", score: 1 },
+      { letter: "B", icon: "contact_mail", title: "CRM básico pero sin automatización", desc: "Registramos leads pero todo el seguimiento es manual.", value: "CRM básico pero sin automatización", score: 2 },
+      { letter: "C", icon: "mark_email_read", title: "CRM con secuencias automáticas", desc: "Secuencias de email/WhatsApp automáticas configuradas.", value: "CRM con secuencias automáticas de email/WhatsApp", score: 3 },
+      { letter: "D", icon: "smart_toy", title: "IA que prioriza leads y predice cierre", desc: "Inteligencia artificial sugiere acciones y prioriza oportunidades.", value: "IA que prioriza leads, predice cierre y sugiere acciones", score: 4 },
     ],
   },
   {
-    id: "data_maturity",
-    phase: "Fase 04: Infraestructura",
-    title: "Nivel de Digitalización Actual",
-    subtitle: "¿Cómo gestionan la información y los datos en tu organización?",
+    id: "q3_contenido",
+    phase: "Fase 03: Marketing",
+    title: "¿Qué rol juega el contenido y marketing digital?",
+    subtitle: "Tu presencia digital impacta directamente en la generación de demanda.",
     type: "select",
     options: [
-      { icon: "folder_off", title: "Analógica / Dispersa", desc: "Documentos físicos, Excel locales, emails no centralizados.", value: "Analógica/Manual" },
-      { icon: "cloud_queue", title: "Digital Básica", desc: "Google Drive/Office 365, pero sin integraciones.", value: "Cloud Básica" },
-      { icon: "hub", title: "Sistemas Integrados", desc: "CRM/ERP implementados, datos estructurados.", value: "Sistemas Integrados" },
-      { icon: "insights", title: "Data-Driven", desc: "Dashboards en tiempo real, cultura de datos establecida.", value: "Data-Driven" },
+      { letter: "A", icon: "visibility_off", title: "Casi nulo", desc: "No tenemos presencia digital activa ni estrategia de contenido.", value: "Casi nulo, no tenemos presencia digital activa", score: 1 },
+      { letter: "B", icon: "edit_note", title: "Publicamos sin estrategia clara", desc: "Tenemos redes sociales pero sin plan ni métricas claras.", value: "Publicamos en redes pero sin estrategia clara", score: 2 },
+      { letter: "C", icon: "event_note", title: "Estrategia con calendario y métricas", desc: "Contenido planificado con KPIs y calendario editorial.", value: "Estrategia de contenido con calendario y métricas", score: 3 },
+      { letter: "D", icon: "auto_fix_high", title: "Contenido optimizado con IA", desc: "IA genera y optimiza contenido con A/B testing automatizado.", value: "Contenido generado/optimizado con IA, A/B testing automatizado", score: 4 },
     ],
   },
   {
-    id: "ai_usage",
-    phase: "Fase 05: Adopción IA",
-    title: "Uso Actual de Inteligencia Artificial",
-    subtitle: "¿En qué grado se utiliza la IA en tus procesos?",
+    id: "q4_postventa",
+    phase: "Fase 04: Post-venta",
+    title: "¿Cómo atienden a sus clientes post-venta?",
+    subtitle: "La retención es tan importante como la adquisición.",
     type: "select",
     options: [
-      { icon: "explore", title: "Nulo / Exploración", desc: "Uso ocasional de ChatGPT o similar de forma individual.", value: "Nulo" },
-      { icon: "science", title: "Experimental", desc: "Pequeños pilotos o pruebas de concepto aisladas.", value: "Experimental" },
-      { icon: "settings", title: "Operativo", desc: "IA integrada en algunos procesos core.", value: "Operativo" },
-      { icon: "auto_awesome", title: "Estratégico", desc: "Modelos propios, automatización end-to-end.", value: "Estratégico" },
+      { letter: "A", icon: "chat", title: "WhatsApp personal o llamadas", desc: "Atendemos cuando el cliente nos escribe, sin sistema.", value: "Por WhatsApp personal o llamadas cuando el cliente escribe", score: 1 },
+      { letter: "B", icon: "email", title: "Email de soporte o ticketing básico", desc: "Tenemos un canal de soporte pero sin SLAs definidos.", value: "Email de soporte o ticketing básico", score: 2 },
+      { letter: "C", icon: "support_agent", title: "Sistema de soporte con SLAs", desc: "Soporte estructurado con tiempos de respuesta y base de conocimiento.", value: "Sistema de soporte con SLAs y base de conocimiento", score: 3 },
+      { letter: "D", icon: "smart_toy", title: "Chatbots con IA y atención 24/7", desc: "Atención automatizada con escalamiento inteligente.", value: "Chatbots con IA, atención 24/7 y escalamiento inteligente", score: 4 },
     ],
   },
   {
-    id: "ai_priority",
-    phase: "Fase 06: Visión",
-    title: "Objetivo Principal con IA",
-    subtitle: "¿Cuál es la meta prioritaria para los próximos 12 meses?",
+    id: "q5_metricas",
+    phase: "Fase 05: Métricas",
+    title: "¿Cómo miden el rendimiento comercial?",
+    subtitle: "Lo que no se mide no se mejora — tu nivel de medición define tu capacidad de mejora.",
     type: "select",
     options: [
-      { icon: "bolt", title: "Eficiencia Operativa", desc: "Reducir costes y tiempos de ejecución manual.", value: "Eficiencia Operativa" },
-      { icon: "trending_up", title: "Escalabilidad", desc: "Crecer sin aumentar proporcionalmente la estructura.", value: "Escalabilidad" },
-      { icon: "lightbulb", title: "Innovación", desc: "Crear nuevas líneas de negocio basadas en IA.", value: "Innovación" },
-      { icon: "support_agent", title: "Experiencia del Cliente", desc: "Personalización, atención 24/7, satisfacción.", value: "Experiencia del Cliente" },
+      { letter: "A", icon: "psychology_alt", title: "Intuición y revisión esporádica", desc: "Revisamos ventas de forma ocasional, sin datos estructurados.", value: "Intuición y revisión esporádica de ventas", score: 1 },
+      { letter: "B", icon: "description", title: "Reportes manuales mensuales", desc: "Hacemos reportes en Excel pero de forma manual y mensual.", value: "Reportes manuales mensuales en Excel", score: 2 },
+      { letter: "C", icon: "dashboard", title: "Dashboards en tiempo real", desc: "KPIs definidos con dashboards que se actualizan automáticamente.", value: "Dashboards en tiempo real con KPIs definidos", score: 3 },
+      { letter: "D", icon: "trending_up", title: "Analytics predictivo con IA", desc: "IA anticipa tendencias y sugiere acciones basadas en datos.", value: "Analytics predictivo con IA que anticipa tendencias", score: 4 },
+    ],
+  },
+  {
+    id: "q6_procesos",
+    phase: "Fase 06: Operaciones",
+    title: "¿Cómo gestionan los procesos internos repetitivos?",
+    subtitle: "Las tareas repetitivas son la mayor oportunidad de eficiencia con IA.",
+    type: "select",
+    options: [
+      { letter: "A", icon: "front_hand", title: "Todo manual", desc: "Copiar/pegar, emails manuales, revisiones humanas para todo.", value: "Todo manual — copiar/pegar, emails, revisiones humanas", score: 1 },
+      { letter: "B", icon: "description", title: "Plantillas y herramientas básicas", desc: "Usamos algunas plantillas y herramientas digitales simples.", value: "Algunas plantillas y herramientas digitales básicas", score: 2 },
+      { letter: "C", icon: "settings_suggest", title: "Flujos automatizados", desc: "Automatizaciones con Zapier, Make o scripts personalizados.", value: "Flujos automatizados (Zapier, Make, scripts)", score: 3 },
+      { letter: "D", icon: "precision_manufacturing", title: "Automatización end-to-end con IA", desc: "Agentes de IA que ejecutan flujos completos de forma autónoma.", value: "Automatización end-to-end con agentes de IA", score: 4 },
+    ],
+  },
+  {
+    id: "q7_documentacion",
+    phase: "Fase 07: Conocimiento",
+    title: "¿Cómo está la documentación y conocimiento interno?",
+    subtitle: "El conocimiento organizacional es la base para implementar IA efectivamente.",
+    type: "select",
+    options: [
+      { letter: "A", icon: "person_off", title: "En la cabeza de las personas", desc: "Nada documentado, todo depende de quién sabe qué.", value: "En la cabeza de las personas, nada documentado", score: 1 },
+      { letter: "B", icon: "folder_open", title: "Drive o carpetas con documentos dispersos", desc: "Hay documentos pero sin organización central.", value: "Google Drive o carpetas con documentos dispersos", score: 2 },
+      { letter: "C", icon: "menu_book", title: "Wiki o base de conocimiento centralizada", desc: "Base de conocimiento organizada y accesible para el equipo.", value: "Wiki o base de conocimiento centralizada", score: 3 },
+      { letter: "D", icon: "auto_stories", title: "Sistema con IA para gestión de conocimiento", desc: "IA encuentra, resume y actualiza documentación automáticamente.", value: "Sistema con IA que encuentra, resume y actualiza documentación", score: 4 },
+    ],
+  },
+  {
+    id: "q8_integracion",
+    phase: "Fase 08: Integración",
+    title: "¿Cuántas herramientas usan que NO se hablan entre sí?",
+    subtitle: "Las herramientas desconectadas generan fricción y pérdida de datos.",
+    type: "select",
+    options: [
+      { letter: "A", icon: "link_off", title: "Muchas — todo desconectado", desc: "Cada área usa sus propias herramientas sin integración.", value: "Muchas — todo está desconectado", score: 1 },
+      { letter: "B", icon: "sync_alt", title: "Algunas integraciones manuales", desc: "Copiamos datos manualmente entre aplicaciones.", value: "Algunas integraciones manuales (copiar datos entre apps)", score: 2 },
+      { letter: "C", icon: "hub", title: "Mayoría integradas vía APIs", desc: "La mayoría de herramientas se conectan via APIs o middleware.", value: "Mayoría integradas vía APIs o middleware", score: 3 },
+      { letter: "D", icon: "device_hub", title: "Ecosistema unificado con IA", desc: "IA como capa de orquestación que conecta todo el ecosistema.", value: "Ecosistema unificado con IA como capa de orquestación", score: 4 },
+    ],
+  },
+  {
+    id: "q9_frustracion",
+    phase: "Fase 09: Pain Point",
+    title: "¿Cuál es la mayor frustración operativa hoy?",
+    subtitle: "Identificar el dolor principal nos permite priorizar el impacto.",
+    type: "select",
+    options: [
+      { letter: "A", icon: "visibility_off", title: "Falta de visibilidad", desc: "No sabemos qué pasa en tiempo real en la operación.", value: "Falta de visibilidad — no sabemos qué pasa en tiempo real", score: 1 },
+      { letter: "B", icon: "local_fire_department", title: "Tareas repetitivas que queman al equipo", desc: "El equipo gasta horas en tareas que podrían automatizarse.", value: "Tareas repetitivas que queman al equipo", score: 2 },
+      { letter: "C", icon: "scatter_plot", title: "Datos dispersos para tomar decisiones", desc: "La información está fragmentada y dificulta decisiones rápidas.", value: "Datos dispersos que dificultan tomar decisiones rápidas", score: 3 },
+      { letter: "D", icon: "groups", title: "Escalar sin multiplicar nómina", desc: "Necesitamos crecer sin contratar proporcionalmente más gente.", value: "Escalar sin multiplicar la nómina proporcionalmente", score: 4 },
+    ],
+  },
+  {
+    id: "q10_adopcion",
+    phase: "Fase 10: Adopción",
+    title: "¿Qué tan abierto está tu equipo a adoptar IA?",
+    subtitle: "La disposición del equipo determina la velocidad de implementación.",
+    type: "select",
+    options: [
+      { letter: "A", icon: "block", title: "Resistentes al cambio", desc: "Prefieren hacer las cosas como siempre, hay resistencia.", value: "Resistentes — prefieren hacer las cosas como siempre", score: 1 },
+      { letter: "B", icon: "help_outline", title: "Curiosos pero sin capacitación", desc: "Hay interés pero falta tiempo y formación.", value: "Curiosos pero sin capacitación ni tiempo", score: 2 },
+      { letter: "C", icon: "emoji_objects", title: "Algunos champions usan IA", desc: "Hay personas que ya usan ChatGPT y herramientas por su cuenta.", value: "Algunos champions ya usan ChatGPT/herramientas por su cuenta", score: 3 },
+      { letter: "D", icon: "verified", title: "Mandato directivo para integrar IA", desc: "La dirección ha dado la orden de implementar IA en todo.", value: "Hay mandato directivo para integrar IA en todo", score: 4 },
     ],
   },
 ];
@@ -106,104 +250,141 @@ export const terminalLogs: Record<string, string[]> = {
     "Loading heuristic models...",
     "Awaiting user identification...",
   ],
-  sector: [
+  q1_captacion: [
     "User profile loaded.",
-    "Mapping industry benchmarks...",
-    "Loading sector-specific models...",
+    "Scanning sales acquisition channels...",
+    "Loading commercial benchmarks...",
   ],
-  company_size: [
-    "Sector data indexed.",
-    "Calibrating scale parameters...",
-    "Loading organizational frameworks...",
+  q2_leads: [
+    "Acquisition model indexed.",
+    "Analyzing lead management pipeline...",
+    "Cross-referencing CRM maturity...",
   ],
-  data_maturity: [
-    "Scale parameters set.",
-    "Scanning infrastructure patterns...",
-    "Loading digitalization benchmarks...",
+  q3_contenido: [
+    "Lead pipeline mapped.",
+    "Evaluating content & marketing strategy...",
+    "Loading digital presence metrics...",
   ],
-  ai_usage: [
-    "Infrastructure profile complete.",
-    "Analyzing AI adoption patterns...",
-    "Cross-referencing maturity models...",
+  q4_postventa: [
+    "Marketing strategy assessed.",
+    "Scanning post-sale service model...",
+    "Loading retention benchmarks...",
   ],
-  ai_priority: [
-    "Adoption level registered.",
-    "Loading strategic frameworks...",
-    "Preparing final analysis vector...",
+  q5_metricas: [
+    "Service model registered.",
+    "Analyzing measurement infrastructure...",
+    "Loading analytics maturity models...",
+  ],
+  q6_procesos: [
+    "--- Switching to Operations Block ---",
+    "Scanning internal process workflows...",
+    "Loading automation benchmarks...",
+  ],
+  q7_documentacion: [
+    "Process audit complete.",
+    "Evaluating knowledge management...",
+    "Loading documentation standards...",
+  ],
+  q8_integracion: [
+    "Knowledge base assessed.",
+    "Mapping tool ecosystem integration...",
+    "Loading interoperability metrics...",
+  ],
+  q9_frustracion: [
+    "Integration map complete.",
+    "Identifying primary pain points...",
+    "Loading operational friction models...",
+  ],
+  q10_adopcion: [
+    "Pain points registered.",
+    "Evaluating team AI readiness...",
+    "Preparing archetype classification...",
   ],
 };
 
 export const processingLogs = [
-  "Compiling user profile data...",
-  "Analyzing sector patterns for {sector}...",
-  "Cross-referencing industry benchmarks...",
-  "Evaluating digital maturity indicators...",
-  "Mapping AI adoption trajectory...",
-  "Calculating maturity score...",
-  "Generating strategic roadmap...",
-  "Estimating ROI projections...",
-  "Building executive report...",
-  "Finalizing diagnosis...",
+  "Compiling all 10 response vectors...",
+  "Calculating Sales & Marketing score...",
+  "Calculating Operations score...",
+  "Aggregating total score: {score}/40...",
+  "Classifying archetype: {archetype}...",
+  "Loading archetype-specific frameworks...",
+  "Cross-referencing with industry patterns...",
+  "Generating area analysis matrix...",
+  "Building risk semaphore assessment...",
+  "Constructing tactical roadmap...",
+  "Generating AI-personalized insights...",
+  "Finalizing executive diagnosis...",
 ];
 
-export interface DiagnosisResult {
-  maturity_score: number;
-  maturity_label: string;
-  sector_average: number;
-  dimensions: { name: string; score: number; insight: string }[];
-  opportunities: { title: string; description: string; impact: string; icon: string }[];
-  roadmap: {
-    month1: { title: string; actions: string[] };
-    month2: { title: string; actions: string[] };
-    month3: { title: string; actions: string[] };
-  };
-  roi_estimate: {
-    hours_saved: string;
-    cost_reduction: string;
-    efficiency_gain: string;
-  };
-}
+export function buildPrompt(answers: Record<string, string>, score: number, archetype: Archetype): string {
+  return `Eres un consultor senior de transformación digital e Inteligencia Artificial para empresas en Latinoamérica, trabajando para Alto Tráfico, una agencia de automatización e IA.
 
-export function buildPrompt(answers: Record<string, string>): string {
-  return `Eres un consultor senior de transformación digital e Inteligencia Artificial para empresas en Latinoamérica. Analiza los siguientes datos de un prospecto y genera un diagnóstico ejecutivo completo y personalizado.
+Analiza los siguientes datos de un prospecto y genera un diagnóstico ejecutivo personalizado.
 
-Datos del prospecto:
+## Datos del prospecto:
 - Nombre: ${answers.name}
 - Empresa: ${answers.company}
 - Cargo: ${answers.role}
-- Sector: ${answers.sector}
-- Tamaño de equipo: ${answers.company_size}
-- Nivel de digitalización: ${answers.data_maturity}
-- Uso actual de IA: ${answers.ai_usage}
-- Objetivo principal: ${answers.ai_priority}
+- Email: ${answers.email}
 
-IMPORTANTE: Personaliza TODO el diagnóstico al sector "${answers.sector}", tamaño "${answers.company_size}" y nivel actual "${answers.data_maturity}". No uses respuestas genéricas. Menciona herramientas, plataformas y estrategias específicas del sector. Sé concreto y accionable.
+## Resultados del Quiz (10 preguntas, score ${score}/40):
+
+### Bloque Ventas/Marketing (Q1-Q5):
+1. Captación de clientes: ${answers.q1_captacion}
+2. Seguimiento de leads: ${answers.q2_leads}
+3. Contenido/marketing digital: ${answers.q3_contenido}
+4. Atención post-venta: ${answers.q4_postventa}
+5. Medición comercial: ${answers.q5_metricas}
+
+### Bloque Operaciones (Q6-Q10):
+6. Procesos internos repetitivos: ${answers.q6_procesos}
+7. Documentación y conocimiento: ${answers.q7_documentacion}
+8. Integración de herramientas: ${answers.q8_integracion}
+9. Mayor frustración operativa: ${answers.q9_frustracion}
+10. Apertura del equipo a IA: ${answers.q10_adopcion}
+
+## Arquetipo determinado: ${archetype.name} (${archetype.key})
+- Score: ${score}/40
+- Foco: ${archetype.focus}
+- Pain point principal: ${archetype.painPoint}
+- Propuesta base: ${archetype.proposal}
+
+## Instrucciones:
+- Personaliza TODO al contexto de esta empresa y sus respuestas específicas. No uses respuestas genéricas.
+- El tono debe ser empático, directo, profesional y conversacional.
+- No juzgues la automatización de puestos — enmárcalo como "Eficiencia Operativa" y "Escalabilidad Inteligente".
+- Las recomendaciones deben ser coherentes con el arquetipo ${archetype.name}.
+- Sé concreto: menciona herramientas, plataformas y estrategias específicas.
+- El profile_summary debe ser 2-3 oraciones máximo, empático y motivador.
 
 Genera un JSON con esta estructura EXACTA (sin texto adicional, solo el JSON):
 {
-  "maturity_score": <número 0-100 basado en digitalización + uso IA>,
-  "maturity_label": "<Explorador|Emergente|Avanzado|Líder>",
-  "sector_average": <número 0-100 promedio estimado del sector>,
-  "dimensions": [
-    { "name": "Datos & Infraestructura", "score": <0-100>, "insight": "<análisis breve específico>" },
-    { "name": "Procesos & Automatización", "score": <0-100>, "insight": "<análisis breve específico>" },
-    { "name": "Cultura & Talento", "score": <0-100>, "insight": "<análisis breve específico>" },
-    { "name": "Estrategia IA", "score": <0-100>, "insight": "<análisis breve específico>" }
-  ],
-  "opportunities": [
-    { "title": "<título concreto>", "description": "<descripción detallada y específica al sector>", "impact": "<Alto|Medio>", "icon": "<nombre_icono_material>" },
-    { "title": "...", "description": "...", "impact": "...", "icon": "..." },
-    { "title": "...", "description": "...", "impact": "...", "icon": "..." }
-  ],
-  "roadmap": {
-    "month1": { "title": "Quick Wins", "actions": ["<acción concreta 1>", "<acción concreta 2>", "<acción concreta 3>"] },
-    "month2": { "title": "Implementación", "actions": ["<acción concreta 1>", "<acción concreta 2>", "<acción concreta 3>"] },
-    "month3": { "title": "Escalamiento", "actions": ["<acción concreta 1>", "<acción concreta 2>", "<acción concreta 3>"] }
+  "profile_summary": "<resumen empático de 2-3 oraciones sobre dónde está la empresa y su potencial>",
+  "area_analysis": {
+    "sales_marketing": {
+      "status": "<Crítico|En desarrollo|Competente|Avanzado>",
+      "insights": ["<insight específico 1>", "<insight específico 2>", "<insight específico 3>"]
+    },
+    "operations": {
+      "status": "<Crítico|En desarrollo|Competente|Avanzado>",
+      "insights": ["<insight específico 1>", "<insight específico 2>", "<insight específico 3>"]
+    }
   },
-  "roi_estimate": {
-    "hours_saved": "<ej: 120-180 horas/mes>",
-    "cost_reduction": "<ej: 15-25% en costos operativos>",
-    "efficiency_gain": "<ej: 40-60% mejora en eficiencia>"
+  "risk_semaphore": {
+    "red": ["<riesgo urgente si no actúan en 6 meses>", "<otro riesgo urgente>"],
+    "yellow": ["<riesgo moderado a monitorear>", "<otro riesgo moderado>"],
+    "green": ["<fortaleza actual a mantener>", "<otra fortaleza>"]
+  },
+  "tactical_roadmap": {
+    "immediate": ["<acción concreta esta semana>", "<otra acción inmediata>", "<otra>"],
+    "short_term": ["<acción a 30 días>", "<otra acción a 30 días>", "<otra>"],
+    "medium_term": ["<acción a 60-90 días>", "<otra acción a 60-90 días>", "<otra>"]
+  },
+  "commercial_close": {
+    "headline": "<titular impactante y personalizado para invitar a sesión>",
+    "body": "<párrafo persuasivo de 2-3 oraciones sobre el valor de una auditoría profunda con Alto Tráfico>",
+    "cta_text": "<texto del botón CTA>"
   }
 }`;
 }

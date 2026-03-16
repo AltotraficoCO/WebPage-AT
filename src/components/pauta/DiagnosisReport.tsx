@@ -9,65 +9,45 @@ interface DiagnosisReportProps {
   companyName: string;
 }
 
-function AnimatedCircle({ score, label }: { score: number; label: string }) {
+function SectionCard({
+  children,
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+}) {
   return (
-    <div className="relative w-48 h-48 flex-shrink-0 mx-auto">
-      <svg
-        className="circle-chart"
-        viewBox="0 0 33.83098862 33.83098862"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <circle
-          cx="16.91549431"
-          cy="16.91549431"
-          fill="none"
-          r="15.91549431"
-          stroke="#e5e7eb"
-          strokeWidth="2"
-        />
-        <circle
-          className="circle-chart__circle"
-          cx="16.91549431"
-          cy="16.91549431"
-          fill="none"
-          r="15.91549431"
-          stroke="#163336"
-          strokeDasharray={`${score}, 100`}
-          strokeLinecap="round"
-          strokeWidth="2"
-        />
-      </svg>
-      <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center">
-        <span className="text-4xl font-bold text-primary">{score}%</span>
-        <span className="text-xs text-gray-500 uppercase tracking-wide mt-1">{label}</span>
-      </div>
-    </div>
+    <motion.div
+      className="bg-white border border-gray-200 rounded-2xl p-8 relative overflow-hidden"
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay }}
+    >
+      {children}
+    </motion.div>
   );
 }
 
-function DimensionBar({ name, score, insight, delay }: { name: string; score: number; insight: string; delay: number }) {
+function SectionTitle({ icon, title }: { icon: string; title: string }) {
   return (
-    <motion.div
-      className="mb-5"
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.5, delay }}
-    >
-      <div className="flex justify-between items-center mb-1.5">
-        <span className="text-sm font-medium text-primary">{name}</span>
-        <span className="text-sm text-gray-500 font-mono">{score}%</span>
-      </div>
-      <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
-        <motion.div
-          className="h-full rounded-full"
-          style={{ background: "linear-gradient(90deg, #B2FFB5, #163336)" }}
-          initial={{ width: 0 }}
-          animate={{ width: `${score}%` }}
-          transition={{ duration: 1, delay: delay + 0.2, ease: "easeOut" }}
-        />
-      </div>
-      <p className="text-xs text-gray-500 mt-1 font-normal">{insight}</p>
-    </motion.div>
+    <h3 className="text-xl font-medium text-primary mb-6 flex items-center gap-2">
+      <span className="material-icons text-neon-1 bg-primary rounded-lg p-1 text-sm">{icon}</span>
+      {title}
+    </h3>
+  );
+}
+
+function StatusBadge({ status }: { status: string }) {
+  const colors: Record<string, string> = {
+    "Crítico": "bg-red-100 text-red-700 border-red-200",
+    "En desarrollo": "bg-yellow-100 text-yellow-700 border-yellow-200",
+    "Competente": "bg-blue-100 text-blue-700 border-blue-200",
+    "Avanzado": "bg-green-100 text-green-700 border-green-200",
+  };
+  return (
+    <span className={`text-xs px-3 py-1 rounded-full font-medium border ${colors[status] || "bg-gray-100 text-gray-700 border-gray-200"}`}>
+      {status}
+    </span>
   );
 }
 
@@ -97,204 +77,247 @@ export default function DiagnosisReport({ result, userName, companyName }: Diagn
         </p>
       </motion.div>
 
-      {/* Section 1: Maturity Score */}
-      <motion.div
-        className="bg-white border border-gray-200 rounded-2xl p-8 relative overflow-hidden"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-      >
+      {/* Section 1: Profile / Archetype */}
+      <SectionCard delay={0.2}>
         <div className="absolute top-0 right-0 p-32 bg-neon-1/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-        <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
-          <AnimatedCircle score={result.maturity_score} label={result.maturity_label} />
-          <div className="flex-grow text-center md:text-left">
-            <h3 className="text-2xl font-medium text-primary mb-2">Score de Madurez IA</h3>
-            <p className="text-gray-500 font-normal mb-4">
-              Tu empresa está en nivel <strong className="text-primary">{result.maturity_label}</strong>.
-              El promedio de tu sector es <strong className="text-primary">{result.sector_average}%</strong>.
-            </p>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-light border border-gray-100 text-sm">
-              <span className="material-icons text-sm text-primary">
-                {result.maturity_score >= result.sector_average ? "trending_up" : "trending_down"}
-              </span>
-              <span className="text-gray-600">
-                {result.maturity_score >= result.sector_average
-                  ? `${result.maturity_score - result.sector_average} puntos por encima del promedio`
-                  : `${result.sector_average - result.maturity_score} puntos por debajo del promedio`}
-              </span>
+        <div className="relative z-10">
+          <div className="flex flex-col md:flex-row items-center gap-8">
+            {/* Archetype icon + score */}
+            <div className="flex-shrink-0 text-center">
+              <div className="w-28 h-28 rounded-2xl bg-primary/5 border border-primary/10 flex items-center justify-center mx-auto mb-3">
+                <span className="material-icons text-5xl text-primary">{result.archetype.icon}</span>
+              </div>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neon-1/20 border border-neon-1/30">
+                <span className="text-2xl font-bold text-primary">{result.score}</span>
+                <span className="text-sm text-gray-500">/40</span>
+              </div>
+            </div>
+
+            <div className="flex-grow text-center md:text-left">
+              <span className="text-xs uppercase tracking-wider text-neon-1 font-mono font-medium">Tu perfil</span>
+              <h3 className="text-2xl md:text-3xl font-medium text-primary mt-1">
+                {result.archetype.name}
+              </h3>
+              <p className="text-sm text-gray-400 mt-1 font-medium">{result.archetype.tagline}</p>
+              <p className="text-gray-500 font-normal mt-4 leading-relaxed">
+                {result.profile_summary}
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2 justify-center md:justify-start">
+                <span className="text-xs px-3 py-1.5 rounded-full bg-primary/5 border border-primary/10 text-primary">
+                  Foco: {result.archetype.focus}
+                </span>
+                <span className="text-xs px-3 py-1.5 rounded-full bg-primary/5 border border-primary/10 text-primary">
+                  {result.archetype.proposal}
+                </span>
+              </div>
             </div>
           </div>
         </div>
-      </motion.div>
+      </SectionCard>
 
-      {/* Section 2: Dimensions */}
-      <motion.div
-        className="bg-white border border-gray-200 rounded-2xl p-8"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.4 }}
-      >
-        <h3 className="text-xl font-medium text-primary mb-6 flex items-center gap-2">
-          <span className="material-icons text-neon-1 bg-primary rounded-lg p-1 text-sm">analytics</span>
-          Análisis por Dimensión
-        </h3>
-        {result.dimensions.map((dim, i) => (
-          <DimensionBar
-            key={dim.name}
-            name={dim.name}
-            score={dim.score}
-            insight={dim.insight}
-            delay={0.5 + i * 0.15}
-          />
-        ))}
-      </motion.div>
-
-      {/* Section 3: Opportunities */}
-      <motion.div
-        className="bg-white border border-gray-200 rounded-2xl p-8"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.6 }}
-      >
-        <h3 className="text-xl font-medium text-primary mb-6 flex items-center gap-2">
-          <span className="material-icons text-neon-1 bg-primary rounded-lg p-1 text-sm">lightbulb</span>
-          Oportunidades Detectadas
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {result.opportunities.map((opp, i) => (
-            <motion.div
-              key={i}
-              className="p-5 bg-surface-light border border-gray-100 rounded-xl hover:border-neon-1/40 transition-colors"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.7 + i * 0.1 }}
-            >
-              <div className="flex items-start gap-3">
-                <span className="material-icons text-primary bg-neon-1/20 rounded-lg p-2 text-lg flex-shrink-0">
-                  {opp.icon}
-                </span>
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <h4 className="font-medium text-primary text-sm">{opp.title}</h4>
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
-                      opp.impact === "Alto"
-                        ? "bg-neon-1/20 text-primary"
-                        : "bg-neon-2/20 text-primary"
-                    }`}>
-                      {opp.impact}
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-500 font-normal leading-relaxed">{opp.description}</p>
-                </div>
+      {/* Section 2: Area Analysis */}
+      <SectionCard delay={0.4}>
+        <SectionTitle icon="analytics" title="Análisis por Áreas" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Sales & Marketing */}
+          <motion.div
+            className="p-5 bg-surface-light border border-gray-100 rounded-xl"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <span className="material-icons text-primary text-lg">storefront</span>
+                <h4 className="font-medium text-primary text-sm">Ventas & Marketing</h4>
               </div>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
+              <StatusBadge status={result.area_analysis?.sales_marketing?.status || "En desarrollo"} />
+            </div>
+            <ul className="space-y-2.5">
+              {(result.area_analysis?.sales_marketing?.insights || []).map((insight, i) => (
+                <motion.li
+                  key={i}
+                  className="flex items-start gap-2 text-xs text-gray-600 font-normal leading-relaxed"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.6 + i * 0.1 }}
+                >
+                  <span className="material-icons text-neon-1 text-xs mt-0.5 flex-shrink-0">arrow_right</span>
+                  {insight}
+                </motion.li>
+              ))}
+            </ul>
+          </motion.div>
 
-      {/* Section 4: Roadmap */}
-      <motion.div
-        className="bg-white border border-gray-200 rounded-2xl p-8"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.8 }}
-      >
-        <h3 className="text-xl font-medium text-primary mb-6 flex items-center gap-2">
-          <span className="material-icons text-neon-1 bg-primary rounded-lg p-1 text-sm">timeline</span>
-          Roadmap 90 Días
-        </h3>
+          {/* Operations */}
+          <motion.div
+            className="p-5 bg-surface-light border border-gray-100 rounded-xl"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <span className="material-icons text-primary text-lg">settings</span>
+                <h4 className="font-medium text-primary text-sm">Operaciones</h4>
+              </div>
+              <StatusBadge status={result.area_analysis?.operations?.status || "En desarrollo"} />
+            </div>
+            <ul className="space-y-2.5">
+              {(result.area_analysis?.operations?.insights || []).map((insight, i) => (
+                <motion.li
+                  key={i}
+                  className="flex items-start gap-2 text-xs text-gray-600 font-normal leading-relaxed"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.6 + i * 0.1 }}
+                >
+                  <span className="material-icons text-neon-1 text-xs mt-0.5 flex-shrink-0">arrow_right</span>
+                  {insight}
+                </motion.li>
+              ))}
+            </ul>
+          </motion.div>
+        </div>
+      </SectionCard>
+
+      {/* Section 3: Risk Semaphore */}
+      <SectionCard delay={0.6}>
+        <SectionTitle icon="traffic" title="Semáforo de Riesgo" />
+        <p className="text-xs text-gray-400 mb-5 -mt-4">Sin IA en los próximos 6 meses...</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Red */}
+          <motion.div
+            className="p-4 bg-red-50/50 border border-red-100 rounded-xl"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-3 h-3 rounded-full bg-red-500" />
+              <span className="text-sm font-medium text-red-700">Riesgo Alto</span>
+            </div>
+            <ul className="space-y-2">
+              {(result.risk_semaphore?.red || []).map((item, i) => (
+                <li key={i} className="text-xs text-red-600/80 font-normal leading-relaxed flex items-start gap-1.5">
+                  <span className="material-icons text-red-400 text-xs mt-0.5 flex-shrink-0">warning</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+
+          {/* Yellow */}
+          <motion.div
+            className="p-4 bg-yellow-50/50 border border-yellow-100 rounded-xl"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-3 h-3 rounded-full bg-yellow-500" />
+              <span className="text-sm font-medium text-yellow-700">Monitorear</span>
+            </div>
+            <ul className="space-y-2">
+              {(result.risk_semaphore?.yellow || []).map((item, i) => (
+                <li key={i} className="text-xs text-yellow-600/80 font-normal leading-relaxed flex items-start gap-1.5">
+                  <span className="material-icons text-yellow-400 text-xs mt-0.5 flex-shrink-0">info</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+
+          {/* Green */}
+          <motion.div
+            className="p-4 bg-green-50/50 border border-green-100 rounded-xl"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9 }}
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-3 h-3 rounded-full bg-green-500" />
+              <span className="text-sm font-medium text-green-700">Fortalezas</span>
+            </div>
+            <ul className="space-y-2">
+              {(result.risk_semaphore?.green || []).map((item, i) => (
+                <li key={i} className="text-xs text-green-600/80 font-normal leading-relaxed flex items-start gap-1.5">
+                  <span className="material-icons text-green-400 text-xs mt-0.5 flex-shrink-0">check_circle</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        </div>
+      </SectionCard>
+
+      {/* Section 4: Tactical Roadmap */}
+      <SectionCard delay={0.8}>
+        <SectionTitle icon="route" title="Hoja de Ruta Táctica" />
+        <p className="text-xs text-gray-400 mb-5 -mt-4">Lo que podemos hacer juntos</p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
           {/* Connector */}
           <div className="hidden md:block absolute top-8 left-[16.6%] right-[16.6%] h-0.5 bg-gradient-to-r from-neon-1 via-primary/20 to-neon-1 opacity-30" />
 
-          {(["month1", "month2", "month3"] as const).map((month, i) => {
-            const data = result.roadmap[month];
-            const icons = ["rocket_launch", "build", "trending_up"];
-            const labels = ["Mes 1", "Mes 2", "Mes 3"];
-            return (
-              <motion.div
-                key={month}
-                className="relative bg-surface-light border border-gray-100 rounded-xl p-5"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.9 + i * 0.15 }}
-              >
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center">
-                    <span className="material-icons text-sm">{icons[i]}</span>
-                  </span>
-                  <div>
-                    <span className="text-xs text-gray-400 uppercase tracking-wider">{labels[i]}</span>
-                    <h4 className="text-sm font-medium text-primary">{data.title}</h4>
-                  </div>
-                </div>
-                <ul className="space-y-2">
-                  {data.actions.map((action, j) => (
-                    <li key={j} className="flex items-start gap-2 text-xs text-gray-600 font-normal">
-                      <span className="material-icons text-neon-1 text-xs mt-0.5 flex-shrink-0">check_circle</span>
-                      {action}
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            );
-          })}
-        </div>
-      </motion.div>
-
-      {/* Section 5: ROI */}
-      <motion.div
-        className="bg-white border border-gray-200 rounded-2xl p-8"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 1.0 }}
-      >
-        <h3 className="text-xl font-medium text-primary mb-6 flex items-center gap-2">
-          <span className="material-icons text-neon-1 bg-primary rounded-lg p-1 text-sm">payments</span>
-          ROI Estimado
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
-            { icon: "schedule", label: "Horas ahorradas", value: result.roi_estimate.hours_saved },
-            { icon: "savings", label: "Reducción de costos", value: result.roi_estimate.cost_reduction },
-            { icon: "speed", label: "Mejora en eficiencia", value: result.roi_estimate.efficiency_gain },
-          ].map((item, i) => (
+            { key: "immediate" as const, label: "Esta Semana", icon: "bolt", items: result.tactical_roadmap?.immediate || [] },
+            { key: "short_term" as const, label: "30 Días", icon: "event", items: result.tactical_roadmap?.short_term || [] },
+            { key: "medium_term" as const, label: "60-90 Días", icon: "rocket_launch", items: result.tactical_roadmap?.medium_term || [] },
+          ].map((phase, i) => (
             <motion.div
-              key={item.label}
-              className="text-center p-5 bg-surface-light border border-gray-100 rounded-xl"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 1.1 + i * 0.1 }}
+              key={phase.key}
+              className="relative bg-surface-light border border-gray-100 rounded-xl p-5"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.9 + i * 0.15 }}
             >
-              <span className="material-icons text-3xl text-primary mb-2 block">{item.icon}</span>
-              <span className="text-lg font-medium text-primary block">{item.value}</span>
-              <span className="text-xs text-gray-500 mt-1 block">{item.label}</span>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center">
+                  <span className="material-icons text-sm">{phase.icon}</span>
+                </span>
+                <div>
+                  <span className="text-xs text-gray-400 uppercase tracking-wider">{phase.label}</span>
+                </div>
+              </div>
+              <ul className="space-y-2">
+                {phase.items.map((action, j) => (
+                  <li key={j} className="flex items-start gap-2 text-xs text-gray-600 font-normal leading-relaxed">
+                    <span className="material-icons text-neon-1 text-xs mt-0.5 flex-shrink-0">check_circle</span>
+                    {action}
+                  </li>
+                ))}
+              </ul>
             </motion.div>
           ))}
         </div>
-      </motion.div>
+      </SectionCard>
 
-      {/* Section 6: CTA */}
+      {/* Section 5: Commercial Close */}
       <motion.div
         className="bg-primary rounded-2xl p-8 md:p-12 text-center relative overflow-hidden"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 1.2 }}
+        transition={{ duration: 0.6, delay: 1.0 }}
       >
         <div className="absolute top-0 right-0 w-64 h-64 bg-neon-1/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-neon-2/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10">
+          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs text-white/80 mb-4">
+            <span className="material-icons text-xs text-neon-1">event_available</span>
+            Sesión de Auditoría Profunda
+          </span>
           <h3 className="text-2xl md:text-3xl font-medium text-white mb-3">
-            ¿Quieres profundizar en tu diagnóstico?
+            {result.commercial_close?.headline || "¿Listo para transformar tu empresa con IA?"}
           </h3>
-          <p className="text-white/70 font-normal mb-6 max-w-lg mx-auto">
-            Agenda una sesión estratégica gratuita con nuestro equipo para revisar tu informe
-            y definir los próximos pasos concretos.
+          <p className="text-white/70 font-normal mb-6 max-w-lg mx-auto leading-relaxed">
+            {result.commercial_close?.body ||
+              "Agenda una sesión estratégica gratuita con nuestro equipo para revisar tu informe y definir los próximos pasos concretos."}
           </p>
           <button
             onClick={scrollToContact}
             className="inline-flex items-center gap-2 px-8 py-4 bg-white text-primary rounded-full font-medium hover:bg-neon-1 transition-all hover:-translate-y-1 shadow-xl"
           >
-            Agendar Sesión Estratégica
+            {result.commercial_close?.cta_text || "Agendar Sesión Estratégica"}
             <span className="material-icons">arrow_forward</span>
           </button>
         </div>

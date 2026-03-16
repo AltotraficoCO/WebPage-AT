@@ -9,7 +9,7 @@ export default function PautaHero() {
   };
 
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-white">
+    <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden bg-white">
       {/* Subtle background pattern */}
       <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:32px_32px] opacity-20" />
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-neon-1/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
@@ -33,8 +33,8 @@ export default function PautaHero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
         >
-          Descubre el potencial de la{" "}
-          <span className="neon-highlight">IA en tu empresa</span>
+          Descubre tu perfil de{" "}
+          <span className="neon-highlight">IA empresarial</span>
         </motion.h1>
 
         <motion.p
@@ -43,8 +43,8 @@ export default function PautaHero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
         >
-          Responde 6 preguntas y nuestra IA generará un informe ejecutivo personalizado
-          con score de madurez, oportunidades y un roadmap de 90 días.
+          10 preguntas, 3 minutos — nuestra IA analizará tu empresa y generará un informe
+          ejecutivo con tu arquetipo, análisis de riesgo y hoja de ruta personalizada.
         </motion.p>
 
         <motion.div
@@ -56,7 +56,7 @@ export default function PautaHero() {
             onClick={scrollToQuiz}
             className="cta-button-generative inline-flex items-center gap-2 px-8 py-4 rounded-full text-base font-medium"
           >
-            Iniciar Diagnóstico Gratuito
+            Descubre tu perfil ahora
             <span className="material-icons text-xl">arrow_downward</span>
           </button>
         </motion.div>
@@ -69,9 +69,9 @@ export default function PautaHero() {
           transition={{ duration: 0.7, delay: 0.5 }}
         >
           {[
-            { value: "2 min", label: "Tiempo del quiz" },
-            { value: "IA Real", label: "Claude AI analiza tu caso" },
-            { value: "100%", label: "Personalizado" },
+            { value: "10 preguntas", label: "Quiz rápido" },
+            { value: "3 min", label: "Tiempo estimado" },
+            { value: "IA Real", label: "Informe personalizado" },
           ].map((badge) => (
             <div key={badge.label} className="text-center">
               <span className="text-lg font-medium text-primary">{badge.value}</span>
