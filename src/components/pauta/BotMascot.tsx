@@ -8,7 +8,7 @@ export default function BotMascot() {
   const targetRef = useRef({ x: 120, y: 500 });
   const animFrameRef = useRef<number>(0);
   const [expression, setExpression] = useState<"idle" | "excited" | "looking">("idle");
-  const expressionTimeout = useRef<NodeJS.Timeout>();
+  const expressionTimeout = useRef<NodeJS.Timeout>(undefined);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
