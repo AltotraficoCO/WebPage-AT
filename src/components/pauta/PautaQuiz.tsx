@@ -206,8 +206,8 @@ export default function PautaQuiz() {
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-neon-1/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-neon-2/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3 pointer-events-none" />
 
-      {/* Floating bot mascot — desktop only */}
-      <div className="hidden lg:block fixed bottom-32 left-8 z-20" style={{ animation: "botFloat 4s ease-in-out infinite" }}>
+      {/* Bot mascot that follows cursor — desktop only */}
+      <div className="hidden lg:block">
         <BotMascot />
       </div>
 

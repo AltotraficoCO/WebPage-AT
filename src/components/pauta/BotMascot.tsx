@@ -1,97 +1,133 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function BotMascot() {
   const botRef = useRef<HTMLDivElement>(null);
-  const eyeLRef = useRef<HTMLDivElement>(null);
-  const eyeRRef = useRef<HTMLDivElement>(null);
+  const posRef = useRef({ x: 120, y: 500 });
+  const targetRef = useRef({ x: 120, y: 500 });
+  const animFrameRef = useRef<number>(0);
+  const [expression, setExpression] = useState<"idle" | "excited" | "looking">("idle");
+  const expressionTimeout = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
+      targetRef.current = { x: e.clientX, y: e.clientY };
+
+      // Change expression when mouse moves near
+      const dx = e.clientX - posRef.current.x;
+      const dy = e.clientY - posRef.current.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist < 150) {
+        setExpression("excited");
+      } else {
+        setExpression("looking");
+      }
+
+      clearTimeout(expressionTimeout.current);
+      expressionTimeout.current = setTimeout(() => setExpression("idle"), 2000);
+    };
+
+    const animate = () => {
       const bot = botRef.current;
-      const eyeL = eyeLRef.current;
-      const eyeR = eyeRRef.current;
-      if (!bot || !eyeL || !eyeR) return;
+      if (!bot) {
+        animFrameRef.current = requestAnimationFrame(animate);
+        return;
+      }
 
-      const rect = bot.getBoundingClientRect();
-      const botCenterX = rect.left + rect.width / 2;
-      const botCenterY = rect.top + rect.height / 2;
+      const speed = 0.03; // Smooth follow speed
+      const tx = targetRef.current.x;
+      const ty = targetRef.current.y;
 
-      const dx = e.clientX - botCenterX;
-      const dy = e.clientY - botCenterY;
-      const angle = Math.atan2(dy, dx);
-      const maxMove = 3;
-      const moveX = Math.cos(angle) * maxMove;
-      const moveY = Math.sin(angle) * maxMove;
+      // Offset so bot doesn't sit right on cursor — stays nearby
+      const offsetX = -60;
+      const offsetY = 40;
 
-      const pupilTransform = `translate(${moveX}px, ${moveY}px)`;
-      eyeL.style.transform = pupilTransform;
-      eyeR.style.transform = pupilTransform;
+      posRef.current.x += (tx + offsetX - posRef.current.x) * speed;
+      posRef.current.y += (ty + offsetY - posRef.current.y) * speed;
 
-      // Subtle body lean toward mouse
-      const leanX = Math.max(-3, Math.min(3, dx / 200));
-      const leanY = Math.max(-2, Math.min(2, dy / 300));
-      bot.style.transform = `translate(${leanX}px, ${leanY}px)`;
+      // Clamp to viewport
+      const maxX = window.innerWidth - 80;
+      const maxY = window.innerHeight - 80;
+      const cx = Math.max(10, Math.min(maxX, posRef.current.x));
+      const cy = Math.max(80, Math.min(maxY, posRef.current.y));
+
+      // Calculate lean based on movement direction
+      const dx = tx - posRef.current.x;
+      const lean = Math.max(-12, Math.min(12, dx * 0.02));
+
+      bot.style.transform = `translate(${cx}px, ${cy}px) rotate(${lean}deg)`;
+
+      animFrameRef.current = requestAnimationFrame(animate);
     };
 
     window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    animFrameRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      cancelAnimationFrame(animFrameRef.current);
+      clearTimeout(expressionTimeout.current);
+    };
   }, []);
 
+  const eyeScale = expression === "excited" ? "scale-110" : "";
+  const mouthClass =
+    expression === "excited"
+      ? "w-4 h-2.5 rounded-full bg-primary/40"
+      : expression === "looking"
+      ? "w-3 h-1.5 rounded-full bg-primary/30"
+      : "w-3.5 h-1 rounded-full bg-primary/20";
+
   return (
-    <div className="pointer-events-none select-none" aria-hidden="true">
-      <div
-        ref={botRef}
-        className="relative transition-transform duration-150 ease-out"
-        style={{ width: 80, height: 90 }}
-      >
-        {/* Antenna */}
-        <div className="absolute left-1/2 -translate-x-1/2 -top-3 w-0.5 h-4 bg-primary/30 rounded-full" />
-        <div className="absolute left-1/2 -translate-x-1/2 -top-5 w-3 h-3 rounded-full bg-neon-1 shadow-[0_0_8px_rgba(178,255,181,0.6)]" style={{ animation: "pulse 2s ease-in-out infinite" }} />
+    <div
+      ref={botRef}
+      className="fixed top-0 left-0 z-30 pointer-events-none select-none"
+      style={{ willChange: "transform" }}
+      aria-hidden="true"
+    >
+      {/* Bot body */}
+      <div className="relative" style={{ width: 56, height: 56 }}>
+        {/* Glow */}
+        <div className="absolute inset-0 rounded-2xl bg-neon-1/20 blur-lg" />
 
-        {/* Head / Body */}
-        <div className="absolute inset-0 bg-primary/[0.07] border-2 border-primary/20 rounded-2xl backdrop-blur-sm">
+        {/* Main body — modern pill/blob */}
+        <div className="relative w-14 h-14 rounded-2xl bg-gradient-to-br from-white via-gray-50 to-neon-1/20 border border-primary/15 shadow-lg shadow-primary/10 backdrop-blur-sm overflow-hidden">
+          {/* Shimmer effect */}
+          <div
+            className="absolute inset-0 opacity-30"
+            style={{
+              background: "linear-gradient(135deg, transparent 40%, rgba(178,255,181,0.4) 50%, transparent 60%)",
+              animation: "botShimmer 3s ease-in-out infinite",
+            }}
+          />
+
           {/* Face */}
-          <div className="flex items-center justify-center gap-3 mt-4">
-            {/* Left eye */}
-            <div className="w-5 h-5 rounded-full bg-white border-2 border-primary/20 flex items-center justify-center overflow-hidden">
-              <div
-                ref={eyeLRef}
-                className="w-2.5 h-2.5 rounded-full bg-primary transition-transform duration-75"
-              />
+          <div className="relative flex flex-col items-center justify-center h-full gap-1.5">
+            {/* Eyes */}
+            <div className="flex items-center gap-2.5">
+              <div className={`w-2.5 h-3 rounded-full bg-primary transition-transform duration-200 ${eyeScale}`} style={{ borderRadius: "40% 40% 45% 45%" }} />
+              <div className={`w-2.5 h-3 rounded-full bg-primary transition-transform duration-200 ${eyeScale}`} style={{ borderRadius: "40% 40% 45% 45%" }} />
             </div>
-            {/* Right eye */}
-            <div className="w-5 h-5 rounded-full bg-white border-2 border-primary/20 flex items-center justify-center overflow-hidden">
-              <div
-                ref={eyeRRef}
-                className="w-2.5 h-2.5 rounded-full bg-primary transition-transform duration-75"
-              />
-            </div>
+            {/* Mouth */}
+            <div className={`transition-all duration-300 ${mouthClass}`} />
           </div>
 
-          {/* Mouth — small smile */}
-          <div className="flex justify-center mt-2">
-            <div className="w-6 h-2.5 border-b-2 border-primary/25 rounded-b-full" />
-          </div>
-
-          {/* Chest indicator */}
-          <div className="flex justify-center mt-2">
-            <div className="w-2 h-2 rounded-full bg-neon-1/60" style={{ animation: "pulse 3s ease-in-out infinite" }} />
-          </div>
+          {/* Status indicator */}
+          <div className="absolute bottom-1.5 right-1.5 w-2 h-2 rounded-full bg-neon-1 shadow-[0_0_6px_rgba(178,255,181,0.8)]" style={{ animation: "pulse 2s ease-in-out infinite" }} />
         </div>
 
-        {/* Left arm */}
-        <div className="absolute -left-2 top-10 w-2 h-6 bg-primary/10 border border-primary/15 rounded-full" style={{ animation: "botArmSwing 4s ease-in-out infinite" }} />
-
-        {/* Right arm */}
-        <div className="absolute -right-2 top-10 w-2 h-6 bg-primary/10 border border-primary/15 rounded-full" style={{ animation: "botArmSwing 4s ease-in-out infinite reverse" }} />
-
-        {/* Legs */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-2">
-          <div className="w-3 h-3 bg-primary/10 border border-primary/15 rounded-b-lg rounded-t-sm" style={{ animation: "botWalk 2s ease-in-out infinite" }} />
-          <div className="w-3 h-3 bg-primary/10 border border-primary/15 rounded-b-lg rounded-t-sm" style={{ animation: "botWalk 2s ease-in-out infinite 1s" }} />
-        </div>
+        {/* Speech bubble — appears when excited */}
+        {expression === "excited" && (
+          <div
+            className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-white border border-primary/15 text-primary text-[9px] font-semibold px-2 py-1 rounded-lg shadow-md"
+            style={{ animation: "botBubblePop 0.3s ease-out" }}
+          >
+            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-white border-r border-b border-primary/15 rotate-45" />
+            Hmm...
+          </div>
+        )}
       </div>
     </div>
   );
