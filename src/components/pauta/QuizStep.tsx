@@ -130,7 +130,7 @@ export default function QuizStepComponent({
         className="w-full"
       >
         {/* Step indicator pills */}
-        <div className="flex items-center gap-2 mb-8">
+        <div className="flex items-center gap-2 mb-5">
           {Array.from({ length: totalSteps }, (_, i) => (
             <div
               key={i}
@@ -145,7 +145,7 @@ export default function QuizStepComponent({
           ))}
         </div>
 
-        <div className="mb-8">
+        <div className="mb-5">
           <motion.span
             className="inline-flex items-center gap-2 text-primary font-mono text-xs bg-primary/10 border border-primary/20 px-4 py-1.5 rounded-full tracking-wider uppercase font-semibold"
             initial={{ opacity: 0, y: -10 }}
@@ -174,7 +174,7 @@ export default function QuizStepComponent({
         </div>
 
         {step.type === "form" ? (
-          <form onSubmit={handleSubmit} className="space-y-5 max-w-lg">
+          <form onSubmit={handleSubmit} className="space-y-3.5 max-w-lg">
             {step.fields?.map((field, i) => {
               const isWebsite = field.name === "website";
               const isDisabled = isWebsite && noWebsite;
@@ -199,7 +199,7 @@ export default function QuizStepComponent({
                       required={isRequired}
                       disabled={isDisabled}
                       defaultValue={formData[field.name] || ""}
-                      className={`form-input w-full text-primary bg-white border-2 border-gray-200 rounded-xl px-4 py-3.5 text-sm font-medium focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all placeholder:text-gray-400 ${isDisabled ? "opacity-40 cursor-not-allowed bg-gray-50" : ""}`}
+                      className={`form-input w-full text-primary bg-white border-2 border-gray-200 rounded-xl px-4 py-3 text-sm font-medium focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all placeholder:text-gray-400 ${isDisabled ? "opacity-40 cursor-not-allowed bg-gray-50" : ""}`}
                     />
                   </div>
                   {isWebsite && (
