@@ -124,6 +124,27 @@ export default function PautaQuiz() {
     addLog(`User identified: ${data.name}`, true);
     addLog("Profile registered.");
 
+    // Send early lead webhook — capture contact even if user abandons quiz
+    const params = new URLSearchParams(window.location.search);
+    const nameParts = (data.name || "").trim().split(/\s+/);
+    fetch("/api/leads", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        first_name: nameParts[0] || "",
+        last_name: nameParts.slice(1).join(" ") || "",
+        email: data.email || "",
+        empresa: data.company || "",
+        cargo: data.role || "",
+        fuente: "ia-para-empresas",
+        estado: "inicio_quiz",
+        website: data.website || "",
+        utm_source: params.get("utm_source") || "",
+        utm_medium: params.get("utm_medium") || "",
+        utm_campaign: params.get("utm_campaign") || "",
+      }),
+    }).catch(() => {}); // Fire and forget — don't block the quiz
+
     // Launch scrape in background if website provided
     if (data.website && data.website.trim()) {
       addLog(`Scanning website: ${data.website}...`);

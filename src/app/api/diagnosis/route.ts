@@ -185,6 +185,7 @@ export async function POST(request: Request) {
       email: answers.email,
       empresa: answers.company,
       fuente: "ia-para-empresas",
+      estado: "diagnostico_completo",
       ...(website ? { website } : {}),
       ...(competitor ? { competitor } : {}),
       proyecto: body.utm_campaign || "Diagnóstico IA",
