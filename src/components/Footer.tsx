@@ -214,7 +214,7 @@ export default function Footer({ logoUrl, logoAlt, logoWidth, logoHeight, legalL
             realmente escalen.
           </h2>
           <Link
-            href="/diagnostico-ia"
+            href="/ia-para-empresas"
             className="cta-button-generative px-8 py-3 rounded-full text-base font-medium inline-flex items-center justify-center shadow-sm"
           >
             Diagnostico IA

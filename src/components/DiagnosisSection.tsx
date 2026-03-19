@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useCallback } from "react";
+import Link from "next/link";
 
 export default function DiagnosisSection() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -82,7 +83,7 @@ export default function DiagnosisSection() {
               ineficiencias y proponer soluciones automatizadas en tiempo real.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <button className="group relative px-8 py-4 bg-primary text-white rounded-full overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-900/10 font-medium">
+              <Link href="/ia-para-empresas" className="group relative px-8 py-4 bg-primary text-white rounded-full overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-900/10 font-medium inline-flex">
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
                 <span className="relative z-10 font-medium flex items-center">
                   Iniciar Análisis
@@ -90,7 +91,7 @@ export default function DiagnosisSection() {
                     arrow_forward
                   </span>
                 </span>
-              </button>
+              </Link>
             </div>
           </div>
 

@@ -18,7 +18,7 @@ export default function Navbar({ logoUrl, logoAlt, logoWidth, logoHeight }: Navb
 
   const navLinks = [
     { href: "/servicios", label: "Servicios" },
-    { href: "/diagnostico-ia", label: "Diagnóstico IA" },
+    { href: "/ia-para-empresas", label: "Diagnóstico IA" },
   ];
 
   function linkClass(href: string) {

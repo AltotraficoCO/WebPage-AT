@@ -258,7 +258,7 @@ export default function HeroSection() {
           style={{ transitionDelay: "400ms" }}
         >
           <Link
-            href="/diagnostico-ia"
+            href="/ia-para-empresas"
             className="cta-button-generative px-6 py-3 md:px-8 md:py-4 rounded-full text-sm md:text-base flex items-center shadow-sm pointer-events-auto"
           >
             Iniciar Diagnostico

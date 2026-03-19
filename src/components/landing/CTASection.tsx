@@ -32,7 +32,7 @@ export default function CTASection() {
         <ScrollReveal delay={0.2}>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
-              href="#"
+              href="/ia-para-empresas"
               className="relative inline-flex items-center px-8 py-4 rounded-full text-sm font-medium text-white bg-primary hover:bg-primary/90 overflow-hidden group transition-colors"
             >
               <span className="relative z-10">Solicitar Diagnostico</span>

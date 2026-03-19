@@ -43,7 +43,7 @@ export default function DarkNavbar({ logoUrl, logoAlt, logoWidth, logoHeight }: 
               Servicios
             </Link>
             <Link
-              href="/diagnostico-ia"
+              href="/ia-para-empresas"
               className="relative inline-flex items-center px-5 py-2.5 rounded-full text-sm font-medium text-white bg-primary hover:bg-primary/90 transition-all"
             >
               Solicitar Diagnostico
@@ -78,7 +78,7 @@ export default function DarkNavbar({ logoUrl, logoAlt, logoWidth, logoHeight }: 
             Servicios
           </Link>
           <Link
-            href="/diagnostico-ia"
+            href="/ia-para-empresas"
             className="block text-center px-5 py-2.5 rounded-full text-sm font-medium text-white bg-primary hover:bg-primary/90 transition"
             onClick={() => setMobileOpen(false)}
           >
