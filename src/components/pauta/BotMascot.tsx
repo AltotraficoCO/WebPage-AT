@@ -16,6 +16,7 @@ export default function BotMascot() {
   const [expression, setExpression] = useState<"idle" | "excited" | "looking" | "waiting">("idle");
   const expressionTimeout = useRef<NodeJS.Timeout>(undefined);
   const [bubble, setBubble] = useState("");
+  const isMoving = useRef(false);
 
   useEffect(() => {
     const bubbleTexts = {
@@ -23,19 +24,25 @@ export default function BotMascot() {
       excited: ["Ooh!", "Eso!", "Wow!", "Siii!"],
     };
 
+    // Throttle mousemove to ~30fps instead of every event
+    let lastMoveTime = 0;
     const handleMouseMove = (e: MouseEvent) => {
+      const now = performance.now();
+      if (now - lastMoveTime < 33) return; // ~30fps throttle
+      lastMoveTime = now;
+
       const mouseInForm = isInFormZone(e.clientX, e.clientY);
       targetRef.current = { x: e.clientX, y: e.clientY };
 
       const dx = e.clientX - posRef.current.x;
       const dy = e.clientY - posRef.current.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
+      const distSq = dx * dx + dy * dy;
 
       if (mouseInForm) {
         setExpression("waiting");
         const texts = bubbleTexts.waiting;
         setBubble(texts[Math.floor(Math.random() * texts.length)]);
-      } else if (dist < 150) {
+      } else if (distSq < 22500) { // 150^2
         setExpression("excited");
         const texts = bubbleTexts.excited;
         setBubble(texts[Math.floor(Math.random() * texts.length)]);
@@ -48,64 +55,67 @@ export default function BotMascot() {
       expressionTimeout.current = setTimeout(() => {
         setExpression("idle");
         setBubble("");
+        isMoving.current = false;
       }, 2500);
+
+      // Start animation loop if not already running
+      if (!isMoving.current) {
+        isMoving.current = true;
+        startAnimation();
+      }
     };
 
-    const animate = () => {
-      const bot = botRef.current;
-      if (!bot) {
+    function startAnimation() {
+      const animate = () => {
+        const bot = botRef.current;
+        if (!bot || !isMoving.current) return;
+
+        const tx = targetRef.current.x;
+        const ty = targetRef.current.y;
+        const mouseInForm = isInFormZone(tx, ty);
+
+        let goalX: number;
+        let goalY: number;
+
+        if (mouseInForm) {
+          const borderX = window.innerWidth * 0.42;
+          goalX = borderX;
+          goalY = ty;
+          const jitterX = Math.sin(Date.now() / 150) * 3;
+          const jitterY = Math.cos(Date.now() / 200) * 2;
+          goalX += jitterX;
+          goalY += jitterY;
+        } else {
+          goalX = tx - 50;
+          goalY = ty + 35;
+        }
+
+        const speed = mouseInForm ? 0.05 : 0.03;
+        posRef.current.x += (goalX - posRef.current.x) * speed;
+        posRef.current.y += (goalY - posRef.current.y) * speed;
+
+        const maxX = window.innerWidth - 70;
+        const maxY = window.innerHeight - 70;
+        const cx = Math.max(10, Math.min(maxX, posRef.current.x));
+        const cy = Math.max(80, Math.min(maxY, posRef.current.y));
+
+        const dx = tx - posRef.current.x;
+        const lean = Math.max(-15, Math.min(15, dx * 0.025));
+
+        bot.style.transform = `translate(${cx}px, ${cy}px) rotate(${lean}deg)`;
+
         animFrameRef.current = requestAnimationFrame(animate);
-        return;
-      }
-
-      const tx = targetRef.current.x;
-      const ty = targetRef.current.y;
-      const mouseInForm = isInFormZone(tx, ty);
-
-      let goalX: number;
-      let goalY: number;
-
-      if (mouseInForm) {
-        // Bot wants to go but can't — stays at the border of the form zone, jittering
-        const borderX = window.innerWidth * 0.42;
-        goalX = borderX;
-        goalY = ty;
-        // Add jitter — trying to push through
-        const jitterX = Math.sin(Date.now() / 150) * 3;
-        const jitterY = Math.cos(Date.now() / 200) * 2;
-        goalX += jitterX;
-        goalY += jitterY;
-      } else {
-        goalX = tx - 50;
-        goalY = ty + 35;
-      }
-
-      const speed = mouseInForm ? 0.05 : 0.03;
-      posRef.current.x += (goalX - posRef.current.x) * speed;
-      posRef.current.y += (goalY - posRef.current.y) * speed;
-
-      // Clamp
-      const maxX = window.innerWidth - 70;
-      const maxY = window.innerHeight - 70;
-      const cx = Math.max(10, Math.min(maxX, posRef.current.x));
-      const cy = Math.max(80, Math.min(maxY, posRef.current.y));
-
-      // Lean toward target
-      const dx = tx - posRef.current.x;
-      const lean = Math.max(-15, Math.min(15, dx * 0.025));
-
-      bot.style.transform = `translate(${cx}px, ${cy}px) rotate(${lean}deg)`;
-
+      };
       animFrameRef.current = requestAnimationFrame(animate);
-    };
+    }
 
-    window.addEventListener("mousemove", handleMouseMove);
-    animFrameRef.current = requestAnimationFrame(animate);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       cancelAnimationFrame(animFrameRef.current);
       clearTimeout(expressionTimeout.current);
+      isMoving.current = false;
     };
   }, []);
 
@@ -140,7 +150,6 @@ export default function BotMascot() {
             <div className="flex items-center gap-2.5">
               {isWaiting ? (
                 <>
-                  {/* Wide eager eyes looking right toward form */}
                   <div className="w-3 h-3.5 rounded-full bg-primary transition-all duration-200 relative overflow-hidden">
                     <div className="absolute top-0.5 right-0.5 w-1 h-1 rounded-full bg-white/80" />
                   </div>

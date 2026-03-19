@@ -2,7 +2,7 @@ import DarkNavbar from "@/components/landing/DarkNavbar";
 import DarkFooter from "@/components/landing/DarkFooter";
 import { readSettings } from "@/lib/storage";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300; // ISR: revalidate every 5 minutes
 
 export default async function LandingLayout({
   children,

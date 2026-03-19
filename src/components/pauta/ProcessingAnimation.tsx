@@ -2,16 +2,17 @@
 
 import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { processingLogs, type Archetype } from "./quizData";
+import { getProcessingLogs, type Archetype } from "./quizData";
 
 interface ProcessingAnimationProps {
   sector?: string;
   score: number;
   archetype: Archetype;
+  hasWebsite?: boolean;
   onComplete: () => void;
 }
 
-export default function ProcessingAnimation({ score, archetype, onComplete }: ProcessingAnimationProps) {
+export default function ProcessingAnimation({ score, archetype, hasWebsite = false, onComplete }: ProcessingAnimationProps) {
   const [logs, setLogs] = useState<string[]>([]);
   const [progress, setProgress] = useState(0);
   const [showReveal, setShowReveal] = useState(false);
@@ -19,7 +20,7 @@ export default function ProcessingAnimation({ score, archetype, onComplete }: Pr
   const completedRef = useRef(false);
 
   useEffect(() => {
-    const filledLogs = processingLogs.map((l) =>
+    const filledLogs = getProcessingLogs(hasWebsite).map((l) =>
       l.replace("{score}", String(score)).replace("{archetype}", archetype.name)
     );
     let i = 0;
@@ -31,7 +32,6 @@ export default function ProcessingAnimation({ score, archetype, onComplete }: Pr
         i++;
       } else {
         clearInterval(interval);
-        // Show archetype reveal before completing
         setShowReveal(true);
         if (!completedRef.current) {
           completedRef.current = true;
@@ -41,7 +41,7 @@ export default function ProcessingAnimation({ score, archetype, onComplete }: Pr
     }, 400);
 
     return () => clearInterval(interval);
-  }, [score, archetype, onComplete]);
+  }, [score, archetype, hasWebsite, onComplete]);
 
   useEffect(() => {
     if (terminalRef.current) {
@@ -104,23 +104,21 @@ export default function ProcessingAnimation({ score, archetype, onComplete }: Pr
         </div>
 
         <div ref={terminalRef} className="space-y-1.5 opacity-90 max-h-[200px] overflow-y-auto">
+          {/* Use CSS animation instead of framer-motion per item */}
           {logs.map((log, i) => (
-            <motion.p
+            <p
               key={i}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.3 }}
-              className="text-xs text-gray-400"
+              className="text-xs text-gray-400 animate-fade-in-left"
             >
               <span className="text-neon-1">$</span> {log}
-            </motion.p>
+            </p>
           ))}
           <p className="text-white text-xs">
             $ <span className="typing-cursor" />
           </p>
         </div>
 
-        {/* Archetype reveal */}
+        {/* Archetype reveal — keep framer-motion here since it's a one-time animation */}
         <AnimatePresence>
           {showReveal && (
             <motion.div
@@ -129,53 +127,30 @@ export default function ProcessingAnimation({ score, archetype, onComplete }: Pr
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
               className="mt-4 p-4 bg-primary/20 border border-neon-1/30 rounded-xl text-center"
             >
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-              >
-                <span className="material-icons text-3xl text-neon-1 mb-1 block">{archetype.icon}</span>
-              </motion.div>
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
-                className="text-neon-1 font-bold text-sm uppercase tracking-wider"
-              >
+              <span className="material-icons text-3xl text-neon-1 mb-1 block">{archetype.icon}</span>
+              <p className="text-neon-1 font-bold text-sm uppercase tracking-wider">
                 Tu perfil:
-              </motion.p>
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-                className="text-white font-medium text-lg mt-1"
-              >
+              </p>
+              <p className="text-white font-medium text-lg mt-1">
                 {archetype.name}
-              </motion.p>
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.8 }}
-                className="text-gray-400 text-xs mt-1"
-              >
+              </p>
+              <p className="text-gray-400 text-xs mt-1">
                 Score: {score}/40 — {archetype.tagline}
-              </motion.p>
+              </p>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Progress bar */}
+        {/* Progress bar — use CSS transition instead of framer-motion */}
         <div className="mt-6 border-t border-gray-800/60 pt-4">
           <div className="flex justify-between text-[10px] uppercase tracking-wider mb-2">
             <span className="text-gray-600">Processing</span>
             <span className="text-neon-1 font-mono">{Math.round(progress)}%</span>
           </div>
           <div className="w-full bg-gray-800/60 h-1.5 rounded-full overflow-hidden">
-            <motion.div
-              className="h-full bg-gradient-to-r from-neon-1 to-neon-2 rounded-full"
-              initial={{ width: 0 }}
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.3 }}
+            <div
+              className="h-full bg-gradient-to-r from-neon-1 to-neon-2 rounded-full transition-all duration-300 ease-out"
+              style={{ width: `${progress}%` }}
             />
           </div>
         </div>

@@ -20,6 +20,9 @@ export default function ContactParticleCanvas() {
     let animationId: number;
     const colors = ["#B2FFB5", "#FFFA86", "#D9FD9E", "#ECFB92"];
 
+    // Reduce particles on mobile
+    const isMobile = window.innerWidth < 768;
+
     class Particle {
       x: number;
       y: number;
@@ -56,9 +59,11 @@ export default function ContactParticleCanvas() {
         if (mouse.x != null && mouse.y != null) {
           const dx = mouse.x - this.x;
           const dy = mouse.y - this.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+          const distSq = dx * dx + dy * dy;
           const maxDistance = 200;
-          if (distance < maxDistance) {
+          const maxDistanceSq = maxDistance * maxDistance;
+          if (distSq < maxDistanceSq) {
+            const distance = Math.sqrt(distSq);
             const force = (maxDistance - distance) / maxDistance;
             const dirX = (dx / distance) * force * this.density;
             const dirY = (dy / distance) * force * this.density;
@@ -81,7 +86,10 @@ export default function ContactParticleCanvas() {
 
     function initParticles() {
       particles = [];
-      const count = (width * height) / 15000;
+      // Reduced count: mobile gets fewer particles
+      const count = isMobile
+        ? Math.min(30, (width * height) / 30000)
+        : Math.min(60, (width * height) / 20000);
       for (let i = 0; i < count; i++) {
         particles.push(new Particle());
       }
@@ -90,12 +98,16 @@ export default function ContactParticleCanvas() {
     function animate() {
       ctx!.clearRect(0, 0, width, height);
 
+      const connectionDist = isMobile ? 100 : 150;
+      const connectionDistSq = connectionDist * connectionDist;
+
+      // Use squared distances to avoid Math.sqrt in the hot loop
       for (let a = 0; a < particles.length; a++) {
-        for (let b = a; b < particles.length; b++) {
+        for (let b = a + 1; b < particles.length; b++) {
           const dx = particles[a].x - particles[b].x;
           const dy = particles[a].y - particles[b].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 150) {
+          const distSq = dx * dx + dy * dy;
+          if (distSq < connectionDistSq) {
             ctx!.strokeStyle = "#B2FFB5";
             ctx!.lineWidth = 0.5;
             ctx!.globalAlpha = 0.1;
@@ -115,9 +127,13 @@ export default function ContactParticleCanvas() {
     initParticles();
     animate();
 
+    let resizeTimeout: ReturnType<typeof setTimeout>;
     const handleResize = () => {
-      resize();
-      initParticles();
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        resize();
+        initParticles();
+      }, 200);
     };
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -126,7 +142,8 @@ export default function ContactParticleCanvas() {
     };
 
     const handleMouseDown = (e: MouseEvent) => {
-      for (let i = 0; i < 8; i++) {
+      // Limit burst particles from 8 to 4
+      for (let i = 0; i < 4; i++) {
         const p = new Particle(
           e.clientX,
           e.clientY,
@@ -144,17 +161,18 @@ export default function ContactParticleCanvas() {
       particles.forEach((p) => {
         const dx = e.clientX - p.x;
         const dy = e.clientY - p.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 200) p.burst();
+        const distSq = dx * dx + dy * dy;
+        if (distSq < 40000) p.burst(); // 200^2 = 40000
       });
     };
 
     window.addEventListener("resize", handleResize);
-    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
     window.addEventListener("mousedown", handleMouseDown);
 
     return () => {
       cancelAnimationFrame(animationId);
+      clearTimeout(resizeTimeout);
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mousedown", handleMouseDown);

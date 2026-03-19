@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 
 interface Props {
   src: string;
@@ -17,11 +18,14 @@ export default function BlogImage({ src, alt, className, wrapperClassName, overl
 
   return (
     <div className={wrapperClassName}>
-      <img
+      <Image
         src={src}
         alt={alt}
         className={className}
+        fill
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
         onError={() => setBroken(true)}
+        loading="lazy"
       />
       {overlay && (
         <div className="absolute inset-0 bg-gradient-to-t from-white via-white/30 to-transparent" />

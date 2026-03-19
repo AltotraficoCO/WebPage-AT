@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, lazy, Suspense } from "react";
 import { motion } from "framer-motion";
-import { quizSteps, terminalLogs, getArchetype, type DiagnosisResult } from "./quizData";
+import { quizSteps, terminalLogs, getArchetype, getProcessingLogs, type DiagnosisResult, type ScrapeResult } from "./quizData";
 import QuizStepComponent from "./QuizStep";
-import ProcessingAnimation from "./ProcessingAnimation";
-import DiagnosisReport from "./DiagnosisReport";
-import BotMascot from "./BotMascot";
+
+// Lazy load heavy components — only needed when quiz reaches those phases
+const ProcessingAnimation = lazy(() => import("./ProcessingAnimation"));
+const DiagnosisReport = lazy(() => import("./DiagnosisReport"));
+const BotMascot = lazy(() => import("./BotMascot"));
 
 type Phase = "quiz" | "processing" | "report";
 
@@ -24,6 +26,7 @@ export default function PautaQuiz() {
   ]);
   const terminalRef = useRef<HTMLDivElement>(null);
   const diagnosisPromise = useRef<Promise<DiagnosisResult> | null>(null);
+  const scrapePromise = useRef<Promise<{ site: ScrapeResult; competitor: ScrapeResult | null } | null> | null>(null);
 
   const addLog = useCallback((text: string, isUser = false) => {
     setLogs((prev) => {
@@ -48,6 +51,17 @@ export default function PautaQuiz() {
 
     const archetype = getArchetype(totalScore);
 
+    // Await scrape data if available
+    let scrapeData = null;
+    if (scrapePromise.current) {
+      try {
+        scrapeData = await scrapePromise.current;
+      } catch {
+        // Scrape failed — continue without web analysis
+        console.log("Scrape failed, continuing without web analysis");
+      }
+    }
+
     const res = await fetch("/api/diagnosis", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -55,6 +69,9 @@ export default function PautaQuiz() {
         ...allAnswers,
         score: totalScore,
         archetype: archetype.key,
+        website: allAnswers.website || "",
+        competitor: allAnswers.competitor || "",
+        scrapeData,
         ...utm,
       }),
     });
@@ -106,6 +123,23 @@ export default function PautaQuiz() {
 
     addLog(`User identified: ${data.name}`, true);
     addLog("Profile registered.");
+
+    // Launch scrape in background if website provided
+    if (data.website && data.website.trim()) {
+      addLog(`Scanning website: ${data.website}...`);
+      scrapePromise.current = fetch("/api/scrape-url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          url: data.website.trim(),
+          competitorUrl: data.competitor?.trim() || undefined,
+        }),
+      })
+        .then((res) => (res.ok ? res.json() : null))
+        .catch(() => null);
+    } else {
+      scrapePromise.current = null;
+    }
 
     const nextIndex = currentStep + 1;
     const nextStep = quizSteps[nextIndex];
@@ -170,11 +204,13 @@ export default function PautaQuiz() {
       <section className="py-16 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-white via-gray-50/80 to-white" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <DiagnosisReport
-            result={diagnosis}
-            userName={answers.name || ""}
-            companyName={answers.company || ""}
-          />
+          <Suspense fallback={<div className="text-center py-20 text-gray-400">Cargando informe...</div>}>
+            <DiagnosisReport
+              result={diagnosis}
+              userName={answers.name || ""}
+              companyName={answers.company || ""}
+            />
+          </Suspense>
         </div>
       </section>
     );
@@ -187,11 +223,14 @@ export default function PautaQuiz() {
         <div className="absolute inset-0 bg-gradient-to-b from-white via-gray-50/80 to-white" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
           <div className="flex justify-center">
-            <ProcessingAnimation
-              score={score}
-              archetype={archetype}
-              onComplete={handleProcessingComplete}
-            />
+            <Suspense fallback={<div className="text-center py-20 text-gray-400">Procesando...</div>}>
+              <ProcessingAnimation
+                score={score}
+                archetype={archetype}
+                hasWebsite={!!answers.website}
+                onComplete={handleProcessingComplete}
+              />
+            </Suspense>
           </div>
         </div>
       </section>
@@ -208,7 +247,9 @@ export default function PautaQuiz() {
 
       {/* Bot mascot that follows cursor — desktop only */}
       <div className="hidden lg:block">
-        <BotMascot />
+        <Suspense fallback={null}>
+          <BotMascot />
+        </Suspense>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-12 lg:py-20">

@@ -9,7 +9,7 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300; // revalidate every 5 minutes instead of force-dynamic
 
 export async function generateMetadata() {
   const settings = await readSettings();
@@ -39,7 +39,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-N5QZ9M');`}
         </Script>
         <link
-          href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          href="https://fonts.googleapis.com/icon?family=Material+Icons&display=swap"
           rel="stylesheet"
         />
         <link

@@ -29,10 +29,13 @@ export default function HeroSection() {
 
     const isMobile = window.innerWidth < 768;
     const config = {
-      particleCount: isMobile ? 60 : 180,
+      particleCount: isMobile ? 40 : 100, // Reduced from 60/180
       mouseRadius: isMobile ? 100 : 180,
+      mouseRadiusSq: isMobile ? 10000 : 32400,
       mouseForce: 0.15,
       friction: 0.95,
+      connectionDist: isMobile ? 80 : 120,
+      connectionDistSq: isMobile ? 6400 : 14400,
       colors: ["#B2FFB5", "#FFFA86", "#D9FD9E", "#ECFB92"],
     };
 
@@ -81,8 +84,9 @@ export default function HeroSection() {
 
         const dx = mouse.x - this.x;
         const dy = mouse.y - this.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < config.mouseRadius) {
+        const distSq = dx * dx + dy * dy;
+        if (distSq < config.mouseRadiusSq) {
+          const distance = Math.sqrt(distSq);
           const forceDirectionX = dx / distance;
           const forceDirectionY = dy / distance;
           const force =
@@ -115,7 +119,8 @@ export default function HeroSection() {
         const oldAlpha = c.globalAlpha;
         c.globalAlpha = this.alpha;
         c.fill();
-        if (this.radius > 3) {
+        // Skip shadowBlur on mobile - very expensive
+        if (!isMobile && this.radius > 3) {
           c.shadowColor = this.color;
           c.shadowBlur = 10;
           c.fill();
@@ -139,7 +144,8 @@ export default function HeroSection() {
 
     function burst(x: number, y: number) {
       if (hint) hint.style.opacity = "0";
-      for (let i = 0; i < 20; i++) {
+      // Reduced burst from 20 to 10
+      for (let i = 0; i < 10; i++) {
         particles.push(new Particle(x, y, true));
       }
     }
@@ -151,10 +157,11 @@ export default function HeroSection() {
           if (particles[j].alpha <= 0) continue;
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 120) {
+          const distSq = dx * dx + dy * dy;
+          if (distSq < config.connectionDistSq) {
+            const dist = Math.sqrt(distSq);
             ctx!.beginPath();
-            ctx!.strokeStyle = `rgba(178, 255, 181, ${1 - dist / 120})`;
+            ctx!.strokeStyle = `rgba(178, 255, 181, ${1 - dist / config.connectionDist})`;
             ctx!.lineWidth = 0.5;
             ctx!.moveTo(particles[i].x, particles[i].y);
             ctx!.lineTo(particles[j].x, particles[j].y);
@@ -179,7 +186,12 @@ export default function HeroSection() {
     initParticles();
     animate();
 
-    window.addEventListener("resize", resize);
+    let resizeTimeout: ReturnType<typeof setTimeout>;
+    const handleResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(resize, 200);
+    };
+    window.addEventListener("resize", handleResize);
 
     const handleMouseMove = (e: MouseEvent) => {
       const rect = canvas!.getBoundingClientRect();
@@ -200,13 +212,14 @@ export default function HeroSection() {
       burst(mouse.x, mouse.y);
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
     section.addEventListener("click", handleClick);
     section.addEventListener("touchstart", handleTouch, { passive: true });
 
     return () => {
       cancelAnimationFrame(animationId);
-      window.removeEventListener("resize", resize);
+      clearTimeout(resizeTimeout);
+      window.removeEventListener("resize", handleResize);
       window.removeEventListener("mousemove", handleMouseMove);
       section.removeEventListener("click", handleClick);
       section.removeEventListener("touchstart", handleTouch);
