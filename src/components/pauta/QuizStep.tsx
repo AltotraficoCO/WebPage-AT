@@ -156,7 +156,7 @@ export default function QuizStepComponent({
             {step.phase}
           </motion.span>
           <motion.h2
-            className="text-2xl md:text-3xl font-semibold mt-4 text-primary leading-tight"
+            className="text-2xl md:text-3xl font-semibold mt-3 text-primary leading-tight"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
@@ -174,21 +174,23 @@ export default function QuizStepComponent({
         </div>
 
         {step.type === "form" ? (
-          <form onSubmit={handleSubmit} className="space-y-3.5 max-w-lg">
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3">
             {step.fields?.map((field, i) => {
               const isWebsite = field.name === "website";
               const isDisabled = isWebsite && noWebsite;
               const isRequired = isWebsite ? !noWebsite && field.required : field.required;
+              // URL fields and competitor span full width
+              const isFullWidth = field.type === "url";
 
               return (
                 <motion.div
                   key={field.name}
-                  className="group"
+                  className={`group ${isFullWidth ? "sm:col-span-2" : ""}`}
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 + i * 0.08 }}
+                  transition={{ delay: 0.2 + i * 0.06 }}
                 >
-                  <label className="block text-xs text-gray-600 uppercase tracking-wider mb-2 font-semibold group-focus-within:text-primary transition-colors">
+                  <label className="block text-xs text-gray-600 uppercase tracking-wider mb-1.5 font-semibold group-focus-within:text-primary transition-colors">
                     {field.label}
                   </label>
                   <div className="relative">
@@ -199,11 +201,11 @@ export default function QuizStepComponent({
                       required={isRequired}
                       disabled={isDisabled}
                       defaultValue={formData[field.name] || ""}
-                      className={`form-input w-full text-primary bg-white border-2 border-gray-200 rounded-xl px-4 py-3 text-sm font-medium focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all placeholder:text-gray-400 ${isDisabled ? "opacity-40 cursor-not-allowed bg-gray-50" : ""}`}
+                      className={`form-input w-full text-primary bg-white border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all placeholder:text-gray-400 ${isDisabled ? "opacity-40 cursor-not-allowed bg-gray-50" : ""}`}
                     />
                   </div>
                   {isWebsite && (
-                    <label className="flex items-center gap-2 mt-2 cursor-pointer select-none">
+                    <label className="flex items-center gap-2 mt-1.5 cursor-pointer select-none">
                       <input
                         type="checkbox"
                         checked={noWebsite}
@@ -216,16 +218,20 @@ export default function QuizStepComponent({
                 </motion.div>
               );
             })}
-            <motion.button
-              type="submit"
-              className="mt-6 inline-flex items-center gap-2 px-8 py-3.5 bg-primary text-white rounded-full font-semibold hover:bg-primary/90 transition-all hover:-translate-y-0.5 shadow-lg shadow-primary/20 group"
+            <motion.div
+              className="sm:col-span-2 mt-2"
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
             >
-              Continuar
-              <span className="material-icons text-lg group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
-            </motion.button>
+              <button
+                type="submit"
+                className="inline-flex items-center gap-2 px-8 py-3 bg-primary text-white rounded-full font-semibold hover:bg-primary/90 transition-all hover:-translate-y-0.5 shadow-lg shadow-primary/20 group"
+              >
+                Continuar
+                <span className="material-icons text-lg group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+              </button>
+            </motion.div>
           </form>
         ) : (
           <div className="relative">
