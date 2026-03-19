@@ -4,6 +4,8 @@ import { checkRateLimit } from "@/lib/rate-limit";
 import { buildPrompt, getArchetype, archetypes } from "@/components/pauta/quizData";
 
 const WEBHOOK_URL = "https://app.altotrafico.co/api/webhook/c/70ddc358-f9ef-4931-996f-b4092e45ea8b";
+const CRM_PATCH_URL = "https://app.altotrafico.co/api/leads";
+const CRM_API_KEY = process.env.CRM_API_KEY || "";
 
 const CONTACT_FIELDS = ["name", "email", "company", "role"] as const;
 const QUESTION_FIELDS = [
@@ -195,21 +197,45 @@ export async function POST(request: Request) {
       utm_medium: body.utm_medium || "",
     };
 
-    // Must await — serverless functions kill unawaited promises on return
+    // Update existing lead via PATCH if we have a leadId, otherwise create new
+    const leadId = body.leadId;
     try {
-      const webhookRes = await fetch(WEBHOOK_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(leadPayload),
-      });
-      if (!webhookRes.ok) {
-        const text = await webhookRes.text().catch(() => "no body");
-        console.error(`Webhook failed: ${webhookRes.status} ${webhookRes.statusText} — ${text}`);
+      if (leadId && CRM_API_KEY) {
+        // PATCH existing lead with diagnosis results
+        const patchRes = await fetch(`${CRM_PATCH_URL}/${leadId}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": CRM_API_KEY,
+          },
+          body: JSON.stringify({
+            estado: "diagnostico_completo",
+            notas: diagnosisSummary,
+            proyecto: body.utm_campaign || "Diagnóstico IA",
+          }),
+        });
+        if (!patchRes.ok) {
+          const text = await patchRes.text().catch(() => "no body");
+          console.error(`Lead PATCH failed: ${patchRes.status} — ${text}`);
+        } else {
+          console.log("Lead updated successfully via PATCH:", leadId);
+        }
       } else {
-        console.log("Webhook sent successfully:", webhookRes.status);
+        // Fallback: create new lead if no leadId available
+        const webhookRes = await fetch(WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(leadPayload),
+        });
+        if (!webhookRes.ok) {
+          const text = await webhookRes.text().catch(() => "no body");
+          console.error(`Webhook POST failed: ${webhookRes.status} — ${text}`);
+        } else {
+          console.log("Webhook sent successfully (fallback POST):", webhookRes.status);
+        }
       }
     } catch (err) {
-      console.error("Webhook network error:", err);
+      console.error("Webhook/PATCH network error:", err);
     }
 
     return NextResponse.json(diagnosis);

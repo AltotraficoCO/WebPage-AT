@@ -29,10 +29,16 @@ export async function POST(request: Request) {
     });
 
     if (!res.ok) {
+      const text = await res.text().catch(() => "no body");
+      console.error(`Webhook POST failed: ${res.status} — ${text}`);
       return NextResponse.json({ error: "Webhook failed" }, { status: 502 });
     }
 
-    return NextResponse.json({ success: true });
+    // CRM returns { success: true, data: { id: "uuid", ...fields } }
+    const data = await res.json().catch(() => null);
+    const leadId = data?.data?.id || null;
+
+    return NextResponse.json({ success: true, leadId });
   } catch {
     return NextResponse.json({ error: "Error interno" }, { status: 500 });
   }

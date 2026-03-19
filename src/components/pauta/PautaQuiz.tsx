@@ -27,6 +27,7 @@ export default function PautaQuiz() {
   const terminalRef = useRef<HTMLDivElement>(null);
   const diagnosisPromise = useRef<Promise<DiagnosisResult> | null>(null);
   const scrapePromise = useRef<Promise<{ site: ScrapeResult; competitor: ScrapeResult | null } | null> | null>(null);
+  const leadIdRef = useRef<string | null>(null);
 
   const addLog = useCallback((text: string, isUser = false) => {
     setLogs((prev) => {
@@ -72,6 +73,7 @@ export default function PautaQuiz() {
         website: allAnswers.website || "",
         competitor: allAnswers.competitor || "",
         scrapeData,
+        leadId: leadIdRef.current || "",
         ...utm,
       }),
     });
@@ -143,7 +145,12 @@ export default function PautaQuiz() {
         utm_medium: params.get("utm_medium") || "",
         utm_campaign: params.get("utm_campaign") || "",
       }),
-    }).catch(() => {}); // Fire and forget — don't block the quiz
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.leadId) leadIdRef.current = json.leadId;
+      })
+      .catch(() => {});
 
     // Launch scrape in background if website provided
     if (data.website && data.website.trim()) {
