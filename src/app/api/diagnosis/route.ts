@@ -89,13 +89,18 @@ export async function POST(request: Request) {
       );
     }
 
+    // Extract optional web data
+    const scrapeData = body.scrapeData || null;
+    const website = body.website ? sanitize(body.website) : "";
+    const competitor = body.competitor ? sanitize(body.competitor) : "";
+
     // Build prompt and call Claude
-    const prompt = buildPrompt(answers, score, archetype);
+    const prompt = buildPrompt(answers, score, archetype, scrapeData);
 
     const client = new Anthropic({ apiKey });
     const message = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: 2048,
+      max_tokens: 4096,
       messages: [{ role: "user", content: prompt }],
     });
 
@@ -143,6 +148,19 @@ export async function POST(request: Request) {
       `OPERACIONES: ${aiResult.area_analysis?.operations?.status || "N/A"}`,
       ...(aiResult.area_analysis?.operations?.insights || []).map((i: string) => `  - ${i}`),
       ``,
+      ...(aiResult.area_analysis?.seo ? [
+        `SEO: ${aiResult.area_analysis.seo.status}`,
+        ...(aiResult.area_analysis.seo.insights || []).map((i: string) => `  - ${i}`),
+      ] : []),
+      ...(aiResult.area_analysis?.sem ? [
+        `SEM: ${aiResult.area_analysis.sem.status}`,
+        ...(aiResult.area_analysis.sem.insights || []).map((i: string) => `  - ${i}`),
+      ] : []),
+      ...(aiResult.area_analysis?.social_media ? [
+        `REDES SOCIALES: ${aiResult.area_analysis.social_media.status}`,
+        ...(aiResult.area_analysis.social_media.insights || []).map((i: string) => `  - ${i}`),
+      ] : []),
+      ``,
       `RIESGOS: ${(aiResult.risk_semaphore?.red || []).join("; ")}`,
       ``,
       `ACCIONES INMEDIATAS:`,
@@ -167,6 +185,8 @@ export async function POST(request: Request) {
       email: answers.email,
       empresa: answers.company,
       fuente: "ia-para-empresas",
+      ...(website ? { website } : {}),
+      ...(competitor ? { competitor } : {}),
       proyecto: body.utm_campaign || "Diagnóstico IA",
       notas: diagnosisSummary,
       cargo: answers.role,

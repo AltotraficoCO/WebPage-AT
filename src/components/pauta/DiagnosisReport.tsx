@@ -175,6 +175,54 @@ export default function DiagnosisReport({ result, userName, companyName }: Diagn
         </SectionCard>
       </div>
 
+      {/* Web Analysis row: SEO + SEM + Social */}
+      {(result.area_analysis?.seo || result.area_analysis?.sem || result.area_analysis?.social_media) && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            { key: "seo" as const, icon: "search", title: "SEO", data: result.area_analysis?.seo },
+            { key: "sem" as const, icon: "ads_click", title: "SEM & Publicidad", data: result.area_analysis?.sem },
+            { key: "social_media" as const, icon: "share", title: "Redes Sociales", data: result.area_analysis?.social_media },
+          ].map((section, i) => (
+            <SectionCard key={section.key} delay={0.35 + i * 0.05}>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <span className="material-icons text-neon-1 bg-primary rounded-lg p-1 text-sm">{section.icon}</span>
+                  <h4 className="font-semibold text-primary text-sm">{section.title}</h4>
+                </div>
+                {section.data && <StatusBadge status={section.data.status} />}
+              </div>
+              {section.data ? (
+                <div className="space-y-3">
+                  <ul className="space-y-1.5">
+                    {section.data.insights.map((insight, j) => (
+                      <li key={j} className="flex items-start gap-1.5 text-[11px] text-gray-600 leading-relaxed">
+                        <span className="material-icons text-neon-1 text-[10px] mt-0.5 flex-shrink-0">arrow_right</span>
+                        {insight}
+                      </li>
+                    ))}
+                  </ul>
+                  {section.data.quick_wins.length > 0 && (
+                    <div className="pt-2 border-t border-gray-100">
+                      <p className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold mb-1.5">Quick Wins</p>
+                      <ul className="space-y-1">
+                        {section.data.quick_wins.map((win, j) => (
+                          <li key={j} className="flex items-start gap-1.5 text-[11px] text-primary/80 leading-relaxed font-medium">
+                            <span className="material-icons text-neon-1 text-[10px] mt-0.5 flex-shrink-0">bolt</span>
+                            {win}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <p className="text-xs text-gray-400">Crear presencia digital desde cero</p>
+              )}
+            </SectionCard>
+          ))}
+        </div>
+      )}
+
       {/* Middle row: Semaphore + Roadmap side by side */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Risk Semaphore */}

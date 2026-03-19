@@ -91,12 +91,21 @@ export default function QuizStepComponent({
     }),
   };
 
+  const [noWebsite, setNoWebsite] = useState(false);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     const data: Record<string, string> = {};
     for (const field of step.fields || []) {
+      if (field.name === "website" && noWebsite) {
+        data[field.name] = "";
+        continue;
+      }
       data[field.name] = (fd.get(field.name) as string) || "";
+    }
+    if (noWebsite) {
+      data.noWebsite = "true";
     }
     onFormSubmit(data);
   };
@@ -166,29 +175,47 @@ export default function QuizStepComponent({
 
         {step.type === "form" ? (
           <form onSubmit={handleSubmit} className="space-y-5 max-w-lg">
-            {step.fields?.map((field, i) => (
-              <motion.div
-                key={field.name}
-                className="group"
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 + i * 0.08 }}
-              >
-                <label className="block text-xs text-gray-600 uppercase tracking-wider mb-2 font-semibold group-focus-within:text-primary transition-colors">
-                  {field.label}
-                </label>
-                <div className="relative">
-                  <input
-                    name={field.name}
-                    type={field.type}
-                    placeholder={field.placeholder}
-                    required={field.required}
-                    defaultValue={formData[field.name] || ""}
-                    className="form-input w-full text-primary bg-white border-2 border-gray-200 rounded-xl px-4 py-3.5 text-sm font-medium focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all placeholder:text-gray-400"
-                  />
-                </div>
-              </motion.div>
-            ))}
+            {step.fields?.map((field, i) => {
+              const isWebsite = field.name === "website";
+              const isDisabled = isWebsite && noWebsite;
+              const isRequired = isWebsite ? !noWebsite && field.required : field.required;
+
+              return (
+                <motion.div
+                  key={field.name}
+                  className="group"
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 + i * 0.08 }}
+                >
+                  <label className="block text-xs text-gray-600 uppercase tracking-wider mb-2 font-semibold group-focus-within:text-primary transition-colors">
+                    {field.label}
+                  </label>
+                  <div className="relative">
+                    <input
+                      name={field.name}
+                      type={field.type}
+                      placeholder={field.placeholder}
+                      required={isRequired}
+                      disabled={isDisabled}
+                      defaultValue={formData[field.name] || ""}
+                      className={`form-input w-full text-primary bg-white border-2 border-gray-200 rounded-xl px-4 py-3.5 text-sm font-medium focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all placeholder:text-gray-400 ${isDisabled ? "opacity-40 cursor-not-allowed bg-gray-50" : ""}`}
+                    />
+                  </div>
+                  {isWebsite && (
+                    <label className="flex items-center gap-2 mt-2 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={noWebsite}
+                        onChange={(e) => setNoWebsite(e.target.checked)}
+                        className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary/20"
+                      />
+                      <span className="text-xs text-gray-500 font-medium">No tengo página web</span>
+                    </label>
+                  )}
+                </motion.div>
+              );
+            })}
             <motion.button
               type="submit"
               className="mt-6 inline-flex items-center gap-2 px-8 py-3.5 bg-primary text-white rounded-full font-semibold hover:bg-primary/90 transition-all hover:-translate-y-0.5 shadow-lg shadow-primary/20 group"

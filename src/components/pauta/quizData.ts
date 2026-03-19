@@ -27,6 +27,29 @@ export interface Archetype {
   icon: string;
 }
 
+export interface WebAnalysisSection {
+  status: string;
+  insights: string[];
+  quick_wins: string[];
+}
+
+export interface ScrapeResult {
+  url: string;
+  title: string;
+  metaDescription: string;
+  metaKeywords: string;
+  ogTags: Record<string, string>;
+  twitterTags: Record<string, string>;
+  canonical: string;
+  headings: { h1: string[]; h2: string[]; h3: string[] };
+  socialLinks: Record<string, string>;
+  trackingPixels: string[];
+  schemaOrg: string[];
+  hasRobotsTxt: boolean;
+  hasSitemap: boolean;
+  imgAltCoverage: string;
+}
+
 export interface DiagnosisResult {
   archetype: Archetype;
   score: number;
@@ -34,6 +57,9 @@ export interface DiagnosisResult {
   area_analysis: {
     sales_marketing: { status: string; insights: string[] };
     operations: { status: string; insights: string[] };
+    seo?: WebAnalysisSection;
+    sem?: WebAnalysisSection;
+    social_media?: WebAnalysisSection;
   };
   risk_semaphore: {
     red: string[];
@@ -110,6 +136,8 @@ export const quizSteps: QuizStep[] = [
       { name: "email", label: "Email corporativo", type: "email", placeholder: "nombre@empresa.com", required: true },
       { name: "company", label: "Empresa", type: "text", placeholder: "Nombre de tu empresa", required: true },
       { name: "role", label: "Cargo", type: "text", placeholder: "Tu cargo actual", required: true },
+      { name: "website", label: "Sitio web", type: "url", placeholder: "https://tuempresa.com", required: true },
+      { name: "competitor", label: "Sitio web de un competidor (opcional)", type: "url", placeholder: "https://competidor.com", required: false },
     ],
   },
   // --- BLOQUE GENERAL (Q1-Q5): Preguntas fáciles y universales primero ---
@@ -304,22 +332,114 @@ export const terminalLogs: Record<string, string[]> = {
   ],
 };
 
-export const processingLogs = [
-  "Compiling all 10 response vectors...",
-  "Calculating Sales & Marketing score...",
-  "Calculating Operations score...",
-  "Aggregating total score: {score}/40...",
-  "Classifying archetype: {archetype}...",
-  "Loading archetype-specific frameworks...",
-  "Cross-referencing with industry patterns...",
-  "Generating area analysis matrix...",
-  "Building risk semaphore assessment...",
-  "Constructing tactical roadmap...",
-  "Generating AI-personalized insights...",
-  "Finalizing executive diagnosis...",
-];
+export function getProcessingLogs(hasWebsite: boolean): string[] {
+  const base = [
+    "Compiling all 10 response vectors...",
+    "Calculating Sales & Marketing score...",
+    "Calculating Operations score...",
+    "Aggregating total score: {score}/40...",
+    "Classifying archetype: {archetype}...",
+  ];
+  const webLogs = hasWebsite
+    ? [
+        "Fetching website data...",
+        "Analyzing SEO structure...",
+        "Scanning SEM & advertising tags...",
+        "Evaluating social media integration...",
+      ]
+    : [];
+  const tail = [
+    "Loading archetype-specific frameworks...",
+    "Cross-referencing with industry patterns...",
+    "Generating area analysis matrix...",
+    "Building risk semaphore assessment...",
+    "Constructing tactical roadmap...",
+    "Generating AI-personalized insights...",
+    "Finalizing executive diagnosis...",
+  ];
+  return [...base, ...webLogs, ...tail];
+}
 
-export function buildPrompt(answers: Record<string, string>, score: number, archetype: Archetype): string {
+/** @deprecated Use getProcessingLogs instead */
+export const processingLogs = getProcessingLogs(false);
+
+export function buildPrompt(
+  answers: Record<string, string>,
+  score: number,
+  archetype: Archetype,
+  scrapeData?: { site: ScrapeResult; competitor: ScrapeResult | null } | null,
+): string {
+  const hasWebsite = !!scrapeData?.site;
+  const hasCompetitor = !!scrapeData?.competitor;
+
+  let webSection = "";
+  if (hasWebsite) {
+    const s = scrapeData!.site;
+    webSection = `
+## Análisis del sitio web: ${s.url}
+- Título: ${s.title || "No encontrado"}
+- Meta description: ${s.metaDescription || "No encontrada"}
+- Meta keywords: ${s.metaKeywords || "No encontradas"}
+- Canonical: ${s.canonical || "No definido"}
+- Open Graph: ${Object.entries(s.ogTags).map(([k, v]) => `${k}=${v}`).join(", ") || "No encontrado"}
+- Twitter Cards: ${Object.entries(s.twitterTags).map(([k, v]) => `${k}=${v}`).join(", ") || "No encontrado"}
+- Headings H1: ${s.headings.h1.join("; ") || "Ninguno"}
+- Headings H2: ${s.headings.h2.slice(0, 5).join("; ") || "Ninguno"}
+- Redes sociales detectadas: ${Object.entries(s.socialLinks).map(([k, v]) => `${k}: ${v}`).join(", ") || "Ninguna"}
+- Píxeles/tracking: ${s.trackingPixels.join(", ") || "Ninguno detectado"}
+- Schema.org (JSON-LD): ${s.schemaOrg.length > 0 ? s.schemaOrg.join(", ") : "No encontrado"}
+- robots.txt: ${s.hasRobotsTxt ? "Existe" : "No encontrado"}
+- sitemap.xml: ${s.hasSitemap ? "Existe" : "No encontrado"}
+- Cobertura de alt en imágenes: ${s.imgAltCoverage}`;
+
+    if (hasCompetitor) {
+      const c = scrapeData!.competitor!;
+      webSection += `
+
+## Análisis del competidor: ${c.url}
+- Título: ${c.title || "No encontrado"}
+- Meta description: ${c.metaDescription || "No encontrada"}
+- Open Graph: ${Object.entries(c.ogTags).map(([k, v]) => `${k}=${v}`).join(", ") || "No encontrado"}
+- Headings H1: ${c.headings.h1.join("; ") || "Ninguno"}
+- Redes sociales: ${Object.entries(c.socialLinks).map(([k, v]) => `${k}: ${v}`).join(", ") || "Ninguna"}
+- Píxeles/tracking: ${c.trackingPixels.join(", ") || "Ninguno detectado"}
+- robots.txt: ${c.hasRobotsTxt ? "Existe" : "No encontrado"}
+- sitemap.xml: ${c.hasSitemap ? "Existe" : "No encontrado"}
+
+IMPORTANTE: Compara el sitio del prospecto con el del competidor e identifica ventajas competitivas y brechas.`;
+    }
+  } else if (answers.noWebsite === "true") {
+    webSection = `
+## Presencia web:
+El prospecto NO tiene página web — esto es una oportunidad para crear su presencia digital desde cero.`;
+  }
+
+  const webAnalysisSchema = hasWebsite || answers.noWebsite === "true"
+    ? `,
+    "seo": {
+      "status": "<Crítico|En desarrollo|Competente|Avanzado>",
+      "insights": ["<hallazgo SEO específico 1>", "<hallazgo SEO específico 2>"],
+      "quick_wins": ["<mejora rápida SEO 1>", "<mejora rápida SEO 2>"]
+    },
+    "sem": {
+      "status": "<Crítico|En desarrollo|Competente|Avanzado>",
+      "insights": ["<hallazgo SEM/publicidad 1>", "<hallazgo SEM/publicidad 2>"],
+      "quick_wins": ["<mejora rápida SEM 1>", "<mejora rápida SEM 2>"]
+    },
+    "social_media": {
+      "status": "<Crítico|En desarrollo|Competente|Avanzado>",
+      "insights": ["<hallazgo redes sociales 1>", "<hallazgo redes sociales 2>"],
+      "quick_wins": ["<mejora rápida redes 1>", "<mejora rápida redes 2>"]
+    }`
+    : "";
+
+  const webInstructions = hasWebsite
+    ? `- Analiza los datos del sitio web y genera insights específicos de SEO, SEM y redes sociales basados en los datos reales extraídos.
+- Si hay datos de competidor, compara y sugiere ventajas competitivas concretas.`
+    : answers.noWebsite === "true"
+    ? `- El prospecto no tiene sitio web. En las secciones SEO/SEM/Social, enfócate en la oportunidad de crear presencia digital desde cero con recomendaciones concretas.`
+    : "";
+
   return `Eres un consultor senior de transformación digital e Inteligencia Artificial para empresas en Latinoamérica, trabajando para Alto Tráfico, una agencia de automatización e IA.
 
 Analiza los siguientes datos de un prospecto y genera un diagnóstico ejecutivo personalizado.
@@ -345,6 +465,7 @@ Analiza los siguientes datos de un prospecto y genera un diagnóstico ejecutivo 
 8. Integración de herramientas: ${answers.q8_integracion}
 9. Mayor frustración operativa: ${answers.q9_frustracion}
 10. Apertura del equipo a IA: ${answers.q10_adopcion}
+${webSection}
 
 ## Arquetipo determinado: ${archetype.name} (${archetype.key})
 - Score: ${score}/40
@@ -359,6 +480,7 @@ Analiza los siguientes datos de un prospecto y genera un diagnóstico ejecutivo 
 - Las recomendaciones deben ser coherentes con el arquetipo ${archetype.name}.
 - Sé concreto: menciona herramientas, plataformas y estrategias específicas.
 - El profile_summary debe ser 2-3 oraciones máximo, empático y motivador.
+${webInstructions}
 
 Genera un JSON con esta estructura EXACTA (sin texto adicional, solo el JSON):
 {
@@ -371,7 +493,7 @@ Genera un JSON con esta estructura EXACTA (sin texto adicional, solo el JSON):
     "operations": {
       "status": "<Crítico|En desarrollo|Competente|Avanzado>",
       "insights": ["<insight específico 1>", "<insight específico 2>", "<insight específico 3>"]
-    }
+    }${webAnalysisSchema}
   },
   "risk_semaphore": {
     "red": ["<riesgo urgente si no actúan en 6 meses>", "<otro riesgo urgente>"],
