@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { buildPrompt, getArchetype, archetypes } from "@/components/pauta/quizData";
+import { sendDiagnosisEmails } from "@/lib/email";
 
 const WEBHOOK_URL = "https://app.altotrafico.co/api/webhook/c/70ddc358-f9ef-4931-996f-b4092e45ea8b";
 const CRM_PATCH_URL = "https://app.altotrafico.co/api/leads";
@@ -236,6 +237,28 @@ export async function POST(request: Request) {
       }
     } catch (err) {
       console.error("Webhook/PATCH network error:", err);
+    }
+
+    // Send emails: PDF to user + notification to team
+    try {
+      await sendDiagnosisEmails(
+        {
+          userName: answers.name,
+          userEmail: answers.email,
+          company: answers.company,
+          role: answers.role,
+          score,
+          archetype,
+          profileSummary: aiResult.profile_summary || "",
+          areaAnalysis: aiResult.area_analysis || {},
+          riskSemaphore: aiResult.risk_semaphore || { red: [], yellow: [], green: [] },
+          tacticalRoadmap: aiResult.tactical_roadmap || { immediate: [], short_term: [], medium_term: [] },
+          website: website || undefined,
+        },
+        diagnosisSummary
+      );
+    } catch (err) {
+      console.error("Email sending error:", err);
     }
 
     return NextResponse.json(diagnosis);
