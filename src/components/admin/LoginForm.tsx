@@ -32,6 +32,7 @@ export default function LoginForm() {
 
   return (
     <form
+      id="admin-login-form"
       onSubmit={handleSubmit}
       className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 space-y-6"
     >

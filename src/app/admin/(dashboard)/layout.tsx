@@ -1,7 +1,7 @@
 import AdminShell from "@/components/admin/AdminShell";
 
 export const metadata = {
-  title: "Alto Tráfico - Admin",
+  title: "Altotrafico - Admin",
 };
 
 export const dynamic = "force-dynamic";

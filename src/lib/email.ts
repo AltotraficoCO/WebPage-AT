@@ -8,7 +8,7 @@ function getResend(): Resend {
   return _resend;
 }
 
-const FROM_EMAIL = "Alto Tráfico <notificaciones@altotrafico.co>";
+const FROM_EMAIL = "Altotrafico <notificaciones@altotrafico.co>";
 const TEAM_EMAIL = "notificaciones@altotrafico.co";
 
 interface DiagnosisEmailData {
@@ -89,7 +89,7 @@ function generatePdfHtml(data: DiagnosisEmailData): string {
   <!-- Header -->
   <div style="background:linear-gradient(135deg,#163336,#2c5f64);padding:40px 32px;text-align:center;">
     <h1 style="color:#ffffff;font-size:28px;margin:0 0 8px 0;font-weight:600;">Diagnostico de IA Empresarial</h1>
-    <p style="color:#B2FFB5;font-size:16px;margin:0;">Alto Trafico — Consultoria Estrategica de IA</p>
+    <p style="color:#B2FFB5;font-size:16px;margin:0;">Altotrafico — Consultoria Estrategica de IA</p>
   </div>
 
   <!-- User Info -->
@@ -168,7 +168,7 @@ function generatePdfHtml(data: DiagnosisEmailData): string {
 
     <!-- Footer -->
     <div style="text-align:center;padding:24px 0;margin-top:24px;border-top:1px solid #e5e7eb;">
-      <p style="color:#9ca3af;font-size:12px;margin:0;">Alto Trafico — Consultoria Estrategica de IA</p>
+      <p style="color:#9ca3af;font-size:12px;margin:0;">Altotrafico — Consultoria Estrategica de IA</p>
       <p style="color:#9ca3af;font-size:12px;margin:4px 0 0 0;">altotrafico.co | hola@altotrafico.ai</p>
     </div>
   </div>
@@ -186,7 +186,7 @@ function generateEmailHtml(userName: string, company: string, archetypeName: str
       <!-- Header -->
       <div style="background:linear-gradient(135deg,#163336,#2c5f64);padding:32px;text-align:center;">
         <h1 style="color:#ffffff;font-size:22px;margin:0 0 4px 0;">Tu Diagnostico de IA esta listo</h1>
-        <p style="color:#B2FFB5;font-size:14px;margin:0;">Alto Trafico</p>
+        <p style="color:#B2FFB5;font-size:14px;margin:0;">Altotrafico</p>
       </div>
 
       <div style="padding:32px;">
@@ -215,7 +215,7 @@ function generateEmailHtml(userName: string, company: string, archetypeName: str
       </div>
 
       <div style="padding:20px 32px;background:#f9fafb;text-align:center;border-top:1px solid #e5e7eb;">
-        <p style="color:#9ca3af;font-size:12px;margin:0;">Alto Trafico — Consultoria Estrategica de IA</p>
+        <p style="color:#9ca3af;font-size:12px;margin:0;">Altotrafico — Consultoria Estrategica de IA</p>
       </div>
     </div>
   </div>
@@ -269,7 +269,7 @@ export async function sendDiagnosisEmails(
     await getResend().emails.send({
       from: FROM_EMAIL,
       to: data.userEmail,
-      subject: `Tu Diagnostico de IA — ${data.archetype.name} | Alto Trafico`,
+      subject: `Tu Diagnostico de IA — ${data.archetype.name} | Altotrafico`,
       html: generateEmailHtml(data.userName, data.company, data.archetype.name, data.score),
       attachments: [
         {

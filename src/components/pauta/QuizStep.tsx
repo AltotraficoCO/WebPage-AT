@@ -174,7 +174,7 @@ export default function QuizStepComponent({
         </div>
 
         {step.type === "form" ? (
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3">
+          <form id="quiz-lead-form" onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3">
             {step.fields?.map((field, i) => {
               const isWebsite = field.name === "website";
               const isDisabled = isWebsite && noWebsite;

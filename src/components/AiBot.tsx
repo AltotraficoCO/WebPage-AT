@@ -317,7 +317,7 @@ export default function AiBot({
         <p className="text-sm text-gray-600 mb-4">
           Para iniciar la conversación, por favor completa los siguientes datos:
         </p>
-        <form onSubmit={handleFormSubmit} className="space-y-3">
+        <form id="chatbot-intake-form" onSubmit={handleFormSubmit} className="space-y-3">
           <div>
             <label className="block text-xs font-medium text-gray-500 mb-1">
               Nombre completo

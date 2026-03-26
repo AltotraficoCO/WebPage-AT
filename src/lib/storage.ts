@@ -33,7 +33,7 @@ const KEYS = {
 
 const DEFAULT_SETTINGS: SiteSettings = {
   logoUrl: "/logo.png",
-  logoAlt: "Alto Tráfico",
+  logoAlt: "Altotrafico",
   logoWidth: 160,
   logoHeight: 40,
   footerLogoUrl: "/logo.png",
@@ -45,7 +45,7 @@ const DEFAULT_SETTINGS: SiteSettings = {
   chatEnabled: true,
   chatApiUrl: "https://varylo.vercel.app/api/webchat",
   chatApiKey: "",
-  chatWelcomeMessage: "Hola. Soy el asistente de Alto Tráfico. ¿En qué puedo ayudarte?",
+  chatWelcomeMessage: "Hola. Soy el asistente de Altotrafico. ¿En qué puedo ayudarte?",
   chatBotName: "AT Assistant",
 };
 

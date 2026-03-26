@@ -1,7 +1,7 @@
 import LoginForm from "@/components/admin/LoginForm";
 
 export const metadata = {
-  title: "Alto Tráfico - Login Admin",
+  title: "Altotrafico - Login Admin",
 };
 
 export default function LoginPage() {
@@ -13,7 +13,7 @@ export default function LoginPage() {
             <span className="text-white text-lg font-bold">AT</span>
           </div>
           <h1 className="text-2xl font-semibold text-gray-900">Admin Panel</h1>
-          <p className="text-sm text-gray-500 mt-1">Alto Tráfico</p>
+          <p className="text-sm text-gray-500 mt-1">Altotrafico</p>
         </div>
         <LoginForm />
       </div>

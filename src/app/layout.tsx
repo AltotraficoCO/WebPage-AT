@@ -14,7 +14,7 @@ export const revalidate = 300; // revalidate every 5 minutes instead of force-dy
 export async function generateMetadata() {
   const settings = await readSettings();
   return {
-    title: "Alto Tráfico - Potencia tu negocio con IA",
+    title: "Altotrafico - Potencia tu negocio con IA",
     description:
       "Consultoría estratégica de IA para empresas que buscan liderar la próxima era digital.",
     icons: {
