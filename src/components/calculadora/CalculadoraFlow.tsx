@@ -2,7 +2,12 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import type { IndustriaConfig, Pregunta } from "@/data/calculadora";
+import {
+  getVariantesSelector,
+  INDUSTRIA_UNIVERSAL,
+  type IndustriaConfig,
+  type Pregunta,
+} from "@/data/calculadora";
 import {
   calcularPerdida,
   formatearMoneda,
@@ -123,7 +128,32 @@ function Hero({
       <p className="mt-4 text-sm text-white/40">
         Gratis · 5 preguntas · sin compromiso
       </p>
+
+      {/* Selector de industria — solo en la variante universal (hub). */}
+      {config.slug === INDUSTRIA_UNIVERSAL && <SelectorIndustria />}
     </section>
+  );
+}
+
+function SelectorIndustria() {
+  const variantes = getVariantesSelector();
+  return (
+    <div className="mt-14 w-full max-w-2xl border-t border-white/10 pt-8">
+      <p className="text-sm font-medium text-white/60">
+        ¿Cuál es tu industria? Calcula con una versión a tu medida:
+      </p>
+      <div className="mt-4 flex flex-wrap justify-center gap-3">
+        {variantes.map((v) => (
+          <Link
+            key={v.slug}
+            href={`/calculadora/${v.slug}`}
+            className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/80 transition hover:border-neon-2 hover:text-white"
+          >
+            {v.nombre}
+          </Link>
+        ))}
+      </div>
+    </div>
   );
 }
 

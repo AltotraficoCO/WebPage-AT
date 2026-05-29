@@ -697,3 +697,11 @@ export const SLUGS_VARIANTES = Object.keys(INDUSTRIAS).filter(
 export function getIndustria(slug?: string): IndustriaConfig | null {
   return INDUSTRIAS[slug ?? INDUSTRIA_UNIVERSAL] ?? null;
 }
+
+/** Variantes para el selector de industria del hub (excluye la universal). */
+export function getVariantesSelector(): { slug: string; nombre: string }[] {
+  return SLUGS_VARIANTES.map((slug) => ({
+    slug,
+    nombre: INDUSTRIAS[slug].nombre,
+  }));
+}
