@@ -113,12 +113,43 @@ export interface IndustriaConfig {
 /*  Plantilla base de preguntas — se sobreescribe por industria       */
 /* ------------------------------------------------------------------ */
 
-const OPCIONES_TIEMPO: OpcionPregunta[] = [
-  { label: "Menos de 5 minutos", value: 1.0 },
-  { label: "Menos de 1 hora", value: 0.8 },
-  { label: "El mismo día", value: 0.55 },
-  { label: "1 día o más", value: 0.3 },
-];
+/**
+ * Construye las 4 opciones de tiempo de respuesta con la retención de
+ * conversión PROPIA del nicho. `ret` = [<5min, <1h, mismo día, +1 día],
+ * cada valor 0..1 = fracción de conversión que se conserva a esa velocidad.
+ * Nichos de decisión rápida/emocional (real estate, SaaS) tienen una caída
+ * más brusca; nichos de ciclo largo (manufactura) la aguantan mejor.
+ */
+function opcionesTiempo(
+  ret: [number, number, number, number]
+): OpcionPregunta[] {
+  return [
+    { label: "Menos de 5 minutos", value: ret[0] },
+    { label: "Menos de 1 hora", value: ret[1] },
+    { label: "El mismo día", value: ret[2] },
+    { label: "1 día o más", value: ret[3] },
+  ];
+}
+
+/** Override de la pregunta de tiempo con retención propia del nicho. */
+function tiempoNicho(ret: [number, number, number, number]): Partial<Pregunta> {
+  return { opciones: opcionesTiempo(ret), defaultValue: ret[2] };
+}
+
+/** Construye un FormulaConfig en COP con los multiplicadores del nicho. */
+function formulaNicho(
+  factorSinSeguimiento: number,
+  recuperableConAutomatizacion: number
+): FormulaConfig {
+  return {
+    moneda: "COP",
+    locale: "es-CO",
+    factorSinSeguimiento,
+    recuperableConAutomatizacion,
+  };
+}
+
+const OPCIONES_TIEMPO = opcionesTiempo([1.0, 0.8, 0.55, 0.3]);
 
 interface OverridePreguntas {
   leadsMes?: Partial<Pregunta>;
@@ -306,8 +337,10 @@ export const INDUSTRIAS: Record<string, IndustriaConfig> = {
         defaultValue: 8,
         max: 50,
       },
+      // Real estate: decisión rápida y emocional, la demora mata la venta.
+      tiempoRespuesta: tiempoNicho([1.0, 0.7, 0.4, 0.18]),
     }),
-    formula: FORMULA_BASE,
+    formula: formulaNicho(0.2, 0.7),
     resultado: {
       titulo: "Esto es lo que tu sala de ventas pierde cada mes",
       subtitulo: "Con tickets de cientos de millones, cada lead mal atendido pesa.",
@@ -389,8 +422,10 @@ export const INDUSTRIAS: Record<string, IndustriaConfig> = {
         titulo: "De cada 100 prospectos bien atendidos, ¿cuántos contratan?",
         defaultValue: 25,
       },
+      // Servicios B2B: gana el primero en responder con seriedad; consideración media.
+      tiempoRespuesta: tiempoNicho([1.0, 0.85, 0.6, 0.35]),
     }),
-    formula: FORMULA_BASE,
+    formula: formulaNicho(0.18, 0.6),
     resultado: {
       titulo: "Esto es lo que tu firma deja de facturar cada mes",
       subtitulo: "Estimación conservadora con tus propios números.",
@@ -472,8 +507,10 @@ export const INDUSTRIAS: Record<string, IndustriaConfig> = {
         defaultValue: 18,
         max: 60,
       },
+      // Manufactura: ciclo largo, la demora penaliza menos; la recompra es clave.
+      tiempoRespuesta: tiempoNicho([1.0, 0.9, 0.7, 0.45]),
     }),
-    formula: FORMULA_BASE,
+    formula: formulaNicho(0.22, 0.55),
     resultado: {
       titulo: "Esto es lo que tu planta deja de vender cada mes",
       subtitulo: "Con pedidos de alto valor, cada cotización perdida cuesta caro.",
@@ -555,8 +592,10 @@ export const INDUSTRIAS: Record<string, IndustriaConfig> = {
         defaultValue: 15,
         max: 60,
       },
+      // SaaS: intención momentánea, la velocidad es crítica; trials muy recuperables.
+      tiempoRespuesta: tiempoNicho([1.0, 0.65, 0.35, 0.15]),
     }),
-    formula: FORMULA_BASE,
+    formula: formulaNicho(0.25, 0.72),
     resultado: {
       titulo: "Esto es el MRR que tu SaaS deja de capturar cada mes",
       subtitulo: "Estimación conservadora basada en tu propio funnel.",
@@ -637,8 +676,10 @@ export const INDUSTRIAS: Record<string, IndustriaConfig> = {
         titulo: "De cada 100 aspirantes bien atendidos, ¿cuántos se matriculan?",
         defaultValue: 22,
       },
+      // Educación: ventana de admisiones y decisión emocional; nurturing importante.
+      tiempoRespuesta: tiempoNicho([1.0, 0.75, 0.45, 0.22]),
     }),
-    formula: FORMULA_BASE,
+    formula: formulaNicho(0.2, 0.68),
     resultado: {
       titulo: "Esto es lo que tu institución deja de matricular cada mes",
       subtitulo: "Estimación conservadora con tus propios números de admisiones.",
