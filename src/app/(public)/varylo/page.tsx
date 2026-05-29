@@ -239,21 +239,16 @@ function Planes() {
           <h2 className="text-3xl font-bold text-primary sm:text-4xl">{planes.titulo}</h2>
           <p className="mt-3 text-gray-600">{planes.subtitulo}</p>
         </div>
-        <div className="mt-12 grid items-start gap-6 lg:grid-cols-3">
+        <div className="mx-auto mt-12 grid max-w-md items-start gap-6">
           {planes.items.map((plan) => (
             <div
               key={plan.nombre}
               className={`rounded-3xl border bg-white p-8 ${
                 plan.destacado
-                  ? "border-2 border-neon-3 shadow-xl lg:-translate-y-3"
+                  ? "border-2 border-neon-3 shadow-xl"
                   : "border-gray-200"
               }`}
             >
-              {plan.destacado && (
-                <span className="mb-4 inline-block rounded-full bg-neon-3 px-3 py-1 text-xs font-semibold text-primary">
-                  Más popular
-                </span>
-              )}
               <h3 className="text-lg font-semibold text-primary">{plan.nombre}</h3>
               <p className="mt-1 text-sm text-gray-500">{plan.descripcion}</p>
               <div className="mt-5 flex items-baseline gap-1">
