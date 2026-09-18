@@ -440,7 +440,7 @@ El prospecto NO tiene página web — esto es una oportunidad para crear su pres
     ? `- El prospecto no tiene sitio web. En las secciones SEO/SEM/Social, enfócate en la oportunidad de crear presencia digital desde cero con recomendaciones concretas.`
     : "";
 
-  return `Eres un consultor senior de transformación digital e Inteligencia Artificial para empresas en Latinoamérica, trabajando para Alto Tráfico, una agencia de automatización e IA.
+  return `Eres un consultor senior de transformación digital e Inteligencia Artificial para empresas en Latinoamérica, trabajando para Altotrafico, una agencia de automatización e IA.
 
 Analiza los siguientes datos de un prospecto y genera un diagnóstico ejecutivo personalizado.
 
@@ -507,7 +507,7 @@ Genera un JSON con esta estructura EXACTA (sin texto adicional, solo el JSON):
   },
   "commercial_close": {
     "headline": "<titular impactante y personalizado para invitar a sesión>",
-    "body": "<párrafo persuasivo de 2-3 oraciones sobre el valor de una auditoría profunda con Alto Tráfico>",
+    "body": "<párrafo persuasivo de 2-3 oraciones sobre el valor de una auditoría profunda con Altotrafico>",
     "cta_text": "<texto del botón CTA>"
   }
 }`;

@@ -184,7 +184,7 @@ export default function ChatManager({ initialSettings }: Props) {
               }
               rows={3}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"
-              placeholder="Hola. Soy el asistente de Alto Tráfico. ¿En qué puedo ayudarte?"
+              placeholder="Hola. Soy el asistente de Altotrafico. ¿En qué puedo ayudarte?"
             />
             <p className="text-xs text-gray-400 mt-1">
               Se muestra cuando el usuario abre el chat por primera vez

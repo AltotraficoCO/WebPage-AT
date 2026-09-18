@@ -347,7 +347,7 @@ export default function Footer({ logoUrl, logoAlt, logoWidth, logoHeight, legalL
 
         <div className="mt-12 md:mt-20 pt-6 md:pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400 font-normal">
           <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-8 items-center">
-            <span>&copy; 2024 Alto Tráfico.</span>
+            <span>&copy; {new Date().getFullYear()} Altotrafico.</span>
             {legalLinks
               .sort((a, b) => a.order - b.order)
               .map((link) => (

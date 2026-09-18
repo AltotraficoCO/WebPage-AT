@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Script from "next/script";
 
 export const metadata: Metadata = {
-  title: "Solicitudes SLC | Alto Tráfico",
+  title: "Solicitudes SLC | Altotrafico",
   description:
-    "Envía tu solicitud a través de nuestro formulario. El equipo de Alto Tráfico te responderá a la brevedad.",
+    "Envía tu solicitud a través de nuestro formulario. El equipo de Altotrafico te responderá a la brevedad.",
 };
 
 export default function SolicitudesSlcPage() {

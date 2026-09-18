@@ -9,14 +9,65 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
+const SITE_NAME = "Altotrafico";
+const SITE_URL = "https://www.altotrafico.co";
+const SITE_DESCRIPTION =
+  "Consultoría estratégica de IA para empresas que buscan liderar la próxima era digital.";
+
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${SITE_URL}/#organization`,
+      name: SITE_NAME,
+      legalName: "Altotráfico S.A.S.",
+      url: SITE_URL,
+      email: "servicios@altotrafico.co",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "Carrera 45 # 5A-37",
+        addressLocality: "Medellín",
+        addressCountry: "CO",
+      },
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      name: SITE_NAME,
+      alternateName: ["Altotrafico Agencia", "altotrafico.co"],
+      url: SITE_URL,
+      inLanguage: "es",
+      publisher: { "@id": `${SITE_URL}/#organization` },
+    },
+  ],
+};
+
 export const revalidate = 300; // revalidate every 5 minutes instead of force-dynamic
 
 export async function generateMetadata() {
   const settings = await readSettings();
   return {
-    title: "Altotrafico - Potencia tu negocio con IA",
-    description:
-      "Consultoría estratégica de IA para empresas que buscan liderar la próxima era digital.",
+    metadataBase: new URL(SITE_URL),
+    applicationName: SITE_NAME,
+    title: {
+      default: `${SITE_NAME} - Potencia tu negocio con IA`,
+      template: `%s | ${SITE_NAME}`,
+    },
+    description: SITE_DESCRIPTION,
+    openGraph: {
+      type: "website",
+      siteName: SITE_NAME,
+      locale: "es_CO",
+      url: SITE_URL,
+      title: `${SITE_NAME} - Potencia tu negocio con IA`,
+      description: SITE_DESCRIPTION,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${SITE_NAME} - Potencia tu negocio con IA`,
+      description: SITE_DESCRIPTION,
+    },
     icons: {
       icon: settings.faviconUrl || "/favicon.ico",
     },
@@ -31,6 +82,10 @@ export default function RootLayout({
   return (
     <html className="scroll-smooth" lang="es">
       <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
         <Script id="gtm-head" strategy="afterInteractive">
           {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],

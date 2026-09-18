@@ -242,7 +242,7 @@ export const INDUSTRIAS: Record<string, IndustriaConfig> = {
     slug: "universal",
     nombre: "Universal B2B",
     meta: {
-      title: "Calculadora de Leads Perdidos | Altotrafico",
+      title: "Calculadora de Leads Perdidos",
       description:
         "Descubre en 2 minutos cuánto dinero pierde tu empresa al mes por leads sin responder. Cálculo gratis y reporte detallado por correo.",
     },
@@ -306,7 +306,7 @@ export const INDUSTRIAS: Record<string, IndustriaConfig> = {
     slug: "constructoras",
     nombre: "Constructoras y Real Estate",
     meta: {
-      title: "Calculadora de Leads Perdidos para Constructoras | Altotrafico",
+      title: "Calculadora de Leads Perdidos para Constructoras",
       description:
         "Cada interesado en un proyecto vale millones. Calcula cuánto pierde tu constructora al mes por leads sin responder a tiempo.",
     },
@@ -392,7 +392,7 @@ export const INDUSTRIAS: Record<string, IndustriaConfig> = {
     slug: "servicios-b2b",
     nombre: "Servicios Profesionales B2B",
     meta: {
-      title: "Calculadora de Leads Perdidos para Servicios B2B | Altotrafico",
+      title: "Calculadora de Leads Perdidos para Servicios B2B",
       description:
         "Agencias, consultoras y firmas: calcula cuánto facturación pierdes al mes por propuestas que nunca seguiste.",
     },
@@ -476,7 +476,7 @@ export const INDUSTRIAS: Record<string, IndustriaConfig> = {
     slug: "manufactura",
     nombre: "Manufactura B2B",
     meta: {
-      title: "Calculadora de Leads Perdidos para Manufactura | Altotrafico",
+      title: "Calculadora de Leads Perdidos para Manufactura",
       description:
         "Cotizaciones sin responder son contratos perdidos. Calcula cuánto pierde tu empresa manufacturera al mes.",
     },
@@ -561,7 +561,7 @@ export const INDUSTRIAS: Record<string, IndustriaConfig> = {
     slug: "tecnologia",
     nombre: "SaaS y Software B2B",
     meta: {
-      title: "Calculadora de Leads Perdidos para SaaS y Software B2B | Altotrafico",
+      title: "Calculadora de Leads Perdidos para SaaS y Software B2B",
       description:
         "Cada trial o demo sin seguimiento es MRR que no entra. Calcula cuánto pierde tu SaaS al mes por leads mal atendidos.",
     },
@@ -646,7 +646,7 @@ export const INDUSTRIAS: Record<string, IndustriaConfig> = {
     slug: "educacion",
     nombre: "Educación Premium",
     meta: {
-      title: "Calculadora de Leads Perdidos para Educación | Altotrafico",
+      title: "Calculadora de Leads Perdidos para Educación",
       description:
         "Cada aspirante sin seguimiento es una matrícula perdida. Calcula cuánto pierde tu institución al mes.",
     },

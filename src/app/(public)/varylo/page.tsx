@@ -4,7 +4,7 @@ import FaqVarylo from "@/components/varylo/FaqVarylo";
 import { VARYLO, CALCOM_DEMO_URL } from "@/data/varylo";
 
 export const metadata: Metadata = {
-  title: "Varylo — Agente de IA para WhatsApp, Instagram y WebChat | Altotrafico",
+  title: "Varylo — Agente de IA para WhatsApp, Instagram y WebChat",
   description:
     "Varylo centraliza WhatsApp, Instagram y WebChat en una sola bandeja con IA que responde, califica y vende por ti 24/7. Agenda una demo de 20 minutos.",
   alternates: { canonical: "/varylo" },

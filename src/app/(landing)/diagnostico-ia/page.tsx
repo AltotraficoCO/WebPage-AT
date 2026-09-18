@@ -5,7 +5,7 @@ import HowItWorksLanding from "@/components/landing/HowItWorksLanding";
 import CTASection from "@/components/landing/CTASection";
 
 export const metadata: Metadata = {
-  title: "Alto Trafico - Diagnostico IA",
+  title: "Diagnostico IA",
   description:
     "Diagnostico estrategico de madurez en Inteligencia Artificial. Descubre el potencial de la IA en tu empresa.",
 };

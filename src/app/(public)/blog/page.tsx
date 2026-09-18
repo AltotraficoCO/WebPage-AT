@@ -7,7 +7,7 @@ function stripHtml(html: string): string {
 }
 
 export const metadata: Metadata = {
-  title: "Alto Tráfico - Blog",
+  title: "Blog",
   description: "Artículos sobre IA, automatización y estrategia empresarial.",
 };
 

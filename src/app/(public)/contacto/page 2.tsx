@@ -4,7 +4,7 @@ import ContactCursor from "@/components/contacto/ContactCursor";
 import ContactForm from "@/components/contacto/ContactForm";
 
 export const metadata: Metadata = {
-  title: "Alto Tráfico - Contacto",
+  title: "Altotrafico - Contacto",
   description: "Contáctanos para diseñar la estrategia de IA de tu empresa.",
 };
 
