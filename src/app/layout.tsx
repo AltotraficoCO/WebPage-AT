@@ -68,9 +68,7 @@ export async function generateMetadata() {
       title: `${SITE_NAME} - Potencia tu negocio con IA`,
       description: SITE_DESCRIPTION,
     },
-    icons: {
-      icon: settings.faviconUrl || "/favicon.ico",
-    },
+    ...(settings.faviconUrl ? { icons: { icon: settings.faviconUrl } } : {}),
   };
 }
 
