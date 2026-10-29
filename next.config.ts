@@ -24,11 +24,13 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  outputFileTracingIncludes: { "/api/marketing/**": ["./public/site/**/*"], "/api/admin/marketing/preview": ["./public/site/**/*"] },
   poweredByHeader: false,
   skipTrailingSlashRedirect: true,
   async rewrites() {
-    const pages = [{"source": "/", "destination": "/site/index.html"}, {"source": "/growth-operations", "destination": "/site/growth-operations/index.html"}, {"source": "/automatizacion-ia", "destination": "/site/automatizacion-ia/index.html"}, {"source": "/desarrollo-software", "destination": "/site/desarrollo-software/index.html"}, {"source": "/contacto", "destination": "/site/contacto/index.html"}, {"source": "/en", "destination": "/site/en/index.html"}, {"source": "/en/growth-operations", "destination": "/site/en/growth-operations/index.html"}, {"source": "/en/ai-automation", "destination": "/site/en/ai-automation/index.html"}, {"source": "/en/software-development", "destination": "/site/en/software-development/index.html"}, {"source": "/en/contact", "destination": "/site/en/contact/index.html"}];
-    return { beforeFiles: pages.flatMap(p => p.source === "/" ? [p] : [p, { ...p, source: p.source + "/" }]), afterFiles: [], fallback: [] };
+    const routes = { es: { home: "/", growth: "/growth-operations", ai: "/automatizacion-ia", tech: "/desarrollo-software", contact: "/contacto" }, en: { home: "/en", growth: "/en/growth-operations", ai: "/en/ai-automation", tech: "/en/software-development", contact: "/en/contact" } };
+    const pages = Object.entries(routes).flatMap(([locale, entries]) => Object.entries(entries).map(([page, source]) => ({ source, destination: `/api/marketing/${locale}/${page}` })));
+    return { beforeFiles: [{ source: "/sitemap.xml", destination: "/api/site-map" }, ...pages.flatMap(p => p.source === "/" ? [p] : [p, { ...p, source: p.source + "/" }])], afterFiles: [], fallback: [] };
   },
   images: {
     remotePatterns: [

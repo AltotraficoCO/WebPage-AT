@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+
 import BlogCard from "@/components/BlogCard";
 
 interface PostData {
@@ -18,13 +18,7 @@ interface Props {
 }
 
 export default function BlogList({ posts }: Props) {
-  const [hiddenIds, setHiddenIds] = useState<Set<string>>(new Set());
-
-  const handleBroken = useCallback((id: string) => {
-    setHiddenIds((prev) => new Set(prev).add(id));
-  }, []);
-
-  const visible = posts.filter((p) => !hiddenIds.has(p.id));
+  const visible = posts;
   const featured = visible[0];
   const rest = visible.slice(1);
 
@@ -48,7 +42,6 @@ export default function BlogList({ posts }: Props) {
           publishDate={featured.publishDate}
           authorName={featured.authorName}
           summary={featured.summary}
-          onBroken={() => handleBroken(featured.id)}
           featured
         />
       )}
@@ -64,7 +57,6 @@ export default function BlogList({ posts }: Props) {
               publishDate={post.publishDate}
               authorName={post.authorName}
               summary={post.summary}
-              onBroken={() => handleBroken(post.id)}
             />
           ))}
         </div>

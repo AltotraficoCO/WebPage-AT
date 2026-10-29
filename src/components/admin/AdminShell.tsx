@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navItems = [
+  { href: "/admin/contenido", label: "Contenido de la web", icon: "edit_note" },
   { href: "/admin", label: "Dashboard", icon: "dashboard" },
   { href: "/admin/logo", label: "Logo", icon: "image" },
   { href: "/admin/footer", label: "Footer Links", icon: "link" },
@@ -16,6 +17,7 @@ const navItems = [
 
 const pageTitles: Record<string, string> = {
   "/admin": "Dashboard",
+  "/admin/contenido": "Contenido de la web",
   "/admin/logo": "Gestión de Logo",
   "/admin/footer": "Footer Links",
   "/admin/cases": "Casos de Éxito",
@@ -74,14 +76,14 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         })}
       </nav>
       <div className="p-3 border-t border-gray-200 space-y-1">
-        <Link
+        <a
           href="/"
           onClick={() => setMobileOpen(false)}
           className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
         >
           <span className="material-icons text-xl">open_in_new</span>
           Ver sitio
-        </Link>
+        </a>
         <form action="/api/auth/signout" method="POST">
           <button
             type="submit"

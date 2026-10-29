@@ -42,7 +42,7 @@ export default function BlogCard({
                 src={featuredImage}
                 alt={name}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                onError={onBroken}
+                onError={e => { e.currentTarget.style.display = "none"; onBroken?.(); }}
               />
             </div>
           )}
@@ -80,7 +80,7 @@ export default function BlogCard({
             src={featuredImage}
             alt={name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            onError={onBroken}
+            onError={e => { e.currentTarget.style.display = "none"; onBroken?.(); }}
           />
         </div>
       )}

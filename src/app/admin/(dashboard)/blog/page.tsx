@@ -8,7 +8,7 @@ export default function BlogPage() {
           Blog - HubSpot
         </h2>
         <p className="text-sm text-gray-500 mt-1">
-          Visualiza y gestiona los artículos publicados desde HubSpot.
+          Importa todos los artículos publicados de HubSpot a una copia propia. Los textos se editan en HubSpot y se actualizan con el botón de importación. Las imágenes conservan su URL de origen.
         </p>
       </div>
       <BlogManager />

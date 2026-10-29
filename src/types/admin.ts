@@ -67,6 +67,7 @@ export interface AdminUser {
 }
 
 export interface HubSpotBlogPost {
+  sourceUrl?: string;
   id: string;
   slug: string;
   name: string;

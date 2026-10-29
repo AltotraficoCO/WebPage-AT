@@ -1,19 +1,16 @@
+import { cleanBlogHtml } from "@/lib/blog-archive";
+import type { Metadata } from "next";
 import { fetchBlogPostBySlug } from "@/lib/hubspot";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import BlogImage from "@/components/BlogImage";
 
-export const revalidate = 3600;
-
-function sanitizeHtml(html: string): string {
-  return html
-    .replace(/<script[\s\S]*?<\/script>/gi, "")
-    .replace(/<style[\s\S]*?<\/style>/gi, "")
-    .replace(/<iframe[\s\S]*?<\/iframe>/gi, "")
-    .replace(/\s*on\w+\s*=\s*"[^"]*"/gi, "")
-    .replace(/\s*on\w+\s*=\s*'[^']*'/gi, "")
-    .replace(/javascript\s*:/gi, "")
-    .replace(/data\s*:/gi, "");
+export const dynamic = "force-dynamic";
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const post = await fetchBlogPostBySlug((await params).slug);
+  if (!post) return { title: "Artículo no encontrado", robots: { index: false } };
+  const canonical = `https://www.altotrafico.co/blog/${post.slug}`;
+  return { title: post.name, description: stripHtml(post.metaDescription || post.postSummary), alternates: { canonical }, openGraph: { type: "article", title: post.name, url: canonical, publishedTime: post.publishDate, images: post.featuredImage ? [post.featuredImage] : [] } };
 }
 
 function stripHtml(html: string): string {
@@ -38,11 +35,12 @@ export default async function BlogPostPage({
     notFound();
   }
 
-  const cleanHtml = sanitizeHtml(post.postBody);
+  const cleanHtml = cleanBlogHtml(post.postBody);
   const summary = stripHtml(post.postSummary || post.metaDescription);
 
   return (
     <main className="pt-20 min-h-screen bg-white">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@type": "BlogPosting", headline: post.name, datePublished: post.publishDate, image: post.featuredImage || undefined, author: { "@type": "Person", name: post.authorName || "Altotráfico" }, publisher: { "@type": "Organization", name: "Altotráfico" }, mainEntityOfPage: `https://www.altotrafico.co/blog/${post.slug}` }).replaceAll("<", "\\u003c") }} />
       {/* Hero header */}
       <header className="relative">
         {post.featuredImage && (

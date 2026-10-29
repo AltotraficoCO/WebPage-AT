@@ -1,3 +1,4 @@
+import { readBlogArchive, readArchivedPost } from "@/lib/blog-archive";
 import type { HubSpotBlogPost } from "@/types/admin";
 import { readHubSpotConfig } from "@/lib/storage";
 
@@ -40,13 +41,15 @@ export async function testConnection(token: string): Promise<{ ok: boolean; tota
 }
 
 export async function fetchBlogPosts(
-  limit = 20,
+  limit = 10000,
   offset = 0
 ): Promise<{ results: HubSpotBlogPost[]; total: number }> {
+  const archive = await readBlogArchive();
+  if (archive) return { results: archive.posts.slice(offset, offset + limit).map(p => ({ ...p, postBody: "" })), total: archive.posts.length };
   const token = await getAccessToken();
   const params = new URLSearchParams({
     state: "PUBLISHED",
-    limit: String(limit),
+    limit: String(Math.min(limit, 100)),
     offset: String(offset),
     sort: "-publishDate",
   });
@@ -70,6 +73,8 @@ export async function fetchBlogPosts(
 export async function fetchBlogPostBySlug(
   slug: string
 ): Promise<HubSpotBlogPost | null> {
+  const archive = await readBlogArchive();
+  if (archive) return readArchivedPost(slug);
   // HubSpot slugs include a path prefix (e.g. "blog/my-post") which we strip
   // in mapPost. To find by clean slug, fetch all and match.
   const data = await fetchBlogPosts(100, 0);
@@ -91,9 +96,10 @@ function cleanSlug(slug: string): string {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function mapPost(raw: any): HubSpotBlogPost {
+export function mapPost(raw: any): HubSpotBlogPost {
   return {
-    id: raw.id,
+    id: String(raw.id ?? ""),
+    sourceUrl: typeof raw.url === "string" && /^https?:\/\//.test(raw.url) ? raw.url : "",
     slug: cleanSlug(raw.slug ?? ""),
     name: raw.name,
     postBody: raw.postBody ?? "",

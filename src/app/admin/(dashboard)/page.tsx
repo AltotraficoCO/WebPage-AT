@@ -2,6 +2,12 @@ import Link from "next/link";
 
 const sections = [
   {
+    title: "Contenido de la web",
+    description: "Editar portada, tres unidades, textos e imágenes en español e inglés",
+    href: "/admin/contenido",
+    icon: "edit_note",
+  },
+  {
     title: "Logo",
     description: "Cambiar el logo del sitio en navbar y footer",
     href: "/admin/logo",
@@ -21,7 +27,7 @@ const sections = [
   },
   {
     title: "Blog",
-    description: "Ver y gestionar publicaciones de HubSpot",
+    description: "Importar y actualizar la copia de los artículos de HubSpot",
     href: "/admin/blog",
     icon: "article",
   },

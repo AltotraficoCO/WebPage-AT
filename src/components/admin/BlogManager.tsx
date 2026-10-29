@@ -20,6 +20,7 @@ export default function BlogManager() {
   const [posts, setPosts] = useState<HubSpotBlogPost[]>([]);
   const [postsLoading, setPostsLoading] = useState(false);
   const [postsError, setPostsError] = useState("");
+  const [importedAt, setImportedAt] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
   const [totalPosts, setTotalPosts] = useState(0);
   const [brokenImages, setBrokenImages] = useState<Set<string>>(new Set());
@@ -142,6 +143,7 @@ export default function BlogManager() {
       const results = data.results || [];
       setPosts(results);
       setTotalPosts(data.total || 0);
+      setImportedAt(data.importedAt || null);
       checkImages(results);
     } catch (err) {
       setPostsError(
@@ -153,12 +155,19 @@ export default function BlogManager() {
 
   async function handleSync() {
     setSyncing(true);
-    await fetchPosts();
-    setSyncing(false);
+    try {
+      const res = await fetch("/api/admin/blog", { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      await fetchPosts();
+      setConfigMessage(`${data.total} artículos importados. El contenido ya tiene copia propia; las imágenes conservan sus URLs de origen.`);
+    } catch (e) { setPostsError(e instanceof Error ? e.message : "No se pudo importar"); }
+    finally { setSyncing(false); }
   }
 
   return (
     <div className="space-y-8">
+      <p className="text-sm text-gray-600">{importedAt ? `Copia propia: ${totalPosts} artículos · Última importación: ${new Date(importedAt).toLocaleString()}` : "Todavía no hay una copia propia importada. Importa los artículos para conservarlos aquí."}</p>
       {/* Connection Config Section */}
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
@@ -310,7 +319,7 @@ export default function BlogManager() {
               <span className={`material-icons text-lg ${syncing ? "animate-spin" : ""}`}>
                 sync
               </span>
-              {syncing ? "Sincronizando..." : "Sincronizar"}
+              {syncing ? "Sincronizando..." : "Importar / actualizar copia"}
             </button>
           </div>
 
@@ -398,9 +407,9 @@ export default function BlogManager() {
                     {isBroken && (
                       <div className="mt-3 flex items-center gap-2 px-3 py-2 bg-red-50 border border-red-100 rounded-lg">
                         <span className="material-icons text-red-400 text-sm">visibility_off</span>
-                        <span className="text-xs font-medium text-red-600">Oculto en el sitio</span>
+                        <span className="text-xs font-medium text-red-600">Imagen por revisar</span>
                         <span className="text-xs text-red-400">
-                          — {post.featuredImage ? "La imagen destacada no carga (URL rota)" : "No tiene imagen destacada"}. Actualiza la imagen en HubSpot.
+                          — {post.featuredImage ? "La imagen destacada no carga (URL rota)" : "No tiene imagen destacada"}. El artículo sigue visible. Actualiza la imagen en HubSpot y vuelve a importar.
                         </span>
                       </div>
                     )}

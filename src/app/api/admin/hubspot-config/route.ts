@@ -7,9 +7,9 @@ export async function GET() {
     const config = await readHubSpotConfig();
     // Return masked token for security
     return NextResponse.json({
-      configured: !!config.accessToken,
+      configured: !!(config.accessToken || process.env.HUBSPOT_ACCESS_TOKEN),
       tokenPreview: config.accessToken
-        ? `${config.accessToken.slice(0, 8)}...${config.accessToken.slice(-4)}`
+        ? "Configurado"
         : "",
     });
   } catch {
@@ -59,14 +59,14 @@ export async function POST() {
   // Test current connection
   try {
     const config = await readHubSpotConfig();
-    if (!config.accessToken) {
+    if (!(config.accessToken || process.env.HUBSPOT_ACCESS_TOKEN)) {
       return NextResponse.json(
         { error: "No hay token configurado" },
         { status: 400 }
       );
     }
 
-    const result = await testConnection(config.accessToken);
+    const result = await testConnection(config.accessToken || process.env.HUBSPOT_ACCESS_TOKEN!);
     return NextResponse.json(result);
   } catch {
     return NextResponse.json(
