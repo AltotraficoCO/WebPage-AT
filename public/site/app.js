@@ -13,7 +13,60 @@ let main='';if(page==='home'){main=`<section class="hero original-hero"><canvas 
 document.getElementById('app').innerHTML=header+`<main id="main" tabindex="-1">${main}</main><footer><div><a class="brand" href="${url('home')}"><img src="${logo}" alt="Altotráfico" width="160" height="40"></a>${t.tag}</div><div>${t.nextText}<br><a href="mailto:atencion@altotrafico.co">atencion@altotrafico.co</a><br><a href="https://wa.me/573045248141">WhatsApp +57 304 524 8141</a></div><div>© ${new Date().getFullYear()} Altotráfico S.A.S.<br><a href="https://www.altotrafico.co/legal/politica-datos" target="_blank" rel="noopener">${t.privacy}</a></div></footer>`;
 const wa=document.createElement('a');wa.className='whatsapp-float';wa.href='https://wa.me/573045248141?text='+encodeURIComponent(lang==='es'?'Hola, quisiera conversar sobre una solución para mi empresa.':'Hello, I would like to discuss a solution for my business.');wa.target='_blank';wa.rel='noopener noreferrer';wa.setAttribute('aria-label',lang==='es'?'Conversar por WhatsApp (abre otra pestaña)':'Chat on WhatsApp (opens a new tab)');wa.innerHTML='<svg viewBox="0 0 24 24" width="25" height="25" fill="currentColor" aria-hidden="true"><path d="M20.52 3.48A11.9 11.9 0 0 0 12.04 0C5.42 0 .04 5.38.04 12c0 2.12.55 4.19 1.6 6.01L0 24l6.15-1.61A11.97 11.97 0 0 0 12.04 24C18.66 24 24 18.62 24 12c0-3.21-1.24-6.22-3.48-8.52zM12.04 22a9.97 9.97 0 0 1-5.09-1.39l-.36-.21-3.65.96.97-3.56-.23-.37A9.94 9.94 0 0 1 2.04 12c0-5.51 4.49-10 10-10s9.96 4.49 9.96 10-4.45 10-9.96 10zm5.49-7.49c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15s-.77.97-.94 1.17-.35.22-.65.07c-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.14-.14.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.38-.03-.53-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.05 1.03-1.05 2.5s1.08 2.9 1.23 3.1c.15.2 2.12 3.24 5.13 4.54.72.31 1.28.5 1.72.64.72.23 1.38.2 1.9.12.58-.09 1.77-.72 2.02-1.42.25-.7.25-1.3.18-1.42-.08-.12-.28-.2-.58-.35z"/></svg><span>WhatsApp</span>';document.getElementById('app').appendChild(wa);
 document.querySelector('.lang').onclick=()=>location.href=routes[lang==='es'?'en':'es'][page];document.querySelector('.menu').onclick=e=>{const n=document.querySelector('nav');n.classList.toggle('open');e.currentTarget.setAttribute('aria-expanded',n.classList.contains('open'));};const f=document.querySelector('form');if(f)f.onsubmit=e=>{e.preventDefault();const d=new FormData(f);const body=`${t.name}: ${d.get('name')}\n${t.company}: ${d.get('company')}\n${t.email}: ${d.get('email')}\n${t.interest}: ${d.get('interest')}\n\n${d.get('need')}`;location.href=`mailto:atencion@altotrafico.co?subject=${encodeURIComponent(d.get('company')+' — '+d.get('interest'))}&body=${encodeURIComponent(body)}`;document.getElementById('form-status').textContent=t.sent;};drawNetwork();}
-let frame;function drawNetwork(){cancelAnimationFrame(frame);const c=document.getElementById('network');if(!c)return;const x=c.getContext('2d');const rect=c.getBoundingClientRect();c.width=rect.width;c.height=rect.height;const pts=Array.from({length:innerWidth<600?35:80},(_,i)=>({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,color:['#B2FFB5','#FFFA86','#D9FD9E','#ECFB92'][i%4]}));const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;function tick(){if(!c.isConnected)return;x.clearRect(0,0,c.width,c.height);for(const p of pts){p.x=(p.x+p.vx+c.width)%c.width;p.y=(p.y+p.vy+c.height)%c.height;for(const q of pts){const d=Math.hypot(p.x-q.x,p.y-q.y);if(d<110){x.strokeStyle=`rgba(178,255,181,${(1-d/110)*.3})`;x.beginPath();x.moveTo(p.x,p.y);x.lineTo(q.x,q.y);x.stroke();}}x.fillStyle=p.color;x.beginPath();x.arc(p.x,p.y,3,0,Math.PI*2);x.fill();}if(!reduced)frame=requestAnimationFrame(tick);}tick();}
+let frame, disposeNetwork;
+function drawNetwork(){
+  if(disposeNetwork)disposeNetwork();
+  cancelAnimationFrame(frame);
+  const canvas=document.getElementById('network');if(!canvas)return;
+  const ctx=canvas.getContext('2d');if(!ctx)return;
+  const section=canvas.closest('section'),rect=canvas.getBoundingClientRect();
+  const width=rect.width,height=rect.height,dpr=Math.min(window.devicePixelRatio||1,2);
+  canvas.width=width*dpr;canvas.height=height*dpr;ctx.scale(dpr,dpr);
+  const mobile=innerWidth<768,reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const count=mobile?40:100,radius=mobile?100:180,distance=mobile?80:120;
+  const colors=['#B2FFB5','#FFFA86','#D9FD9E','#ECFB92'];
+  const pointer={x:-1000,y:-1000};
+  function particle(x=Math.random()*width,y=Math.random()*height,fragment=false){
+    return {x,y,vx:(Math.random()-.5)*(fragment?8:1),vy:(Math.random()-.5)*(fragment?8:1),r:Math.random()*(fragment?2:3)+(fragment?1:2),color:colors[Math.floor(Math.random()*4)],angle:Math.random()*Math.PI*2,speed:Math.random()*.5+.1,fragment,alpha:1,decay:Math.random()*.02+.01};
+  }
+  let particles=Array.from({length:count},()=>particle());
+  function position(e){const r=canvas.getBoundingClientRect();pointer.x=e.clientX-r.left;pointer.y=e.clientY-r.top;}
+  function leave(){pointer.x=pointer.y=-1000;}
+  function burst(e){
+    if(reduced||e.target.closest('a,button,input,select,textarea'))return;
+    position(e);
+    for(let i=0;i<10&&particles.length<count+100;i++)particles.push(particle(pointer.x,pointer.y,true));
+  }
+  function tick(){
+    if(!canvas.isConnected)return;
+    ctx.clearRect(0,0,width,height);
+    particles=particles.filter(p=>p.alpha>0);
+    for(const p of particles){
+      if(!reduced){
+        if(p.fragment){p.x+=p.vx;p.y+=p.vy;p.vx*=.95;p.vy*=.95;p.alpha-=p.decay;}
+        else{p.angle+=.01;p.x+=Math.cos(p.angle)*p.speed+p.vx;p.y+=Math.sin(p.angle)*p.speed+p.vy;}
+        const dx=pointer.x-p.x,dy=pointer.y-p.y,d=Math.hypot(dx,dy);
+        if(d>0&&d<radius){const force=(radius-d)/radius;p.vx-=dx/d*force*radius*.15*.05;p.vy-=dy/d*force*radius*.15*.05;}
+        if(p.x<0)p.x=width;if(p.x>width)p.x=0;if(p.y<0)p.y=height;if(p.y>height)p.y=0;
+      }
+      ctx.globalAlpha=Math.max(0,p.alpha);ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
+      if(!mobile&&p.r>3){ctx.shadowColor=p.color;ctx.shadowBlur=10;ctx.fill();ctx.shadowBlur=0;}
+    }
+    ctx.globalAlpha=1;
+    for(let i=0;i<particles.length;i++)for(let j=i+1;j<particles.length;j++){
+      const a=particles[i],b=particles[j],d=Math.hypot(a.x-b.x,a.y-b.y);
+      if(d<distance){ctx.strokeStyle=`rgba(178,255,181,${(1-d/distance)*Math.max(0,Math.min(a.alpha,b.alpha))})`;ctx.lineWidth=.5;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}
+    }
+    if(!reduced&&!document.hidden)frame=requestAnimationFrame(tick);
+  }
+  function visibility(){cancelAnimationFrame(frame);if(!document.hidden)tick();}
+  section.addEventListener('pointermove',position,{passive:true});
+  section.addEventListener('pointerleave',leave);
+  section.addEventListener('pointerdown',burst,{passive:true});
+  document.addEventListener('visibilitychange',visibility);
+  disposeNetwork=()=>{cancelAnimationFrame(frame);section.removeEventListener('pointermove',position);section.removeEventListener('pointerleave',leave);section.removeEventListener('pointerdown',burst);document.removeEventListener('visibilitychange',visibility);};
+  tick();
+}
 window.addEventListener('hashchange',()=>{render();window.scrollTo(0,0);document.getElementById('main').focus({preventScroll:true});});let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(drawNetwork,180);});render();
 
 document.querySelector('.skip').addEventListener('click',e=>{e.preventDefault();document.getElementById('main').focus();});
