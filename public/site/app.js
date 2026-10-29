@@ -19,6 +19,7 @@ function drawNetwork(){
   cancelAnimationFrame(frame);
   const canvas=document.getElementById('network');if(!canvas)return;
   const ctx=canvas.getContext('2d');if(!ctx)return;
+  document.documentElement.style.setProperty('--header-height',document.querySelector('header').getBoundingClientRect().height+'px');
   const section=canvas.closest('section'),rect=canvas.getBoundingClientRect();
   const width=rect.width,height=rect.height,dpr=Math.min(window.devicePixelRatio||1,2);
   canvas.width=width*dpr;canvas.height=height*dpr;ctx.scale(dpr,dpr);
