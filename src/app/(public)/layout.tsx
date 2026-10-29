@@ -1,6 +1,5 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import AiBot from "@/components/AiBot";
 import { readSettings, readFooterLinks } from "@/lib/storage";
 
 export const revalidate = 300; // ISR: revalidate every 5 minutes
@@ -29,16 +28,10 @@ export default async function PublicLayout({
         logoHeight={settings.footerLogoHeight}
         legalLinks={footerLinksData.legalLinks}
         contactEmail={settings.contactEmail || "hola@altotrafico.ai"}
-        contactLocation={settings.contactLocation || "Madrid, España"}
+        contactLocation="Hub en Medellín, Colombia"
         socialLinks={settings.socialLinks || []}
       />
-      <AiBot
-        enabled={settings.chatEnabled ?? false}
-        apiUrl={settings.chatApiUrl || ""}
-        apiKey={settings.chatApiKey || ""}
-        welcomeMessage={settings.chatWelcomeMessage || "Hola. ¿En qué puedo ayudarte?"}
-        botName={settings.chatBotName || "AT Assistant"}
-      />
+      <a href="https://wa.me/573045248141" target="_blank" rel="noopener noreferrer" aria-label="Conversar por WhatsApp" className="fixed bottom-5 right-5 z-50 rounded-full bg-primary text-white px-6 py-3 shadow-lg">WhatsApp ↗</a>
     </>
   );
 }

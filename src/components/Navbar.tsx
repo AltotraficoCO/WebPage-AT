@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-import Link from "next/link";
 import Image from "next/image";
 
 interface NavbarProps {
@@ -17,10 +16,9 @@ export default function Navbar({ logoUrl, logoAlt, logoWidth, logoHeight }: Navb
   const pathname = usePathname();
 
   const navLinks = [
-    { href: "/servicios", label: "Servicios" },
-    { href: "/calculadora", label: "Calculadora" },
-    { href: "/varylo", label: "Varylo" },
-    { href: "/ia-para-empresas", label: "Diagnóstico IA" },
+    { href: "/growth-operations/", label: "Growth Operations" },
+    { href: "/automatizacion-ia/", label: "AI & Automation" },
+    { href: "/desarrollo-software/", label: "Technology & Development" },
   ];
 
   function linkClass(href: string) {
@@ -35,7 +33,7 @@ export default function Navbar({ logoUrl, logoAlt, logoWidth, logoHeight }: Navb
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <div className="flex-shrink-0 flex items-center">
-            <Link href="/" className="flex items-center">
+            <a href="/" className="flex items-center">
               <Image
                 alt={logoAlt}
                 className="h-8 md:h-10 w-auto object-contain"
@@ -44,18 +42,18 @@ export default function Navbar({ logoUrl, logoAlt, logoWidth, logoHeight }: Navb
                 height={logoHeight}
                 priority
               />
-            </Link>
+            </a>
           </div>
 
           <div className="hidden md:flex items-center space-x-8">
             {navLinks.map((link) => (
-              <Link
+              <a
                 key={link.href}
                 href={link.href}
                 className={linkClass(link.href)}
               >
                 {link.label}
-              </Link>
+              </a>
             ))}
             <a
               href="https://app.altotrafico.co"
@@ -65,12 +63,12 @@ export default function Navbar({ logoUrl, logoAlt, logoWidth, logoHeight }: Navb
             >
               Zona clientes
             </a>
-            <Link
+            <a
               href="/contacto"
               className="btn-tech bg-primary text-white px-5 py-2.5 rounded-full text-sm font-medium shadow-lg shadow-primary/20"
             >
               Contacto
-            </Link>
+            </a>
           </div>
 
           <div className="md:hidden flex items-center">
@@ -89,14 +87,14 @@ export default function Navbar({ logoUrl, logoAlt, logoWidth, logoHeight }: Navb
       {mobileOpen && (
         <div className="md:hidden bg-white border-t border-gray-100 px-4 py-6 space-y-4">
           {navLinks.map((link) => (
-            <Link
+            <a
               key={link.href}
               href={link.href}
               className={`block ${linkClass(link.href)}`}
               onClick={() => setMobileOpen(false)}
             >
               {link.label}
-            </Link>
+            </a>
           ))}
           <a
             href="https://app.altotrafico.co"
@@ -107,13 +105,13 @@ export default function Navbar({ logoUrl, logoAlt, logoWidth, logoHeight }: Navb
           >
             Zona clientes
           </a>
-          <Link
+          <a
             href="/contacto"
             className="block btn-tech bg-primary text-white px-5 py-2.5 rounded-full text-sm font-medium text-center shadow-lg shadow-primary/20"
             onClick={() => setMobileOpen(false)}
           >
             Contacto
-          </Link>
+          </a>
         </div>
       )}
     </nav>

@@ -25,6 +25,11 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  skipTrailingSlashRedirect: true,
+  async rewrites() {
+    const pages = [{"source": "/", "destination": "/site/index.html"}, {"source": "/growth-operations", "destination": "/site/growth-operations/index.html"}, {"source": "/automatizacion-ia", "destination": "/site/automatizacion-ia/index.html"}, {"source": "/desarrollo-software", "destination": "/site/desarrollo-software/index.html"}, {"source": "/contacto", "destination": "/site/contacto/index.html"}, {"source": "/en", "destination": "/site/en/index.html"}, {"source": "/en/growth-operations", "destination": "/site/en/growth-operations/index.html"}, {"source": "/en/ai-automation", "destination": "/site/en/ai-automation/index.html"}, {"source": "/en/software-development", "destination": "/site/en/software-development/index.html"}, {"source": "/en/contact", "destination": "/site/en/contact/index.html"}];
+    return { beforeFiles: pages.flatMap(p => p.source === "/" ? [p] : [p, { ...p, source: p.source + "/" }]), afterFiles: [], fallback: [] };
+  },
   images: {
     remotePatterns: [
       {

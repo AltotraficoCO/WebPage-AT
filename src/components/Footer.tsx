@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Link from "next/link";
 import Image from "next/image";
 
 interface FooterLinkItem {
@@ -213,20 +212,20 @@ export default function Footer({ logoUrl, logoAlt, logoWidth, logoHeight, legalL
             Diseña sistemas que <br />
             realmente escalen.
           </h2>
-          <Link
+          <a
             href="/ia-para-empresas"
             className="cta-button-generative px-8 py-3 rounded-full text-base font-medium inline-flex items-center justify-center shadow-sm"
           >
             Diagnostico IA
             <span className="material-icons ml-2 text-sm">arrow_forward</span>
-          </Link>
+          </a>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-16">
           <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="mb-4 block">
+            <a href="/" className="mb-4 block">
               <Image
                 alt={logoAlt}
                 className="h-6 md:h-8 w-auto object-contain"
@@ -234,7 +233,7 @@ export default function Footer({ logoUrl, logoAlt, logoWidth, logoHeight, legalL
                 width={logoWidth}
                 height={logoHeight}
               />
-            </Link>
+            </a>
             <p className="text-sm font-normal text-gray-900 mb-6">
               AT Sistemas inteligentes para crecimiento real.
             </p>
@@ -251,24 +250,24 @@ export default function Footer({ logoUrl, logoAlt, logoWidth, logoHeight, legalL
             </h4>
             <ul className="space-y-4 text-sm font-normal text-gray-500">
               <li>
-                <Link href="/" className="footer-link">
+                <a href="/" className="footer-link">
                   Inicio
-                </Link>
+                </a>
               </li>
               <li>
-                <Link href="/servicios" className="footer-link">
+                <a href="/servicios" className="footer-link">
                   Servicios
-                </Link>
+                </a>
               </li>
               <li>
-                <Link href="/#how-we-work" className="footer-link">
+                <a href="/#how-we-work" className="footer-link">
                   Metodologia
-                </Link>
+                </a>
               </li>
               <li>
-                <Link href="/blog" className="footer-link">
+                <a href="/blog" className="footer-link">
                   Blogs
-                </Link>
+                </a>
               </li>
             </ul>
           </div>
@@ -279,27 +278,27 @@ export default function Footer({ logoUrl, logoAlt, logoWidth, logoHeight, legalL
             </h4>
             <ul className="space-y-4 text-sm font-normal text-gray-500">
               <li>
-                <Link href="#" className="footer-link">
+                <a href="#" className="footer-link">
                   Consultoria Estrategica
-                </Link>
+                </a>
               </li>
               <li>
-                <Link href="#" className="footer-link">
+                <a href="#" className="footer-link">
                   AT Assistant{" "}
                   <span className="text-[10px] bg-primary text-white px-1.5 py-0.5 rounded-full ml-1 font-medium">
                     NEW
                   </span>
-                </Link>
+                </a>
               </li>
               <li>
-                <Link href="#" className="footer-link">
+                <a href="#" className="footer-link">
                   Automatizacion de Procesos
-                </Link>
+                </a>
               </li>
               <li>
-                <Link href="#" className="footer-link">
+                <a href="#" className="footer-link">
                   Integraciones Custom
-                </Link>
+                </a>
               </li>
             </ul>
           </div>
@@ -347,7 +346,7 @@ export default function Footer({ logoUrl, logoAlt, logoWidth, logoHeight, legalL
 
         <div className="mt-12 md:mt-20 pt-6 md:pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400 font-normal">
           <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-8 items-center">
-            <span>&copy; {new Date().getFullYear()} Altotrafico.</span>
+            <span>&copy; {new Date().getFullYear()} Altotráfico.</span>
             {legalLinks
               .sort((a, b) => a.order - b.order)
               .map((link) => (

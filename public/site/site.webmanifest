@@ -1,0 +1,17 @@
+{
+  "name": "Altotráfico",
+  "short_name": "Altotráfico",
+  "lang": "es",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#ffffff",
+  "theme_color": "#163336",
+  "icons": [
+    {
+      "src": "/site/assets/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

@@ -9,10 +9,10 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-const SITE_NAME = "Altotrafico";
+const SITE_NAME = "Altotráfico";
 const SITE_URL = "https://www.altotrafico.co";
 const SITE_DESCRIPTION =
-  "Consultoría estratégica de IA para empresas que buscan liderar la próxima era digital.";
+  "Growth Operations, automatización con IA y desarrollo de software. Hub en Medellín, Colombia; atención en español e inglés.";
 
 const organizationJsonLd = {
   "@context": "https://schema.org",
@@ -23,10 +23,10 @@ const organizationJsonLd = {
       name: SITE_NAME,
       legalName: "Altotráfico S.A.S.",
       url: SITE_URL,
-      email: "servicios@altotrafico.co",
+      email: "atencion@altotrafico.co",
       address: {
         "@type": "PostalAddress",
-        streetAddress: "Carrera 45 # 5A-37",
+
         addressLocality: "Medellín",
         addressCountry: "CO",
       },
