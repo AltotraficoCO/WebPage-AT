@@ -2,15 +2,18 @@ import type { Metadata } from "next";
 import ContactParticleCanvas from "@/components/contacto/ContactParticleCanvas";
 import ContactCursor from "@/components/contacto/ContactCursor";
 import ContactForm from "@/components/contacto/ContactForm";
+import { conSeo } from "@/lib/atos-seo";
+import { AtosFaq } from "@/components/AtosFaq";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = conSeo("/contacto", {
   title: "Contacto",
   description: "Contáctanos para diseñar la estrategia de IA de tu empresa.",
-};
+});
 
 export default function ContactoPage() {
   return (
     <>
+      <AtosFaq ruta="/contacto" />
       <ContactCursor />
       <ContactParticleCanvas />
       <main className="pt-20 min-h-screen relative overflow-hidden flex flex-col items-center justify-center bg-white">

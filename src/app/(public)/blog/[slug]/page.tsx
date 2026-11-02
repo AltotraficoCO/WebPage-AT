@@ -4,10 +4,18 @@ import { fetchBlogPostBySlug } from "@/lib/hubspot";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import BlogImage from "@/components/BlogImage";
+import { conSeo } from "@/lib/atos-seo";
+import { AtosFaq } from "@/components/AtosFaq";
 
 export const dynamic = "force-dynamic";
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  const post = await fetchBlogPostBySlug((await params).slug);
+  const { slug } = await params;
+  // AT OS (atos/seo.json) puede dejar título y descripción por artículo.
+  return conSeo(`/blog/${slug}`, await metadataDelArticulo(slug));
+}
+
+async function metadataDelArticulo(slug: string): Promise<Metadata> {
+  const post = await fetchBlogPostBySlug(slug);
   if (!post) return { title: "Artículo no encontrado", robots: { index: false } };
   const canonical = `https://www.altotrafico.co/blog/${post.slug}`;
   return { title: post.name, description: stripHtml(post.metaDescription || post.postSummary), alternates: { canonical }, openGraph: { type: "article", title: post.name, url: canonical, publishedTime: post.publishDate, images: post.featuredImage ? [post.featuredImage] : [] } };
@@ -40,6 +48,7 @@ export default async function BlogPostPage({
 
   return (
     <main className="pt-20 min-h-screen bg-white">
+      <AtosFaq ruta={`/blog/${slug}`} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@type": "BlogPosting", headline: post.name, datePublished: post.publishDate, image: post.featuredImage || undefined, author: { "@type": "Person", name: post.authorName || "Altotráfico" }, publisher: { "@type": "Organization", name: "Altotráfico" }, mainEntityOfPage: `https://www.altotrafico.co/blog/${post.slug}` }).replaceAll("<", "\\u003c") }} />
       {/* Hero header */}
       <header className="relative">

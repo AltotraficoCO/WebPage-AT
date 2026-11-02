@@ -2,17 +2,20 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import FaqVarylo from "@/components/varylo/FaqVarylo";
 import { VARYLO, CALCOM_DEMO_URL } from "@/data/varylo";
+import { conSeo } from "@/lib/atos-seo";
+import { AtosFaq } from "@/components/AtosFaq";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = conSeo("/varylo", {
   title: "Varylo — Agente de IA para WhatsApp, Instagram y WebChat",
   description:
     "Varylo centraliza WhatsApp, Instagram y WebChat en una sola bandeja con IA que responde, califica y vende por ti 24/7. Agenda una demo de 20 minutos.",
   alternates: { canonical: "/varylo" },
-};
+});
 
 export default function VaryloPage() {
   return (
     <main className="bg-white text-gray-900">
+      <AtosFaq ruta="/varylo" />
       <Hero />
       <Problemas />
       <ComoFunciona />
