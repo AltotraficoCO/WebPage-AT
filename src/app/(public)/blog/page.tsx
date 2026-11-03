@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
 import { fetchBlogPosts } from "@/lib/hubspot";
 import BlogList from "@/components/BlogList";
+import { conSeo } from "@/lib/atos-seo";
+import { AtosFaq } from "@/components/AtosFaq";
 
 function stripHtml(html: string): string {
   return html.replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();
 }
 
-export const metadata: Metadata = {
+export const metadata: Metadata = conSeo("/blog", {
   title: "Blog",
   description: "Artículos sobre IA, automatización y estrategia empresarial.",
-};
+});
 
 export const dynamic = "force-dynamic";
 
@@ -36,6 +38,7 @@ export default async function BlogPage() {
 
   return (
     <main className="pt-20 min-h-screen">
+      <AtosFaq ruta="/blog" />
       <section className="py-20 sm:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
