@@ -1,4 +1,11 @@
 {
   "version": 1,
-  "paginas": {}
+  "paginas": {
+    "/": {},
+    "/servicios": {},
+    "/contacto": {},
+    "/blog": {},
+    "/calculadora": {},
+    "/blog/tu-pauta-no-esta-rota-tu-estrategia-tal-vez-si": {}
+  }
 }
