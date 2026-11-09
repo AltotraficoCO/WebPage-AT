@@ -17,7 +17,32 @@
         }
       ]
     },
-    "/servicios": {},
+    "/servicios": {
+      "titulo": "Consultoría de IA para empresas: servicios | Altotráfico",
+      "descripcion": "Consultoría de IA para empresas: IA aplicada, integraciones, automatización, estrategia y AT Assistant, un asistente virtual 24/7. Escala con control.",
+      "faq": [
+        {
+          "pregunta": "¿Qué servicios de IA ofrece Altotráfico?",
+          "respuesta": "Ofrecemos IA Aplicada, Integraciones & Arquitectura, Performance & Automatización, Consultoría Estratégica y AT Assistant, nuestro asistente virtual corporativo."
+        },
+        {
+          "pregunta": "¿Qué es AT Assistant?",
+          "respuesta": "Es nuestro producto insignia: un asistente virtual corporativo entrenado exclusivamente con el conocimiento de tu empresa para dar soporte 24/7 a clientes y empleados, con chatbots conversacionales, base de conocimiento, soporte multicanal y análisis de sentimiento."
+        },
+        {
+          "pregunta": "¿Pueden integrar la IA con mi CRM o ERP?",
+          "respuesta": "Sí. Construimos puentes entre tus herramientas actuales (CRM, ERP, bases de datos) mediante desarrollo de APIs, middleware inteligente, data warehousing y seguridad de datos."
+        },
+        {
+          "pregunta": "¿Qué incluye la consultoría estratégica de IA?",
+          "respuesta": "Acompañamos a la dirección en las decisiones tecnológicas con roadmap digital, gestión del cambio, capacitación ejecutiva y evaluación de ROI para adoptar la IA a escala corporativa."
+        },
+        {
+          "pregunta": "¿Cómo ayuda la automatización a mi equipo?",
+          "respuesta": "Diseñamos flujos de trabajo autónomos con RPA, optimización de workflows, dashboards en tiempo real y auditoría de procesos, que eliminan la redundancia operativa y liberan al equipo para tareas de alto valor."
+        }
+      ]
+    },
     "/contacto": {},
     "/blog": {},
     "/calculadora": {},
