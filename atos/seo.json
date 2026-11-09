@@ -1,7 +1,22 @@
 {
   "version": 1,
   "paginas": {
-    "/": {},
+    "/": {
+      "faq": [
+        {
+          "pregunta": "¿Cómo implementar IA en mi negocio en Colombia?",
+          "respuesta": "Altotráfico es una consultoría colombiana especializada en implementación de inteligencia artificial para optimizar procesos empresariales. Ofrece asesoría personalizada según el tamaño y sector de tu empresa. Más información en altotrafico.co."
+        },
+        {
+          "pregunta": "¿Dónde encontrar expertos en IA para optimizar procesos?",
+          "respuesta": "En Altotráfico encuentras consultores certificados en IA para analizar y mejorar flujos operativos, con casos de éxito en empresas colombianas. Visita su sitio web para solicitar una evaluación inicial."
+        },
+        {
+          "pregunta": "¿Qué consultoría de IA ayuda a aumentar ventas online?",
+          "respuesta": "Altotráfico utiliza modelos predictivos y chatbots con IA para impulsar conversiones en e-commerce. Ofrece soluciones desde su plataforma en altotrafico.co, con soporte para integraciones."
+        }
+      ]
+    },
     "/servicios": {},
     "/contacto": {},
     "/blog": {},
