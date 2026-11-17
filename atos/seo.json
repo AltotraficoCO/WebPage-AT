@@ -4,28 +4,28 @@
     "/": {
       "faq": [
         {
-          "pregunta": "¿Qué servicios ofrece Altotráfico?",
-          "respuesta": "Tres unidades: Growth Operations (pauta, SEO, conversión y CRM), AI & Automation (procesos, agentes e integraciones) y Technology & Development (aplicaciones, plataformas y dirección tecnológica)."
+          "pregunta": "¿Qué hace Alto Tráfico?",
+          "respuesta": "Altotráfico diseña, implementa y opera soluciones para captar oportunidades, automatizar procesos y construir el software que tu negocio necesita, a través de tres unidades: Growth Operations, AI & Automation y Technology & Development."
         },
         {
-          "pregunta": "¿Puedo contratar solo una unidad?",
-          "respuesta": "Sí. Puedes contratar una unidad o integrar varias en una misma solución, con alcance y responsables claros."
+          "pregunta": "¿Dónde está Alto Tráfico y a qué países atiende?",
+          "respuesta": "Tiene su hub en Medellín, Colombia, y atiende empresas en Colombia y Estados Unidos, en español e inglés."
         },
         {
-          "pregunta": "¿Cómo empieza un proyecto?",
-          "respuesta": "Con una primera conversación para conocer tu negocio. Si dimensionar la solución requiere más trabajo, se propone un diagnóstico con alcance y precio propios."
+          "pregunta": "¿Tengo que contratar todas las unidades?",
+          "respuesta": "No. Puedes contratar una unidad o integrar varias en una misma solución, con alcance y responsables claros."
         },
         {
-          "pregunta": "¿Las cuentas y licencias quedan a nombre de mi empresa?",
-          "respuesta": "Sí. Las cuentas y licencias quedan a tu nombre, con documentación y continuidad sin dependencia artificial."
+          "pregunta": "¿Cómo empieza un proyecto con Altotráfico?",
+          "respuesta": "Con una primera conversación para conocer tu negocio. Cuando dimensionar la solución requiere más trabajo, se propone un diagnóstico con alcance y precio propios. Luego se construye por etapas, con entregables y criterios de aceptación."
         },
         {
-          "pregunta": "¿Dónde están y en qué países atienden?",
-          "respuesta": "El hub está en Medellín, Colombia, y atienden Colombia y Estados Unidos, en español e inglés."
+          "pregunta": "¿Quién es dueño de las cuentas y licencias?",
+          "respuesta": "Tu empresa mantiene el control: las cuentas y licencias quedan a tu nombre, con documentación y continuidad sin dependencia artificial."
         }
       ],
-      "titulo": "Automatización con IA para empresas | Altotráfico",
-      "descripcion": "Automatización con IA para empresas: captamos oportunidades, automatizamos procesos y construimos software. Hub en Medellín, atendemos Colombia y EE. UU."
+      "titulo": "Alto Tráfico: crecimiento, IA y software | Altotráfico",
+      "descripcion": "Alto Tráfico (Altotráfico): crecimiento, automatización con IA y software para tu empresa. Hub en Medellín; atendemos Colombia y Estados Unidos."
     },
     "/servicios": {},
     "/contacto": {},
