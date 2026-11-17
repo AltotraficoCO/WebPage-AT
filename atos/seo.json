@@ -135,6 +135,32 @@
           "respuesta": "Puedes solicitar una consulta gratuita con Altotráfico desde esta misma página."
         }
       ]
+    },
+    "/blog/videos-de-ia-el-futuro-o-una-moda-costosa": {
+      "titulo": "Videos de IA: ¿el futuro o una moda costosa? | Altotráfico",
+      "descripcion": "Videos de IA con Veo, HeyGen, Runway o Pika: ventajas, limitaciones, casos donde sí convienen y cómo decidir si tu empresa debe invertir.",
+      "faq": [
+        {
+          "pregunta": "¿Qué herramientas existen para crear videos con IA?",
+          "respuesta": "El artículo menciona Veo, de Google DeepMind, que genera secuencias de video a partir de descripciones; HeyGen, que convierte un texto en un presentador virtual que habla en varios idiomas; además de Runway y Pika."
+        },
+        {
+          "pregunta": "¿Cuáles son las ventajas de los videos de IA?",
+          "respuesta": "Velocidad de producción (un guion podría convertirse en video en menos de una hora), reducción de costos iniciales al no requerir cámara, iluminación ni actores, y acceso a escenarios ficticios, recreaciones históricas y efectos visuales avanzados."
+        },
+        {
+          "pregunta": "¿Qué limitaciones tienen los videos generados con IA?",
+          "respuesta": "Pueden tener un estilo repetitivo y gestos robóticos, muchas herramientas no generan video 4K fluido y presentan errores de continuidad, no todos los servicios dan derechos plenos de uso comercial y el uso constante puede volverse costoso."
+        },
+        {
+          "pregunta": "¿En qué casos sí conviene usar video con IA?",
+          "respuesta": "En localización de contenido a varios idiomas, prototipado y pruebas de ideas, contenido educativo y tutoriales que se actualizan con frecuencia, y campañas de marketing exprés o tendencias virales."
+        },
+        {
+          "pregunta": "¿Cuándo es mejor la producción tradicional?",
+          "respuesta": "En publicidad de alto impacto televisivo o cinematográfico, en producciones con alto componente emocional y en videos de marca que buscan una diferenciación visual única. Ahí la IA puede ser complemento, no reemplazo."
+        }
+      ]
     }
   }
 }
