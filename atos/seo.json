@@ -4,28 +4,28 @@
     "/": {
       "faq": [
         {
-          "pregunta": "¿Qué hace Alto Tráfico?",
-          "respuesta": "Altotráfico diseña, implementa y opera soluciones para captar oportunidades, automatizar procesos y construir el software que tu negocio necesita, a través de tres unidades: Growth Operations, AI & Automation y Technology & Development."
+          "pregunta": "¿Dónde está Altotráfico y a qué países atiende?",
+          "respuesta": "Altotráfico tiene su hub en Medellín, Colombia, y atiende empresas en Colombia y Estados Unidos, en español e inglés."
         },
         {
-          "pregunta": "¿Dónde está Alto Tráfico y a qué países atiende?",
-          "respuesta": "Tiene su hub en Medellín, Colombia, y atiende empresas en Colombia y Estados Unidos, en español e inglés."
+          "pregunta": "¿Qué incluye el servicio de automatización con IA?",
+          "respuesta": "La unidad AI & Automation trabaja procesos, agentes e integraciones diseñados para trabajar junto con tu equipo."
         },
         {
-          "pregunta": "¿Tengo que contratar todas las unidades?",
-          "respuesta": "No. Puedes contratar una unidad o integrar varias en una misma solución, con alcance y responsables claros."
+          "pregunta": "¿Puedo contratar solo una unidad?",
+          "respuesta": "Sí. Puedes contratar una unidad o integrar varias en una misma solución, con alcance y responsables claros."
         },
         {
-          "pregunta": "¿Cómo empieza un proyecto con Altotráfico?",
-          "respuesta": "Con una primera conversación para conocer tu negocio. Cuando dimensionar la solución requiere más trabajo, se propone un diagnóstico con alcance y precio propios. Luego se construye por etapas, con entregables y criterios de aceptación."
+          "pregunta": "¿Cómo empieza un proyecto?",
+          "respuesta": "Con una primera conversación para conocer tu negocio. Si dimensionar la solución requiere más trabajo, se propone un diagnóstico con alcance y precio propios."
         },
         {
-          "pregunta": "¿Quién es dueño de las cuentas y licencias?",
-          "respuesta": "Tu empresa mantiene el control: las cuentas y licencias quedan a tu nombre, con documentación y continuidad sin dependencia artificial."
+          "pregunta": "¿Mi empresa mantiene el control de las herramientas?",
+          "respuesta": "Sí. Las cuentas y licencias quedan a nombre de tu empresa, con documentación y continuidad sin dependencia artificial."
         }
       ],
-      "titulo": "Alto Tráfico: crecimiento, IA y software | Altotráfico",
-      "descripcion": "Alto Tráfico (Altotráfico): crecimiento, automatización con IA y software para tu empresa. Hub en Medellín; atendemos Colombia y Estados Unidos."
+      "titulo": "Automatización con IA y software en Medellín | Altotráfico",
+      "descripcion": "Automatización con IA, crecimiento y software para empresas en Colombia y Estados Unidos. Hub en Medellín. Conversemos sobre tu empresa."
     },
     "/servicios": {},
     "/contacto": {},
