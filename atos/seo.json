@@ -109,6 +109,32 @@
           "respuesta": "Porque Google concentra más del 90 % de las búsquedas mundiales, lo que da más exposición a los anuncios, incluso cuando lo que se busca es segmentar el público."
         }
       ]
+    },
+    "/blog/publicidad-ohi-automatico": {
+      "titulo": "Publicidad OHI: publicidad online con inbound | Altotráfico",
+      "descripcion": "Publicidad OHI es publicidad online con inbound marketing y CRM HubSpot: más humana, menos invasiva. Conoce cómo funciona y solicita tu consulta gratuita.",
+      "faq": [
+        {
+          "pregunta": "¿Qué es la Publicidad OHI?",
+          "respuesta": "La Publicidad OHI es Publicidad Online con Inbound Marketing. Consiste en acercarse a los usuarios y entender su necesidad, con una publicidad más humana y menos invasiva."
+        },
+        {
+          "pregunta": "¿En qué plataformas se aplica la Publicidad OHI?",
+          "respuesta": "Altotráfico incorpora su estrategia de Publicidad OHI en Google Ads, Facebook & Instagram Ads, LinkedIn Ads, Twitter Ads y Pinterest Ads."
+        },
+        {
+          "pregunta": "¿Qué aporta HubSpot a la Publicidad OHI?",
+          "respuesta": "El CRM HubSpot ayuda a analizar los resultados en los canales adecuados, obtener datos del retorno de inversión y saber exactamente qué anuncio proporciona más clientes efectivos."
+        },
+        {
+          "pregunta": "¿Cómo ayuda la Publicidad OHI a mi empresa?",
+          "respuesta": "Ayuda a que tu empresa aparezca en el momento exacto en que el usuario tiene una necesidad y hace que tus usuarios se comprometan con tus productos y servicios."
+        },
+        {
+          "pregunta": "¿Cómo puedo conocer más sobre la Publicidad OHI?",
+          "respuesta": "Puedes solicitar una consulta gratuita con Altotráfico desde esta misma página."
+        }
+      ]
     }
   }
 }
