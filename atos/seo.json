@@ -83,6 +83,32 @@
           "respuesta": "La manual da más control sobre las pujas y la inversión por palabra clave, pero exige ajustes continuos. Con la automática, el algoritmo de Google hace parte de los ajustes, siempre con un límite definido."
         }
       ]
+    },
+    "/blog/google-ads-que-es": {
+      "titulo": "Publicidad AdWords: qué es Google Ads | Altotráfico",
+      "descripcion": "Publicidad AdWords, hoy Google Ads: qué es, cómo funciona en la Red de Búsqueda, cómo elegir palabras clave y medir conversiones con Google Analytics.",
+      "faq": [
+        {
+          "pregunta": "¿Google Ads y Google AdWords son lo mismo?",
+          "respuesta": "Sí. Google Ads es el nombre actual de la herramienta de publicidad online de Google, antes conocida como Google AdWords."
+        },
+        {
+          "pregunta": "¿Dónde aparecen los anuncios de Google Ads?",
+          "respuesta": "En la Red de Búsqueda de Google pueden mostrarse en los primeros resultados del buscador y, en ocasiones, al pie de la primera página de resultados, bajo la etiqueta «Anuncio»."
+        },
+        {
+          "pregunta": "¿Cómo se activan los anuncios en Google Ads?",
+          "respuesta": "Debes elegir antes las palabras clave que los activarán; cuando un usuario busca la palabra elegida, le aparece tu anuncio."
+        },
+        {
+          "pregunta": "¿Qué tipos de anuncios permite Google Ads?",
+          "respuesta": "Permite anuncios de texto, anuncios gráficos, anuncios de vídeo y otros formatos."
+        },
+        {
+          "pregunta": "¿Por qué anunciarse en Google y no en otro buscador?",
+          "respuesta": "Porque Google concentra más del 90 % de las búsquedas mundiales, lo que da más exposición a los anuncios, incluso cuando lo que se busca es segmentar el público."
+        }
+      ]
     }
   }
 }
