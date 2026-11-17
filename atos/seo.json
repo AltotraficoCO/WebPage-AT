@@ -187,6 +187,32 @@
           "respuesta": "Herramientas como AnswerThePublic, AlsoAsked o foros especializados ayudan a detectar lo que realmente pregunta tu público."
         }
       ]
+    },
+    "/blog/marketing-ia-first-rituales-y-riesgos": {
+      "titulo": "Marketing IA-First: rituales y riesgos | Altotráfico",
+      "descripcion": "Marketing IA-First: qué significa, el riesgo de sonar como todos y los rituales para automatizar con IA sin perder la voz de tu marca.",
+      "faq": [
+        {
+          "pregunta": "¿Qué significa ser IA-First en marketing?",
+          "respuesta": "Es un enfoque, no una moda: implica diseñar experiencias, campañas y procesos pensando desde la IA, no solo agregándola al final."
+        },
+        {
+          "pregunta": "¿Qué ejemplos hay de marketing IA-First?",
+          "respuesta": "Usar ChatGPT, Gemini o Copilot para idear titulares, automatizar los saludos de WhatsApp, predecir el comportamiento del usuario, ajustar dinámicamente una pauta y generar contenido a escala."
+        },
+        {
+          "pregunta": "¿Cuál es el principal riesgo de una estrategia IA-First?",
+          "respuesta": "Sonar como todos: cuando se automatiza sin pensar y la tecnología reemplaza la intención, los mensajes salen del mismo molde y el marketing se vuelve un eco vacío."
+        },
+        {
+          "pregunta": "¿Cómo mantener la voz de la marca al usar IA?",
+          "respuesta": "Volviendo a tu propósito antes de automatizar, sabiendo a quién le hablas, revisando si tus mensajes suenan a tu marca, dejando espacio para la sorpresa, el humor y la emoción, y usando la IA como copiloto, no como piloto automático."
+        },
+        {
+          "pregunta": "¿La IA reemplaza la estrategia de marketing?",
+          "respuesta": "No. En AltoTráfico creemos que la IA no reemplaza la estrategia, la potencia: ayuda a moverse más rápido, pero son las personas quienes deciden a dónde."
+        }
+      ]
     }
   }
 }
