@@ -31,6 +31,32 @@
     "/contacto": {},
     "/blog": {},
     "/calculadora": {},
-    "/blog/tu-pauta-no-esta-rota-tu-estrategia-tal-vez-si": {}
+    "/blog/tu-pauta-no-esta-rota-tu-estrategia-tal-vez-si": {},
+    "/blog/desarrollo-web-wordpress": {
+      "titulo": "Desarrollo web WordPress para negocios online | Altotráfico",
+      "descripcion": "Desarrollo web WordPress para tu negocio: diseños a medida, SEO desde el inicio, integraciones como WhatsApp o pagos y soporte. Asesoría sin compromiso.",
+      "faq": [
+        {
+          "pregunta": "¿Qué es WordPress?",
+          "respuesta": "Es un sistema de gestión de contenidos (CMS) que impulsa más del 40% de los sitios web del mundo y permite crear y administrar una página web profesional sin conocimientos técnicos avanzados."
+        },
+        {
+          "pregunta": "¿WordPress es bueno para el SEO?",
+          "respuesta": "Sí. Ofrece URLs amigables, jerarquía de contenido clara y código limpio, plugins como Yoast SEO o Rank Math y optimización de velocidad con sistemas de caché y compresión."
+        },
+        {
+          "pregunta": "¿Puedo actualizar mi sitio WordPress yo mismo?",
+          "respuesta": "Sí. Su panel administrativo está pensado para usuarios no técnicos y su editor visual funciona como un procesador de texto, lo que ahorra tiempo y costes de mantenimiento."
+        },
+        {
+          "pregunta": "¿Un sitio WordPress puede crecer con mi negocio?",
+          "respuesta": "Sí. Puedes añadir funcionalidades cuando las necesites, conectar CRMs, email marketing y analítica, y gestionar varios sitios desde un solo panel con Multisite."
+        },
+        {
+          "pregunta": "¿Qué integraciones hace Altotráfico en WordPress?",
+          "respuesta": "Realizamos integraciones a medida como WhatsApp, formularios, reservas, pagos en línea y más, además de ofrecer soporte y mantenimiento constantes."
+        }
+      ]
+    }
   }
 }
