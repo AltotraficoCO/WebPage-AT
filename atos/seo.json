@@ -57,6 +57,32 @@
           "respuesta": "Realizamos integraciones a medida como WhatsApp, formularios, reservas, pagos en línea y más, además de ofrecer soporte y mantenimiento constantes."
         }
       ]
+    },
+    "/blog/costo-campana-google-ads": {
+      "titulo": "Cuánto invertir en Google Ads y cómo se cobra | Altotráfico",
+      "descripcion": "¿Cuánto invertir en Google Ads? Te explicamos cómo funcionan las pujas, el presupuesto diario y el cobro mensual, con ejemplos en USD para empezar.",
+      "faq": [
+        {
+          "pregunta": "¿Hay un monto mínimo para invertir en Google Ads?",
+          "respuesta": "No. No hay un monto mínimo de inversión definido: se establece un presupuesto diario promedio por campaña y se puede modificar en cualquier momento."
+        },
+        {
+          "pregunta": "¿Cuándo se paga en Google Ads?",
+          "respuesta": "A diferencia de la publicidad convencional, en Google Ads solo se paga cuando el usuario hace clic en tu anuncio."
+        },
+        {
+          "pregunta": "¿Cuánto me puede cobrar Google en un mes?",
+          "respuesta": "No recibirás cobros mayores al presupuesto diario multiplicado por el promedio de días del mes (aproximadamente 30,4). Por ejemplo, con 10 USD por día el máximo estimado es 304 USD."
+        },
+        {
+          "pregunta": "¿Qué es el CPC máximo?",
+          "respuesta": "Es el precio máximo que estás dispuesto a pagar por clic. Si fijas 1 USD, eso es lo máximo que pagarás por clic (salvo algunos casos con ofertas automáticas), y el costo real puede ser inferior."
+        },
+        {
+          "pregunta": "¿Es mejor la puja manual o la automática?",
+          "respuesta": "La manual da más control sobre las pujas y la inversión por palabra clave, pero exige ajustes continuos. Con la automática, el algoritmo de Google hace parte de los ajustes, siempre con un límite definido."
+        }
+      ]
     }
   }
 }
