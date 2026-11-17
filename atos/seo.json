@@ -4,24 +4,28 @@
     "/": {
       "faq": [
         {
-          "pregunta": "¿Qué es AT OS?",
-          "respuesta": "AT OS es la plataforma de operación de Altotráfico, donde se encuentra el Sistema de Seguimiento de Leads."
+          "pregunta": "¿Qué servicios ofrece Altotráfico?",
+          "respuesta": "Tres unidades: Growth Operations (pauta, SEO, conversión y CRM), AI & Automation (procesos, agentes e integraciones) y Technology & Development (aplicaciones, plataformas y dirección tecnológica)."
         },
         {
-          "pregunta": "¿Cómo inicio sesión en el Sistema de Seguimiento de Leads?",
-          "respuesta": "Ingresa tu email y tu contraseña y pulsa 'Iniciar Sesión', o usa la opción 'Continuar con Google'."
+          "pregunta": "¿Puedo contratar solo una unidad?",
+          "respuesta": "Sí. Puedes contratar una unidad o integrar varias en una misma solución, con alcance y responsables claros."
         },
         {
-          "pregunta": "¿Puedo entrar con mi cuenta de Google?",
-          "respuesta": "Sí. En la página de acceso está el botón 'Continuar con Google' para iniciar sesión sin escribir email y contraseña."
+          "pregunta": "¿Cómo empieza un proyecto?",
+          "respuesta": "Con una primera conversación para conocer tu negocio. Si dimensionar la solución requiere más trabajo, se propone un diagnóstico con alcance y precio propios."
         },
         {
-          "pregunta": "¿Qué hago si olvidé mi contraseña?",
-          "respuesta": "Usa el enlace '¿Olvidaste tu contraseña?' que aparece en el formulario de inicio de sesión."
+          "pregunta": "¿Las cuentas y licencias quedan a nombre de mi empresa?",
+          "respuesta": "Sí. Las cuentas y licencias quedan a tu nombre, con documentación y continuidad sin dependencia artificial."
+        },
+        {
+          "pregunta": "¿Dónde están y en qué países atienden?",
+          "respuesta": "El hub está en Medellín, Colombia, y atienden Colombia y Estados Unidos, en español e inglés."
         }
       ],
-      "titulo": "Alto Track: Seguimiento de Leads | Altotráfico",
-      "descripcion": "Inicia sesión en el Sistema de Seguimiento de Leads de Altotráfico (AT OS) con tu email y contraseña, o continúa directamente con tu cuenta de Google."
+      "titulo": "Automatización con IA para empresas | Altotráfico",
+      "descripcion": "Automatización con IA para empresas: captamos oportunidades, automatizamos procesos y construimos software. Hub en Medellín, atendemos Colombia y EE. UU."
     },
     "/servicios": {},
     "/contacto": {},
