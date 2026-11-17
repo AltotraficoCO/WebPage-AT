@@ -161,6 +161,32 @@
           "respuesta": "En publicidad de alto impacto televisivo o cinematográfico, en producciones con alto componente emocional y en videos de marca que buscan una diferenciación visual única. Ahí la IA puede ser complemento, no reemplazo."
         }
       ]
+    },
+    "/blog/la-evoluci%C3%B3n-del-seo-answer-engine-optimization-aeo": {
+      "titulo": "Answer Engine Optimization (AEO): qué es | Altotráfico",
+      "descripcion": "Qué es el Answer Engine Optimization (AEO), en qué se diferencia del SEO clásico y 5 claves para que la IA elija tu contenido como la mejor respuesta.",
+      "faq": [
+        {
+          "pregunta": "¿Qué es el Answer Engine Optimization (AEO)?",
+          "respuesta": "Es la optimización de tu contenido para que los motores de búsqueda basados en IA, o answer engines, seleccionen tu respuesta como la mejor opción cuando un usuario hace una pregunta."
+        },
+        {
+          "pregunta": "¿El AEO reemplaza al SEO?",
+          "respuesta": "No. El AEO no reemplaza al SEO: lo complementa y lo eleva. El SEO no murió, evolucionó, y la estrategia más potente combina SEO técnico, optimización de experiencia e IA."
+        },
+        {
+          "pregunta": "¿En qué se diferencia el AEO del SEO clásico?",
+          "respuesta": "El SEO clásico giraba alrededor de keywords, enlaces y métricas técnicas. El AEO se enfoca en intenciones: ya no compites solo por aparecer en la primera página, sino por ser la respuesta que una IA cita."
+        },
+        {
+          "pregunta": "¿Cuáles son las claves para optimizar con AEO?",
+          "respuesta": "Responder preguntas reales, ser claro y sin rodeos, usar formatos que faciliten la extracción (listas, subtítulos, tablas), demostrar autoridad y confianza (E-E-A-T) y conversar de forma natural."
+        },
+        {
+          "pregunta": "¿Qué herramientas ayudan a detectar las preguntas de mi público?",
+          "respuesta": "Herramientas como AnswerThePublic, AlsoAsked o foros especializados ayudan a detectar lo que realmente pregunta tu público."
+        }
+      ]
     }
   }
 }
