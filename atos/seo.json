@@ -288,6 +288,32 @@
           "respuesta": "No. En AltoTráfico creemos que la IA no reemplaza la estrategia, la potencia: ayuda a moverse más rápido, pero son las personas quienes deciden a dónde."
         }
       ]
+    },
+    "/blog/c%C3%B3mo-mejorar-la-presencia-digital-de-mi-empresa-en-2025-gu%C3%ADa-completa": {
+      "titulo": "Mejorar presencia online de mi empresa: guía | Altotráfico",
+      "descripcion": "Mejora la presencia online de tu empresa en 2025 con esta guía: sitio web, SEO, redes sociales, email marketing, publicidad y contenidos paso a paso.",
+      "faq": [
+        {
+          "pregunta": "¿Qué es la presencia digital de una empresa?",
+          "respuesta": "Es el conjunto de acciones, plataformas y estrategias que una empresa utiliza para estar visible y conectada con su audiencia en internet. Incluye su página web, redes sociales, estrategia de contenido, publicidad online y posicionamiento en buscadores."
+        },
+        {
+          "pregunta": "¿Cómo mejorar la presencia online de mi empresa?",
+          "respuesta": "Con un sitio web profesional y responsive, una estrategia SEO, presencia activa en redes sociales, email marketing, publicidad online y marketing de contenidos, midiendo los resultados para optimizar continuamente."
+        },
+        {
+          "pregunta": "¿Por qué es importante mejorar la presencia digital de una empresa?",
+          "respuesta": "Porque permite aumentar la visibilidad, generar confianza, conectar con la audiencia, impulsar las ventas y mejorar la reputación online. Si no te encuentran o tu imagen es poco profesional, los clientes se van con la competencia."
+        },
+        {
+          "pregunta": "¿Qué acciones de SEO ayudan a la presencia digital?",
+          "respuesta": "Investigar palabras clave con herramientas como Google Keyword Planner, optimizar títulos, meta descripciones, encabezados e imágenes, conseguir enlaces de calidad y, si tienes un negocio físico, optimizar Google My Business y directorios locales."
+        },
+        {
+          "pregunta": "¿Cómo medir si mejora la presencia digital de mi empresa?",
+          "respuesta": "Con Google Analytics para analizar tráfico, comportamiento de usuarios y conversiones, y con las métricas de redes sociales para evaluar alcance, interacciones y crecimiento."
+        }
+      ]
     }
   }
 }
