@@ -29,7 +29,32 @@
     },
     "/servicios": {},
     "/contacto": {},
-    "/blog": {},
+    "/blog": {
+      "titulo": "Altotráfico blog: IA, SEO y Google Ads | Altotráfico",
+      "descripcion": "Blog de Altotráfico: artículos sobre IA, automatización, SEO y AEO, Google Ads, Facebook Ads, HubSpot y WordPress para hacer crecer tu empresa.",
+      "faq": [
+        {
+          "pregunta": "¿Sobre qué temas escribe el blog de Altotráfico?",
+          "respuesta": "Sobre IA, automatización y transformación digital: el futuro de las agencias con IA, Answer Engine Optimization (AEO), videos de IA, Google Ads, Facebook Ads, HubSpot, customer journey map y desarrollo web con WordPress."
+        },
+        {
+          "pregunta": "¿Qué es la Red de Display de Google?",
+          "respuesta": "La Red de Display de Google incluye una colección de sitios web de Google (como Google Finance, Gmail, Blogger y YouTube) y sitios asociados."
+        },
+        {
+          "pregunta": "¿En qué consiste el Remarketing en Google Ads?",
+          "respuesta": "El Remarketing, en pocas palabras, consiste en tratar de captar a un cliente potencial por segunda, tercera, cuarta vez."
+        },
+        {
+          "pregunta": "¿Qué es la Publicidad OHI de Altotráfico?",
+          "respuesta": "La Publicidad OHI es acercarse a tus usuarios, entender su necesidad: una publicidad más humana y menos invasiva."
+        },
+        {
+          "pregunta": "¿Qué es Answer Engine Optimization (AEO)?",
+          "respuesta": "Es la evolución del SEO: responder preguntas (con IA) es la nueva clave para posicionar, porque ya no basta con llenar un texto de palabras clave y esperar que Google haga su magia."
+        }
+      ]
+    },
     "/calculadora": {},
     "/blog/tu-pauta-no-esta-rota-tu-estrategia-tal-vez-si": {
       "titulo": "Pauta digital sin resultados: es la estrategia | Altotráfico",
