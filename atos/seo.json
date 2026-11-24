@@ -31,7 +31,32 @@
     "/contacto": {},
     "/blog": {},
     "/calculadora": {},
-    "/blog/tu-pauta-no-esta-rota-tu-estrategia-tal-vez-si": {},
+    "/blog/tu-pauta-no-esta-rota-tu-estrategia-tal-vez-si": {
+      "titulo": "Pauta digital sin resultados: es la estrategia | Altotráfico",
+      "descripcion": "¿Pautas y no ves resultados? La pauta digital funciona si hay estrategia: objetivo claro, público definido, flujo de conversión y métricas que importan.",
+      "faq": [
+        {
+          "pregunta": "¿La pauta digital sirve si no estoy viendo resultados?",
+          "respuesta": "Sí. La pauta es una herramienta poderosa si sabes usarla, pero depende de la estrategia que la guíe. No se trata de pautar más, sino de pautar mejor."
+        },
+        {
+          "pregunta": "¿Cuántos objetivos debe tener una campaña de pauta?",
+          "respuesta": "Uno solo. La recomendación es definir un único objetivo por campaña (reconocimiento, leads, ventas o descargas) y que todo lo demás se alinee a ese objetivo."
+        },
+        {
+          "pregunta": "¿Conviene elegir audiencias grandes para llegar a más gente?",
+          "respuesta": "No necesariamente. Las audiencias genéricas diluyen el mensaje y el presupuesto. Lo ideal es usar datos de tus redes, tu sitio y tu CRM para construir perfiles reales y pautar para ellos."
+        },
+        {
+          "pregunta": "¿A dónde debo llevar a los usuarios después del clic?",
+          "respuesta": "A una ruta clara, como una landing optimizada con un mensaje consistente y un siguiente paso evidente. Un error común es enviarlos a la home o a una página saturada sin foco."
+        },
+        {
+          "pregunta": "¿Qué métricas debo medir en mi pauta digital?",
+          "respuesta": "Las que impactan tu negocio: leads calificados, tasa de conversión, retención, CAC y ROI. Likes, comentarios y reproducciones pueden ser valiosos, pero no cuentan toda la historia."
+        }
+      ]
+    },
     "/blog/desarrollo-web-wordpress": {
       "titulo": "Desarrollo web WordPress para negocios online | Altotráfico",
       "descripcion": "Desarrollo web WordPress para tu negocio: diseños a medida, SEO desde el inicio, integraciones como WhatsApp o pagos y soporte. Asesoría sin compromiso.",
